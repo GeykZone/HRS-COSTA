@@ -1,6 +1,4 @@
 
-@import url('https://fonts.googleapis.com/css?family=Montserrat:400,800');
-
 * {
 	box-sizing: border-box;
 }
@@ -13,7 +11,7 @@ body {
 	font-family: 'Montserrat', sans-serif;
 	height: 97vh;
 	margin: -20px 0 50px;
-    background: linear-gradient(180deg, rgba(0, 255, 231, 1), rgba(255, 121, 19, 1))
+    background: linear-gradient(180deg, rgba(0, 255, 231, 1), rgba(255, 121, 19, 1));
 }
 
 h1 {
@@ -65,12 +63,27 @@ form {
 }
 
 input {
-	background-color: #EEEEEE00;
-	border: solid dimgray 2px;
 	padding: 12px 15px;
 	margin: 8px 0;
 	width: 100%;
     border-radius: 20px;
+}
+
+input:focus {
+	outline-color: #000000;
+	border: 3px solid;
+	border-color: #000000;
+}
+
+input.error{
+	border: 2px solid;
+	border-color: #ff0037;
+}
+
+input.error:focus {
+	outline-color: #ff0037;
+	border: 3px solid;
+	border-color: #ff0037;
 }
 
 .title-container {
@@ -277,5 +290,17 @@ input {
 
 .google {
     background: linear-gradient(45deg, #ff0037, rgba(255, 233, 0, 1));
-    color: white
+    color: white;
+}
+
+.error {
+    color: red;
+}
+
+.errormsg {
+	color: red !important;
+	font-size: 12px;
+	font-weight:300;
+	align-self: flex-start;
+	margin-left: 10px;
 }

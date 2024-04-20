@@ -6,6 +6,10 @@ const signInButton = document.getElementById('signIn');
 const container = document.getElementById('container');
 const overlayLeftElements = document.querySelectorAll('.overlay-left');
 const overlayRightElements = document.querySelectorAll('.overlay-right');
+const emailInput = document.getElementById("email");
+const passwordInput = document.getElementById("password");
+const confirmPasswordInput = document.getElementById("confirm-password");
+const confirmButton = document.getElementById("confirm");
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
     apiKey: "AIzaSyCESzbz0Ux11Dcnt4CJiVdYLWcxshuJXX0",
@@ -127,6 +131,7 @@ facebookLogin.forEach(function(element) {
 
 });
 
+//login using googleLogin
 googleLogin.forEach(function(element) {
    
     element.addEventListener("click", function(){
@@ -171,4 +176,139 @@ googleLogin.forEach(function(element) {
     });
 
 });
+
+//call event for manual sign-up
+confirmButton.addEventListener("click", function(event) {
+    event.preventDefault();
+
+    if(validateForm())
+    {
+        verifyEmailAddress()
+    }
+});
+
+// validate formfor manual sign-up
+function validateForm() {
+    resetErrors();
+    let isValid = true;
+
+    // Validate email
+    if (!isValidEmail(emailInput.value)) {
+        displayError(emailInput, "Invalid email format");
+        isValid = false;
+    }
+    else{
+        displayError(emailInput, '');
+    }
+
+    // Validate password
+    if (!passwordInput.value) {
+        displayError(passwordInput, "Password cannot be empty");
+        isValid = false;
+    }
+    else{
+        displayError(passwordInput, '');
+    }
+
+    // Validate confirm password
+    if (!confirmPasswordInput.value) {
+        displayError(confirmPasswordInput, "Confirm password cannot be empty");
+        isValid = false;
+    } else if (confirmPasswordInput.value !== passwordInput.value) {
+        displayError(confirmPasswordInput, "Passwords do not match");
+        isValid = false;
+    }
+    else {
+        displayError(confirmPasswordInput, '');
+    }
+
+    return isValid;
+}
+
+//check if is valid email format
+function isValidEmail(email) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+}
+
+//add or display error on inputs if does not meet the validation
+function displayError(inputElement, errorMessage) {
+
+    const errorElement = document.getElementById(`${inputElement.id}-error`);
+    errorElement.innerText = errorMessage;
+    inputElement.classList.remove("error");
+    if (errorMessage) {
+        errorElement.innerText = errorMessage;
+        inputElement.classList.add("error");
+    }
+}
+
+//remove validation error on inputs
+function resetErrors() {
+    const errorElements = document.querySelectorAll(".error");
+    errorElements.forEach(function(errorElement) {
+        errorElement.innerText = "";
+        errorElement.classList.remove("error");
+    });
+}
+
+// verify email address form manual sign-up
+function verifyEmailAddress() {
+
+    let toEMail = emailInput.value;
+    let toName = extractUsername(toEMail);
+    let generateUniqueCode = Math.random().toString(36).substring(2, 8).toUpperCase();
+    
+    var data = {
+        service_id: 'service_lb5am8l',
+        template_id: 'template_gak32m7',
+        user_id: '9YUtu9MVMdqaqe0T7', //public key
+        template_params: {
+            'fromName': 'HRS-COSTA',
+            'message': generateUniqueCode,
+            'toEmail': toEMail,
+            'toName': toName
+        }
+    };
+
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', 'https://api.emailjs.com/api/v1.0/email/send');
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.onload = function() {
+        if (xhr.status === 200) {
+
+            toastMixin.fire({
+                animation: true,
+                title: `Your mail is sent!`,
+                timer: 3000,
+                icon: 'success'
+            });
+            
+        } else {
+
+            toastMixin.fire({
+                animation: true,
+                title: 'Oops... ' + xhr.responseText,
+                timer: 3000,
+                icon: 'error'
+              });
+        }
+    };
+    xhr.onerror = function() {
+        alert('Oops... Something went wrong!');
+    };
+    xhr.send(JSON.stringify(data));
+}
+
+//Convert Email into a Username
+function extractUsername(email) {
+    const atIndex = email.indexOf("@");
+    let username = email.substring(0, atIndex);
+    username = username.replace(/\./g, " ");
+    username = username.replace(/\b\w/g, function(char) {
+        return char.toUpperCase();
+    });
+    return username;
+}
+
 
