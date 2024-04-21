@@ -10,6 +10,11 @@ const emailInput = document.getElementById("email");
 const passwordInput = document.getElementById("password");
 const confirmPasswordInput = document.getElementById("confirm-password");
 const confirmButton = document.getElementById("confirm");
+const verifyGmailButton = document.getElementById("verifyGmail");
+const verificationCodeInput = document.getElementById("verificationCode");
+const forVerification = document.querySelectorAll(".forVerification");
+const forSignUp = document.querySelectorAll(".forSignUp");
+let globalUniqueCode;
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
     apiKey: "AIzaSyCESzbz0Ux11Dcnt4CJiVdYLWcxshuJXX0",
@@ -40,6 +45,15 @@ var toastMixin = Swal.mixin({
     }
 });
 const facebookLogin =  document.querySelectorAll(".facebook");
+
+function alertMessage(message, type, time) {
+    toastMixin.fire({
+        animation: true,
+        title: message,
+        timer: time,
+        icon: type
+    });
+}
 
 // To swap the view from login to signup
 signUpButton.addEventListener('click', () => {
@@ -107,23 +121,11 @@ facebookLogin.forEach(function(element) {
                 FB.api('/me', function(response) {
                     username = response.name;
                 });
-    
-                toastMixin.fire({
-                    animation: true,
-                    title: `User is authorized.`,
-                    timer: 3000,
-                    icon: 'success'
-                });
-    
+
+                alertMessage(`User is authorized.`, 'success', 3000);
             }
             else {
-    
-                toastMixin.fire({
-                    animation: true,
-                    title: `User cancelled login or did not authorize.`,
-                    timer: 3000,
-                    icon: 'error'
-                });
+                alertMessage(`User cancelled login or did not authorize.`, 'error', 3000);
             }
         }, { scope: 'email' });
 
@@ -154,22 +156,12 @@ googleLogin.forEach(function(element) {
             accessToken = token;
             loginStatus = "connected";
             email = user.email;
-            toastMixin.fire({
-                animation: true,
-                title: `User is authorized.`,
-                timer: 3000,
-                icon: 'success'
-            });
+            alertMessage(`User is authorized.`, 'success', 3000);
           
         }).catch((error) => {
 
           const errorMessage = error.message;
-          toastMixin.fire({
-            animation: true,
-            title: errorMessage,
-            timer: 3000,
-            icon: 'error'
-          });
+          alertMessage(errorMessage, 'error', 3000);
 
         });
 
@@ -187,7 +179,103 @@ confirmButton.addEventListener("click", function(event) {
     }
 });
 
-// validate formfor manual sign-up
+//call event for verifying the gmail code
+verifyGmailButton.addEventListener("click", function(event) {
+    event.preventDefault();
+
+    if(validateVerificationCode())
+    {
+        createAccount();
+    }
+});
+
+//validate verification code field
+function validateVerificationCode() {
+    resetErrors();
+    let isValid = true;
+
+    if(!verificationCodeInput.value) {
+        displayError(verificationCodeInput, "Verification code cannot be empty");
+        isValid = false;
+    }
+    else if (verificationCodeInput.value !== globalUniqueCode) {
+        displayError(verificationCodeInput, "Verification code do not match");
+        isValid = false;
+
+        console.log(verificationCodeInput + " !== " + globalUniqueCode);
+    }
+    else {
+        displayError(verificationCodeInput, '');
+    }
+
+    return isValid;
+}
+
+function handlePostRequest(url, data) {
+    return new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+
+        xhr.open("POST", url, true);
+        xhr.setRequestHeader("Content-Type", "application/json");
+
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === XMLHttpRequest.DONE) {
+                if (xhr.status === 200) {
+                    resolve(xhr.responseText);
+                } else {
+                    reject("HTTP Error: " + xhr.status);
+                }
+            }
+        };
+
+        xhr.onerror = function () {
+            reject("Network error");
+        };
+
+        xhr.send(JSON.stringify(data));
+    });
+}
+
+//create account after gmail is validated
+function createAccount() {
+    alertMessage(`Account created`, 'success', 3000);
+
+    let newEmail = emailInput.value;
+    let newPassword = passwordInput.value;
+    let newRole = 'customer';
+    let newUserName = extractUsername(newEmail);
+    let newAccessToken = generateRandomToken(50);
+
+    const url = "backend/loginSignUpController.php";
+    const data = {
+        newEmail: newEmail,
+        newPassword: newPassword,
+        newRole: newRole,
+        newUserName: newUserName,
+        newAccessToken: newAccessToken,
+        manualSignUp: true
+    };
+
+    handlePostRequest(url, data)
+        .then((response) => {
+            console.log("Response message:", response);
+        })
+        .catch((error) => {
+            console.error("Error:", error);
+        });
+}
+
+//create an accesstoken
+function generateRandomToken(length) {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let result = '';
+    for (let i = 0; i < length; i++) {
+        result += characters.charAt(Math.floor(Math.random() * characters.length));
+    }
+    return result;
+}
+
+// validate form for manual sign-up
 function validateForm() {
     resetErrors();
     let isValid = true;
@@ -276,28 +364,34 @@ function verifyEmailAddress() {
     xhr.setRequestHeader('Content-Type', 'application/json');
     xhr.onload = function() {
         if (xhr.status === 200) {
+            alertMessage(`Your mail is sent!`, 'success', 3000);
+            globalUniqueCode = generateUniqueCode;
 
-            toastMixin.fire({
-                animation: true,
-                title: `Your mail is sent!`,
-                timer: 3000,
-                icon: 'success'
-            });
+            showVerificationFields();
             
         } else {
-
-            toastMixin.fire({
-                animation: true,
-                title: 'Oops... ' + xhr.responseText,
-                timer: 3000,
-                icon: 'error'
-              });
+            alertMessage('Oops... ' + xhr.responseText, 'error', 3000);
         }
     };
     xhr.onerror = function() {
         alert('Oops... Something went wrong!');
     };
     xhr.send(JSON.stringify(data));
+}
+
+//show the gmail verification field after code is sent
+function showVerificationFields() {
+
+    forVerification.forEach(function(element) {
+        element.classList.remove('display-none');
+    });
+
+    confirmButton.innerText = "Resend Code";
+
+    forSignUp.forEach(function(element) {
+        element.classList.add('display-none');
+    });
+
 }
 
 //Convert Email into a Username

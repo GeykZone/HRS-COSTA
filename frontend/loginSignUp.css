@@ -67,6 +67,7 @@ input {
 	margin: 8px 0;
 	width: 100%;
     border-radius: 20px;
+	border-color: #000000;
 }
 
 input:focus {
@@ -120,6 +121,11 @@ input.error:focus {
 #confirm {
     background-color: rgba(255, 121, 19, 1);
     border-color: rgba(255, 121, 19, 1);
+}
+
+#verifyGmail {
+	background-color: rgb(4 134 73);
+    border-color: rgb(4 134 73);
 }
 
 #signIn {
@@ -303,4 +309,8 @@ input.error:focus {
 	font-weight:300;
 	align-self: flex-start;
 	margin-left: 10px;
+}
+
+.display-none {
+	display: none;
 }

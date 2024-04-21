@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 14, 2024 at 05:21 PM
+-- Generation Time: Apr 21, 2024 at 05:15 PM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -20,6 +20,25 @@ SET time_zone = "+00:00";
 --
 -- Database: `hrs_costa`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `access_token`
+--
+
+CREATE TABLE `access_token` (
+  `Id` bigint(10) NOT NULL,
+  `token` varchar(225) NOT NULL,
+  `userId` bigint(10) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `access_token`
+--
+
+INSERT INTO `access_token` (`Id`, `token`, `userId`) VALUES
+(1, 'XmLUWctVYZ7eGgQYzIQ2avsZiILOlHH7PbrMY68hU8X7bmK4o4', 3);
 
 -- --------------------------------------------------------
 
@@ -73,15 +92,29 @@ CREATE TABLE `user` (
   `username` varchar(50) NOT NULL,
   `email` varchar(50) NOT NULL,
   `password` varchar(225) NOT NULL,
-  `role` int(1) NOT NULL,
-  `accessToken` int(225) NOT NULL,
+  `role` varchar(50) NOT NULL,
   `createdDate` date NOT NULL DEFAULT current_timestamp(),
   `lastModifiedDate` date NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
+-- Dumping data for table `user`
+--
+
+INSERT INTO `user` (`id`, `username`, `email`, `password`, `role`, `createdDate`, `lastModifiedDate`) VALUES
+(3, 'Jeykson Maravillas', 'jeykson.maravillas@gmail.com', 'aUdscUhmS0FLekRIRzFrU0lGTFNQQT09', 'customer', '2024-04-21', '2024-04-21');
+
+--
 -- Indexes for dumped tables
 --
+
+--
+-- Indexes for table `access_token`
+--
+ALTER TABLE `access_token`
+  ADD PRIMARY KEY (`Id`),
+  ADD UNIQUE KEY `tokken` (`token`),
+  ADD UNIQUE KEY `userId` (`userId`);
 
 --
 -- Indexes for table `created_from_facebook`
@@ -109,12 +142,17 @@ ALTER TABLE `personal_information`
 --
 ALTER TABLE `user`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `password` (`password`),
-  ADD UNIQUE KEY `accessToken` (`accessToken`);
+  ADD UNIQUE KEY `password` (`password`);
 
 --
 -- AUTO_INCREMENT for dumped tables
 --
+
+--
+-- AUTO_INCREMENT for table `access_token`
+--
+ALTER TABLE `access_token`
+  MODIFY `Id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `created_from_facebook`
@@ -138,7 +176,7 @@ ALTER TABLE `personal_information`
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
