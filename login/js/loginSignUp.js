@@ -94,7 +94,7 @@ facebookLogin.forEach(function(element) {
             const user = result.user;
             const fbDetails = user.reloadUserInfo.providerUserInfo[0];
 
-            console.log('fb: ', fbDetails);
+            //console.log('fb: ', fbDetails);
 
             const url = "controller/loginSignUpController.php";
             const data = {
@@ -141,22 +141,35 @@ googleLogin.forEach(function(element) {
         signInWithPopup(auth, googleProvider)
         .then((result) => {
 
-            let fromFacebook = false;
-            let fromGoogle = true;
-            let manualSignUp = false;
-            let username;
-            let accessToken;
-            let loginStatus;
-            let email;
-            const credential = GoogleAuthProvider.credentialFromResult(result);
-            const token = credential.accessToken;
             const user = result.user;
+            const googleDetails = user.reloadUserInfo.providerUserInfo[0];
 
-            username = user.displayName;
-            accessToken = token;
-            loginStatus = "connected";
-            email = user.email;
-            alertMessage(`User is authorized.`, 'success', 3000);
+            const url = "controller/loginSignUpController.php";
+            const data = {
+                googleUsername: user.displayName,
+                googleAccessToken: generateRandomToken(50),
+                googleUSerId: googleDetails.rawId,
+                googleuserEmail: user.email,
+                googleloginStatus: loginStatus,
+                newRole: newRole,
+                fromGoogle: true
+            };
+            //console.log('google results: ', data);            
+            
+            handlePostRequest(url,data )
+            .then((response) => {
+                var jsonResponse = JSON.parse(response);
+                alertMessage(`User is authorized.`, 'success', 3000);
+                if(jsonResponse.userId && jsonResponse.googleloginStatus === 'connected') {
+                    window.location.reload(true);
+                }
+                else {
+                    console.log(response)
+                }
+            })
+            .catch((error) => {
+                console.log("Error:", error);
+            });
           
         }).catch((error) => {
 
@@ -258,7 +271,14 @@ function createAccount() {
 
     handlePostRequest(url, data)
         .then((response) => {
-            console.log("Response message:", response);
+            var jsonResponse = JSON.parse(response);
+            alertMessage(`User is authorized.`, 'success', 3000);
+            if(jsonResponse.userId) {
+                window.location.reload(true);
+            }
+            else {
+                console.log(response)
+            }
         })
         .catch((error) => {
             console.error("Error:", error);

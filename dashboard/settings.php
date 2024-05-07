@@ -1,3 +1,7 @@
+<?php 
+include('../login/controller/loginSignUpController.php');
+include('controller/generalController.php')
+?>
 <!DOCTYPE html>
 <html lang="en">
   <head>

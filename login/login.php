@@ -5,12 +5,14 @@ if (isset($_COOKIE['hrsCostaToken'])) {
 	
 	$hrsCostaToken = $_COOKIE['hrsCostaToken'];
 	// SQL query with INNER JOIN and WHERE clause
-	$selectFbuserSql = "
+	$selectUserSql = "
 	SELECT 
 		u.Id AS userId,
 		u.username,
 		u.email,
+		u.role,
 		cff.fbUserId,
+		cfg.googleUserId,
 		at.token AS accessToken,
 		at.expirationDate
 	FROM 
@@ -19,13 +21,16 @@ if (isset($_COOKIE['hrsCostaToken'])) {
 		created_from_facebook AS cff 
 		ON u.Id = cff.userId
 	LEFT JOIN 
+		created_from_google AS cfg 
+		ON u.Id = cfg.userId
+	LEFT JOIN 
 		access_token AS at 
 		ON u.Id = at.userId
 	WHERE 
 		at.token = ?
 	";
 	
-	$stmt = $conn->prepare($selectFbuserSql);
+	$stmt = $conn->prepare($selectUserSql);
 	$stmt->bind_param("s", $hrsCostaToken);
 	getUserAccess($stmt);
 

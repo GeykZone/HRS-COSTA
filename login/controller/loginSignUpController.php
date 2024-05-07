@@ -62,6 +62,7 @@ function getUserAccess($stmt) {
             $response['username'] = (isset($row['username']) ? $row['username'] : null);
             $response['email'] = (isset($row['email']) ? $row['email'] : null);
             $response['fbUserId'] = (isset($row['fbUserId']) ? $row['fbUserId'] : null);
+            $response['googleUserId'] = (isset($row['googleUserId']) ? $row['googleUserId'] : null);
             $response['accessToken'] = (isset($row['accessToken']) ? $row['accessToken'] : null);
             $response['role'] = (isset($row['role']) ? $row['role'] : null);
             $response['expirationDate'] = (isset($row['expirationDate']) ? $row['expirationDate'] : null);
@@ -75,8 +76,30 @@ function getUserAccess($stmt) {
 if (isset($inputData['logout'])) {
     $expirationTime = time() - 3600;// Calculate the expiration time for 30 days from now
     $cookieName = 'hrsCostaToken';
-    setcookie($cookieName, '', $expirationTime, "/");
-    $response['logout'] = true ;
+    $cookieValue = (isset($_COOKIE['hrsCostaToken']) ? $_COOKIE['hrsCostaToken'] : null);
+
+    if($cookieValue !== null) {
+        
+        $selectUserTokenSql = "SELECT `Id` FROM `access_token` WHERE `token` = ?";
+        $stmt = $conn->prepare($selectUserTokenSql);
+        $stmt->bind_param("s", $cookieValue);
+        getUserAccess($stmt);
+    }
+
+    if(!isset($response['notfound'])) {
+        $deleteTokenSql = "DELETE FROM `access_token` WHERE `token` = ?";
+        $stmt = $conn->prepare($deleteTokenSql);
+        $stmt->bind_param("s", $cookieValue);
+        $executionResult = $stmt->execute();
+
+        if ($executionResult) {
+            setcookie($cookieName, '', $expirationTime, "/");
+            $response['logout'] = true ;
+        } else {
+            $response['ErrorDeletingToken: '] = $stmt->error ;
+        }
+    }
+    
     echo json_encode($response);
 }
 
@@ -87,6 +110,10 @@ if (isset($inputData['manualSignUp'])) {
     $newRole = $inputData['newRole'];
     $newUserName = $inputData['newUserName'];
     $newAccessToken = $inputData['newAccessToken'];
+    $expirationTime = time() + (30 * 86400);// Calculate the expiration time for 30 days from now
+    $cookieName = 'hrsCostaToken';
+    $cookieValue = $newAccessToken;
+    $userTokenExpiry = date("Y-m-d", $expirationTime); // Format: Year-Month-Da
 
     $newHashedPassword = encrypt_decrypt('encrypt', $newPassword);
 
@@ -97,11 +124,12 @@ if (isset($inputData['manualSignUp'])) {
 
     if ($newlyCreatedUserId) {
         // Insert token after user creation
-        $tokenInsertSQL = "INSERT INTO `access_token`(`token`, `userId`) 
-        VALUES ('$newAccessToken', '$newlyCreatedUserId')";
+        $tokenInsertSQL = "INSERT INTO `access_token`(`token`, `userId`,`expirationDate`) 
+        VALUES ('$newAccessToken', '$newlyCreatedUserId','$userTokenExpiry')";
 
         if (insertToken($tokenInsertSQL)) {
             $response['userId'] = $newlyCreatedUserId;
+            userCookie($cookieName, $cookieValue, $expirationTime); 
         }
     }
     // Return the response as JSON
@@ -127,7 +155,8 @@ if (isset($inputData['fromFacebook'])) {
     if(isset($response['notfound'])) {
         $newHashedPassword = encrypt_decrypt('encrypt', $fbUserId);
         $email = $inputData['fbuserEmail'];
-        $userInsertSQL = "INSERT INTO `user`(`username`, `role`, `createdDate`, `lastModifiedDate`, `password`, `email`) VALUES ('$newUserName', '$newRole', NOW(), NOW(), '$newHashedPassword', '$email')";
+        $userInsertSQL = "INSERT INTO `user`(`username`, `role`, `createdDate`, `lastModifiedDate`, `password`, `email`) 
+        VALUES ('$newUserName', '$newRole', NOW(), NOW(), '$newHashedPassword', '$email')";
         $newlyCreatedUserId = insertUser($userInsertSQL);
 
         if ($newlyCreatedUserId) {
@@ -153,14 +182,67 @@ if (isset($inputData['fromFacebook'])) {
     }
     else {
         $response['facebookLoggedIn'] = true;
-        $selectFbuserSql = "SELECT `userId` FROM `created_from_facebook` WHERE `fbUserId` = ?";
-        $stmt = $conn->prepare($selectFbuserSql);
-        $stmt->bind_param("s", $fbUserId);
-        getUserAccess($stmt);
 
         $tokenInsertSQL = "INSERT INTO `access_token`(`token`, `userId`,`expirationDate`) VALUES ('$newAccessToken', '".$response['userId']."','$userTokenExpiry')";
         if(insertToken($tokenInsertSQL)) {
             $response['fbloginStatus'] = $inputData['fbloginStatus'];
+            userCookie($cookieName, $cookieValue, $expirationTime); 
+        }
+    }
+
+    // Return the response as JSON
+    echo json_encode($response);
+}
+
+// google sign-up
+if (isset($inputData['fromGoogle'])) {
+    $googleUSerId = $inputData['googleUSerId'];
+    $newAccessToken = $inputData['googleAccessToken'];
+    $newRole = $inputData['newRole'];
+    $newUserName = $inputData['googleUsername'];
+    $expirationTime = time() + (30 * 86400);// Calculate the expiration time for 30 days from now
+    $cookieName = 'hrsCostaToken';
+    $cookieValue = $newAccessToken;
+    $userTokenExpiry = date("Y-m-d", $expirationTime); // Format: Year-Month-Day
+
+    $selectGoogleuserSql = "SELECT `userId` FROM `created_from_google` WHERE `googleUserId` = ?";
+    $stmt = $conn->prepare($selectGoogleuserSql);
+    $stmt->bind_param("s", $googleUSerId);
+    getUserAccess($stmt);
+
+    if(isset($response['notfound'])) {
+        $newHashedPassword = encrypt_decrypt('encrypt', $googleUSerId);
+        $email = $inputData['googleuserEmail'];
+        $userInsertSQL = "INSERT INTO `user`(`username`, `role`, `createdDate`, `lastModifiedDate`, `password`, `email`) 
+        VALUES ('$newUserName', '$newRole', NOW(), NOW(), '$newHashedPassword', '$email')";
+        $newlyCreatedUserId = insertUser($userInsertSQL);
+
+        if ($newlyCreatedUserId) {
+            $tokenInsertSQL = "INSERT INTO `access_token`(`token`, `userId`,`expirationDate`) 
+            VALUES ('$newAccessToken', '$newlyCreatedUserId','$userTokenExpiry')";
+
+            if (insertToken($tokenInsertSQL)) {
+                            
+                $googleAccountInsertSQL = "INSERT INTO `created_from_google`(`googleUserId`, `userId`)
+                VALUES ('$googleUSerId', '$newlyCreatedUserId')";
+                try {
+                    $conn->query($googleAccountInsertSQL);
+                    $response['googleloginStatus'] = $inputData['googleloginStatus'];
+                    $response['userId']  = $newlyCreatedUserId;
+                    userCookie($cookieName, $cookieValue, $expirationTime);
+                } catch (Exception $e) {
+                    $response['insertgoogleUserError'] = "Error: " . $e->getMessage();
+                }
+            
+            }
+        }
+    }
+    else {
+        $response['googleLoggedIn'] = true;
+
+        $tokenInsertSQL = "INSERT INTO `access_token`(`token`, `userId`,`expirationDate`) VALUES ('$newAccessToken', '".$response['userId']."','$userTokenExpiry')";
+        if(insertToken($tokenInsertSQL)) {
+            $response['googleloginStatus'] = $inputData['googleloginStatus'];
             userCookie($cookieName, $cookieValue, $expirationTime); 
         }
     }
