@@ -24,6 +24,31 @@ include('controller/generalController.php')
          <!--place header here-->
          <?php include('header.php'); ?>
         <!--place header here-->
+        
+        <div class="nav-tab">
+          <div class="nav-list">
+
+            <div>
+              <label for="check-in-date">Check-in</label>
+              <input type="date" id="check-in-date" class="costa-datePicker">
+            </div>
+
+            <div>
+              <label for="check-out-date">Check-out</label>
+              <input type="date" id="check-out-date" class="costa-datePicker">
+            </div>
+            
+           <div>
+              <label for="check-out-date" >Availability</label>
+              <span class="clickable costa-btn-a" >Search </span>
+           </div>
+          </div>
+
+          <div class="button-list">
+            <span class="clickable costa-btn-a">Add Room</span>
+            <span class="clickable costa-btn-a">Book Now</span>
+          </div>
+        </div>
 
         <div class="main-content main-view">
 

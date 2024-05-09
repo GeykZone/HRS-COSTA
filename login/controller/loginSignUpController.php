@@ -58,7 +58,7 @@ function getUserAccess($stmt) {
     if ($result->num_rows > 0) {
         // Loop through the results
         while ($row = $result->fetch_assoc()) {
-            $response['userId'] = (isset($row['userId']) ? $row['userId'] : null);
+            $response['userId'] = (isset($row['userId']) ? $row['userId'] : (isset($row['loginUser_Id']) ? $row['loginUser_Id'] : null));
             $response['username'] = (isset($row['username']) ? $row['username'] : null);
             $response['email'] = (isset($row['email']) ? $row['email'] : null);
             $response['fbUserId'] = (isset($row['fbUserId']) ? $row['fbUserId'] : null);
@@ -129,6 +129,37 @@ if (isset($inputData['manualSignUp'])) {
 
         if (insertToken($tokenInsertSQL)) {
             $response['userId'] = $newlyCreatedUserId;
+            userCookie($cookieName, $cookieValue, $expirationTime); 
+        }
+    }
+    // Return the response as JSON
+    echo json_encode($response);
+}
+
+// Manual Login
+if (isset($inputData['manualLogin'])) {
+    $emailOrUsername = $inputData['emailOrUsername'];
+    $password = $inputData['password'];
+    $hashedPassword = encrypt_decrypt('encrypt', $password);
+    $newAccessToken = $inputData['loginAccessToken'];
+    $expirationTime = time() + (30 * 86400);// Calculate the expiration time for 30 days from now
+    $cookieName = 'hrsCostaToken';
+    $cookieValue = $newAccessToken;
+    $userTokenExpiry = date("Y-m-d", $expirationTime); // Format: Year-Month-Da
+
+    $selectUserTokenSql = "SELECT `loginUser`.`Id` AS `loginUser_Id` FROM `user` AS loginUser WHERE (`loginUser`.`username` = ? OR `loginUser`.`email` = ?) AND `loginUser`.`password` = ?";
+    $stmt = $conn->prepare($selectUserTokenSql);
+    $stmt->bind_param("sss", $emailOrUsername,$emailOrUsername,$hashedPassword);
+    getUserAccess($stmt);
+
+    if(!isset($response['notfound'])) {
+
+        $userId = $response['userId'];
+        // Insert token after user creation
+        $tokenInsertSQL = "INSERT INTO `access_token`(`token`, `userId`,`expirationDate`) 
+        VALUES ('$newAccessToken', '$userId','$userTokenExpiry')";
+
+        if (insertToken($tokenInsertSQL)) {
             userCookie($cookieName, $cookieValue, $expirationTime); 
         }
     }

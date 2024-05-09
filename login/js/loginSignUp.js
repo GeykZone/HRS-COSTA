@@ -7,9 +7,12 @@ const container = document.getElementById('container');
 const overlayLeftElements = document.querySelectorAll('.overlay-left');
 const overlayRightElements = document.querySelectorAll('.overlay-right');
 const emailInput = document.getElementById("email");
+const emailOrUsernameInput = document.getElementById("emailOrUserLogin");
 const passwordInput = document.getElementById("password");
+const passwordLoginInput = document.getElementById("passwordLogin");
 const confirmPasswordInput = document.getElementById("confirm-password");
 const confirmButton = document.getElementById("confirm");
+const login = document.getElementById('login');
 const verifyGmailButton = document.getElementById("verifyGmail");
 const verificationCodeInput = document.getElementById("verificationCode");
 const forVerification = document.querySelectorAll(".forVerification");
@@ -182,6 +185,33 @@ googleLogin.forEach(function(element) {
 
 });
 
+function loginManual() {
+
+    const url = "controller/loginSignUpController.php";
+    const data = {
+        emailOrUsername: emailOrUsernameInput.value,
+        password: passwordLoginInput.value,
+        loginAccessToken: generateRandomToken(50),
+        manualLogin: true
+    };
+
+    handlePostRequest(url,data )
+    .then((response) => {
+        var jsonResponse = JSON.parse(response);
+        alertMessage(`User is authorized.`, 'success', 3000);
+        if(jsonResponse.userId) {
+            window.location.reload(true);
+        }
+        else {
+            console.log(response)
+        }
+    })
+    .catch((error) => {
+        console.log("Error:", error);
+    });
+
+}
+
 //call event for manual sign-up
 confirmButton.addEventListener("click", function(event) {
     event.preventDefault();
@@ -189,6 +219,15 @@ confirmButton.addEventListener("click", function(event) {
     if(validateForm())
     {
         verifyEmailAddress()
+    }
+});
+
+login.addEventListener("click", function(event) {
+    event.preventDefault();
+
+    if(validateLoginForm())
+    {
+        loginManual();
     }
 });
 
@@ -328,6 +367,31 @@ function validateForm() {
     }
     else {
         displayError(confirmPasswordInput, '');
+    }
+
+    return isValid;
+}
+
+function validateLoginForm() {
+    resetErrors();
+    let isValid = true;
+
+    // Validate email
+    if (!emailOrUsernameInput.value) {
+        displayError(emailOrUsernameInput, "Email/Username cannot be empty");
+        isValid = false;
+    }
+    else{
+        displayError(emailOrUsernameInput, '');
+    }
+
+    // Validate password
+    if (!passwordLoginInput.value) {
+        displayError(passwordLoginInput, "Password cannot be empty");
+        isValid = false;
+    }
+    else{
+        displayError(passwordLoginInput, '');
     }
 
     return isValid;
