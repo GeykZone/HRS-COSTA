@@ -1,0 +1,210 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+
+/* -------------- DETAILS MODAL */
+
+.details-modal {
+  background: #ffffff;
+  border-radius: 0.5em;
+  box-shadow: 0 10px 20px rgba(black, 0.2);
+  left: 50%;
+  max-width: 90%;
+  pointer-events: none;
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 50em;
+  text-align: left;
+  max-height: 90vh;
+  display: none;
+  flex-direction: column;
+  z-index: 99999;
+  transition: opacity 0.3s ease; /* transition effect */
+}
+
+.details-modal.show {
+    display: flex; /* show the modal when the show class is added */
+    opacity: 1; /* make the modal fully visible */
+}
+
+.details-modal-close {
+  align-items: center;
+  color: #111827;
+  display: flex;
+  height: 4.5em;
+  justify-content: center;
+  pointer-events: all;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 4.5em;
+}
+
+.details-modal-close svg:hover {
+    width: 12px;
+    height: 12px;
+}
+
+.details-modal-close svg {
+  display: block;
+}
+
+.details-modal-title {
+  color: #111827;
+  padding: 1.5em 2em;
+  pointer-events: all;
+  position: relative;
+  width: calc(100% - 4.5em);
+}
+
+.details-modal-title h1 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  line-height: normal;
+}
+
+.details-modal-footer {
+  color: #111827;
+  padding: 1.5em 1px;
+  pointer-events: all;
+  position: relative;
+  width: calc(100% - 4.5em);
+  display: flex;
+  justify-content: flex-end;
+}
+
+.details-modal-content {
+  border-top: 1px solid #e0e0e0;
+  border-bottom: 1px solid #e0e0e0;
+  padding: 2em;
+  pointer-events: all;
+  overflow: auto;
+}
+
+.room-form-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--secondary-margin);
+}
+
+.input-container{
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.addOtherRate-container  {
+  background-color: whitesmoke;
+  padding: 10px;
+  border-radius: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.newAddedRate-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  background-color: white;
+  padding: 15px;
+  border-radius: 15px;
+  margin-bottom: 5px;
+}
+
+.otherRate-card {
+  background-color: forestgreen;
+  border-radius: 15px;
+  padding: 10px 15px;
+  color: white;
+}
+
+.room-form-button-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+#showOtherRate {
+  width: 9.5rem;
+  background-color: goldenrod;
+}
+
+#closeOtherRate {
+  width: 9.5rem;
+  background-color: firebrick;
+}
+
+.previewImage {
+  max-width: 100px;
+  max-height: 100px;
+  margin-right: 10px;
+  margin-bottom: 10px;
+}
+
+.deleteButton {
+  display: none;
+  position:absolute;
+  width: 100px;
+  height: 20px;
+  background-color: rgba(26 25 25 / 0.26);
+  color: white;
+  border-radius: 0.5rem;
+  cursor: pointer;
+}
+
+.imageContainer:hover .deleteButton {
+  display: flex;
+  justify-content: center;
+  padding-bottom: 25px;
+}
+
+#imagePreviewContainer {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+
+.room-input {
+  height: 5rex;
+  border-radius: 0.5rem;
+  padding: 5px 12px;
+  border: 1.9px solid black;
+}
+
+#roomDescription {
+ padding-top: 10px;
+ height: 10rex;
+}
+
+/* -------------- OVERLAY */
+
+.details-modal-overlay {
+  transition: opacity 0.2s ease-out;
+  pointer-events: none;
+  background: rgba(#0f172a, 0.8);
+  position: fixed;
+  opacity: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  top: 0;
+}
+
+details[open] .details-modal-overlay {
+  pointer-events: all;
+  opacity: 0.5;
+}
+
+/* -------------- DETAILS */
+
+details summary {
+  list-style: none;
+}
+
+details summary:focus {
+  outline: none;
+}
+
+details summary::-webkit-details-marker {
+  display: none;
+}

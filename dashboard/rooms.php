@@ -28,25 +28,25 @@ include('controller/generalController.php')
         <div class="nav-tab">
           <div class="nav-list">
 
-            <div>
+            <div class="customer display-none">
               <label for="check-in-date">Check-in</label>
               <input type="date" id="check-in-date" class="costa-datePicker">
             </div>
 
-            <div>
+            <div class="customer display-none">
               <label for="check-out-date">Check-out</label>
               <input type="date" id="check-out-date" class="costa-datePicker">
             </div>
             
-           <div>
+           <div class="customer display-none">
               <label for="check-out-date" >Availability</label>
               <span class="clickable costa-btn-a" >Search </span>
            </div>
           </div>
 
           <div class="button-list">
-            <span class="clickable costa-btn-a">Add Room</span>
-            <span class="clickable costa-btn-a">Book Now</span>
+            <span class="clickable costa-btn-a admin display-none" id="addRoomBtn">Add Room</span>
+            <span class="clickable costa-btn-a customer display-none">Book Now</span>
           </div>
         </div>
 
@@ -58,23 +58,9 @@ include('controller/generalController.php')
 
           <div class="courses-boxes">
 
-            <div class="courses-box">
-              <div class="card-image">
-              <img src="https://h-img1.cloudbeds.com/uploads/199021/cds-1_1_thumb~~65c4477f47757.png" style="background-color: white;" alt="" />
-                <img src="https://h-img1.cloudbeds.com/199021/1669205371354_featured~~638ec42d17964.jpg" alt="" />
-              </div>
-              <div class="courses-card-body">
-                <h4>Room D</h4>
-                <p>
-                Sample Description
-                </p>
-                <span>View Room Details</span>
-              </div>
-              <div class="courses-card-footer">
-                <span><i class="fa-regular fa-user"></i>950</span>
-                <span><i class="fa-solid fa-dollar-sign"></i>250</span>
-              </div>
-            </div>
+            <!-- resources-->
+            <?php include('addRoomModal.php') ?>
+            <!-- resources-->
 
             <div class="courses-box">
               <div class="card-image">
@@ -91,140 +77,20 @@ include('controller/generalController.php')
               <div class="courses-card-footer">
                 <span><i class="fa-regular fa-user"></i>950</span>
                 <span><i class="fa-solid fa-dollar-sign"></i>165</span>
-              </div>
-            </div>
-
-            <div class="courses-box">
-              <div class="card-image">
-              <img src="https://h-img1.cloudbeds.com/uploads/199021/cds-1_1_thumb~~65c4477f47757.png" style="background-color: white;" alt="" />
-                <img src="https://h-img3.cloudbeds.com/uploads/199021/deluxe_2_gallery~~61406d9556939.jpg" alt="" />
-              </div>
-              <div class="courses-card-body">
-                <h4>Room B</h4>
-                <p>
-                Sample Description 
-                </p>
-                <span>View Room Details</span>
-              </div>
-              <div class="courses-card-footer">
-                <span><i class="fa-regular fa-user"></i>1150</span>
-                <span><i class="fa-solid fa-dollar-sign"></i>210</span>
-              </div>
-            </div>
-
-            <div class="courses-box">
-              <div class="card-image">
-                <img src="https://h-img1.cloudbeds.com/uploads/199021/cds-1_1_thumb~~65c4477f47757.png" style="background-color: white;" alt="" />
-                <img src="https://h-img3.cloudbeds.com/uploads/199021/213_featured~~65c44a016abf5.jpg" alt="" />
-              </div>
-              <div class="courses-card-body">
-                <h4>Room C</h4>
-                <p>
-                Sample Description 
-                </p>
-                <span>View Room Details</span>
-              </div>
-              <div class="courses-card-footer">
-                <span><i class="fa-regular fa-user"></i>650</span>
-                <span><i class="fa-solid fa-dollar-sign"></i>90</span>
-              </div>
-            </div>
-
-            <div class="courses-box">
-              <div class="card-image">
-              <img src="https://h-img1.cloudbeds.com/uploads/199021/cds-1_1_thumb~~65c4477f47757.png" style="background-color: white;" alt="" />
-                <img src="https://h-img1.cloudbeds.com/199021/1669205371354_featured~~638ec42d17964.jpg" alt="" />
-              </div>
-              <div class="courses-card-body">
-                <h4>Room D</h4>
-                <p>
-                Sample Description
-                </p>
-                <span>View Room Details</span>
-              </div>
-              <div class="courses-card-footer">
-                <span><i class="fa-regular fa-user"></i>950</span>
-                <span><i class="fa-solid fa-dollar-sign"></i>250</span>
-              </div>
-            </div>
-
-            <div class="courses-box">
-              <div class="card-image">
-                <img src="https://h-img1.cloudbeds.com/uploads/199021/cds-1_1_thumb~~65c4477f47757.png" style="background-color: white;" alt="" />
-                <img src="https://h-img3.cloudbeds.com/uploads/199021/pbv_7_gallery~~614068a056257.jpg" alt="" />
-              </div>
-              <div class="courses-card-body">
-                <h4>Room A</h4>
-                <p>
-                  Sample Description 
-                </p>
-                <span>View Room Details</span>
-              </div>
-              <div class="courses-card-footer">
-                <span><i class="fa-regular fa-user"></i>950</span>
-                <span><i class="fa-solid fa-dollar-sign"></i>165</span>
-              </div>
-            </div>
-
-            <div class="courses-box">
-              <div class="card-image">
-              <img src="https://h-img1.cloudbeds.com/uploads/199021/cds-1_1_thumb~~65c4477f47757.png" style="background-color: white;" alt="" />
-                <img src="https://h-img3.cloudbeds.com/uploads/199021/deluxe_2_gallery~~61406d9556939.jpg" alt="" />
-              </div>
-              <div class="courses-card-body">
-                <h4>Room B</h4>
-                <p>
-                Sample Description 
-                </p>
-                <span>View Room Details</span>
-              </div>
-              <div class="courses-card-footer">
-                <span><i class="fa-regular fa-user"></i>1150</span>
-                <span><i class="fa-solid fa-dollar-sign"></i>210</span>
-              </div>
-            </div>
-
-            <div class="courses-box">
-              <div class="card-image">
-                <img src="https://h-img1.cloudbeds.com/uploads/199021/cds-1_1_thumb~~65c4477f47757.png" style="background-color: white;" alt="" />
-                <img src="https://h-img3.cloudbeds.com/uploads/199021/213_featured~~65c44a016abf5.jpg" alt="" />
-              </div>
-              <div class="courses-card-body">
-                <h4>Room C</h4>
-                <p>
-                Sample Description 
-                </p>
-                <span>View Room Details</span>
-              </div>
-              <div class="courses-card-footer">
-                <span><i class="fa-regular fa-user"></i>650</span>
-                <span><i class="fa-solid fa-dollar-sign"></i>90</span>
-              </div>
-            </div>
-
-            <div class="courses-box">
-              <div class="card-image">
-              <img src="https://h-img1.cloudbeds.com/uploads/199021/cds-1_1_thumb~~65c4477f47757.png" style="background-color: white;" alt="" />
-                <img src="https://h-img1.cloudbeds.com/199021/1669205371354_featured~~638ec42d17964.jpg" alt="" />
-              </div>
-              <div class="courses-card-body">
-                <h4>Room D</h4>
-                <p>
-                Sample Description
-                </p>
-                <span>View Room Details</span>
-              </div>
-              <div class="courses-card-footer">
-                <span><i class="fa-regular fa-user"></i>950</span>
-                <span><i class="fa-solid fa-dollar-sign"></i>250</span>
               </div>
             </div>
             
+      
           </div>
           </div>
 
       </main>
     </div>
+     <!-- Firebase SDK -->
+     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-storage-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
     <script>var userOrAdminDetails = <?php echo json_encode($response); ?>;</script>
     <script src="js/script.js"></script>
   </body>

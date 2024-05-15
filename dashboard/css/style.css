@@ -4,7 +4,7 @@
   box-sizing: border-box;
 }
 body {
-  font-family: "Open Sans", sans-serif;
+  font-family: 'Montserrat', sans-serif;
 }
 ul {
   list-style: none;
@@ -113,7 +113,7 @@ a {
   font-size: 0.90rem;
 }
 .display-none {
-  display: none;
+  display: none !important;
 }
 div.loader {
   height: 100vh;
@@ -290,7 +290,7 @@ div.loader h1 span {
   position: sticky;
 }
 .clickable {
-  cursor: pointer;
+  cursor: pointer !important;
 }
 .text-logo {
   width: 100px;
@@ -421,6 +421,40 @@ div.loader h1 span {
     display: flex;
     flex-direction: column;
   }
+}
+
+.room-error-message-label {
+	color: red !important;
+	font-size: 12px;
+	font-weight:300;
+	align-self: flex-start;
+	margin-left: 4px;
+}
+
+.error {
+  color: red;
+}
+
+textarea.error{
+	border: 2px solid;
+	border-color: #ff0037;
+}
+
+input.error{
+	border: 2px solid;
+	border-color: #ff0037;
+}
+
+input.error:focus {
+	outline-color: #ff0037;
+	border: 3px solid;
+	border-color: #ff0037;
+}
+
+textarea.error:focus {
+	outline-color: #ff0037;
+	border: 3px solid;
+	border-color: #ff0037;
 }
 
 .costa-datePicker {
@@ -2225,6 +2259,9 @@ main .projects-box .projects-box-section2 table tr td a.rejected {
   span {
   width: 40%;
 }
+.width-800px {
+  width: 800px;
+}
 .main-content .courses-boxes {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
@@ -2251,6 +2288,9 @@ main .projects-box .projects-box-section2 table tr td a.rejected {
 }
 .main-content .courses-box .card-image {
   position: relative;
+  display: flex;
+  justify-content: center;
+  background-color: #000;
 }
 .main-content .courses-box .card-image img {
   max-width: 100%;
