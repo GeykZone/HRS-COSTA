@@ -27,18 +27,18 @@
           </div>
 
           <div class="input-container">
-            <input type="number" class="room-input" placeholder="Published Rate" id="publishedRate" maxlength="10" />
+            <input type="text" class="room-input" placeholder="Published Rate" id="publishedRate" maxlength="10" />
             <div id="publishedRate-error" class="room-error-message-label error"></div>
           </div>
 
           <div class="addOtherRate-container display-none">
             <div class="input-container">
-              <input type="number" class="room-input" placeholder="Rate Type" id="rateType" maxlength="10" />
+              <input type="text" class="room-input" placeholder="Rate Type" id="rateType" maxlength="50" />
               <div id="rateType-error" class="room-error-message-label error"></div>
             </div>
 
             <div class="input-container">
-              <input type="number" class="room-input" placeholder="New Rate" id="newRate" maxlength="10" />
+              <input type="text" class="room-input" placeholder="New Rate" id="newRate" maxlength="10" />
               <div id="newRate-error" class="room-error-message-label error"></div>
             </div>
 
@@ -47,7 +47,6 @@
             </div>
 
             <div class="newAddedRate-container">
-              <span class="otherRate-card"><span>Flash Sale</span><span> : </span><span>200</span></span>
             </div>
           </div>
 

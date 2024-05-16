@@ -26,8 +26,12 @@ let publishedRate = document.getElementById('publishedRate');
 let showOtherRate = document.getElementById('showOtherRate');
 let closeOtherRate = document.getElementById('closeOtherRate');
 let addOtherRateContainer = document.querySelector(".addOtherRate-container");
+let rateType = document.getElementById('rateType');
+let newRate = document.getElementById('newRate');
+let addRateNow =addOtherRateBtn = document.getElementById('addRateNow');
 let storage;
 let imgCount = 0;
+let otherRateCount = 0;
 const selectedFiles = [];
 const coursesBoxContainer = document.querySelector('.courses-boxes');
 
@@ -44,6 +48,58 @@ if(typeof firebase !== 'undefined' && firebase.apps.length === 0){
   };
   firebase.initializeApp(firebaseConfig);
   storage = firebase.storage();
+}
+
+// Function to capitalize the first letter of a string
+function capitalizeFirstLetter(string) {
+  return string.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+}
+
+// Function to format a number as Philippine pesos currency
+function formatCurrency(number) {
+  return new Intl.NumberFormat('en-PH', { style: 'currency', currency: 'PHP' }).format(number);
+}
+
+// Function to parse a Philippine pesos currency string back to a number
+function parseCurrency(currencyString) {
+  return parseFloat(currencyString.replace(/[^0-9.-]+/g, ""));
+}
+
+// dynamic Currency Only Input
+function dynamicCurrencyOnlyInput(inputNUmber) {
+  // Get the entered value from the input field
+  let enteredValue = inputNUmber.value;
+
+  // Remove any characters that are not digits or characters used for currency
+  let cleanedValue = enteredValue.replace(/[^\d.,₱]/g, '');
+
+  // Update the value displayed in the input field with the cleaned value
+    inputNUmber.value = cleanedValue;
+
+  // If the cleaned value is only the currency symbol, clear the input field
+  if (cleanedValue === '₱') {
+    inputNUmber.value = '';
+  } else {
+    // Update the value displayed in the input field with the cleaned value
+    inputNUmber.value = cleanedValue;
+  }
+}
+
+function dynamicInputFieldCurrencyFormatter(inputField) {
+  // Get the entered value from the input field
+  let enteredValue = inputField.value;
+  
+  // Check if the entered value is valid (not empty and is a number)
+  if (enteredValue.trim() !== '' && !isNaN(enteredValue)) {
+      // Parse the entered value to a float
+      let parsedValue = parseCurrency(enteredValue);
+      
+      // Format the parsed value as currency
+      let formattedCurrency = formatCurrency(parsedValue);
+      
+      // Update the value displayed in the input field with the formatted currency
+      inputField.value = formattedCurrency;
+  }
 }
 
 // only for addRoom modal
@@ -113,6 +169,74 @@ if(fileInput) {
     validateAddRoomForm();
   });
 
+  // Attach blur event listener to the input field
+  newRate.addEventListener('blur', function() {
+    dynamicInputFieldCurrencyFormatter(newRate)
+  });
+
+  // Attach blur event listener to the input field
+  publishedRate.addEventListener('blur', function() {
+    dynamicInputFieldCurrencyFormatter(publishedRate)
+  });
+
+  // Attach input event listener to the input field
+  newRate.addEventListener('input', function() {
+    dynamicCurrencyOnlyInput(newRate);
+  });
+
+  publishedRate.addEventListener('input', function() {
+    dynamicCurrencyOnlyInput(publishedRate);
+  });
+
+  // add other rates event
+  document.getElementById('addRateNow').addEventListener('click', function() {
+      if (validateOtherRatesForm()) {
+          let rateTypeValue = capitalizeFirstLetter(rateType.value);
+          let newRateValue = parseCurrency(newRate.value);
+          newRateValue = formatCurrency(newRateValue);
+
+          // Create the inner span element with a unique ID
+          let otherRateCard = document.createElement('div');
+          otherRateCard.classList.add('otherRate-card');
+
+          let rateTypeSpan = document.createElement('span');
+          rateTypeSpan.id = `ratype-${otherRateCount}`;
+          rateTypeSpan.textContent = rateTypeValue;
+
+          let colonSpan = document.createElement('span');
+          colonSpan.textContent = ' : ';
+
+          let newRateValueSpan = document.createElement('span');
+          newRateValueSpan.id = `newRateValue-${otherRateCount}`;
+          newRateValueSpan.textContent = newRateValue;
+
+          // Create the delete button
+          let removeOtherRateCard = document.createElement('span');
+          removeOtherRateCard.classList.add('fa-regular', 'fa-circle-xmark');
+          removeOtherRateCard.style.marginLeft = '10px';
+          removeOtherRateCard.style.cursor = 'pointer';
+
+          // Append the spans and button to the card
+          otherRateCard.appendChild(rateTypeSpan);
+          otherRateCard.appendChild(colonSpan);
+          otherRateCard.appendChild(newRateValueSpan);
+          otherRateCard.appendChild(removeOtherRateCard);
+
+          // Append the card to the existing container
+          document.querySelector('.newAddedRate-container').appendChild(otherRateCard);
+
+          // Increment the counter
+          otherRateCount++;
+          rateType.value = null;
+          newRate.value = null;
+
+          // Add event listener to delete button
+          removeOtherRateCard.addEventListener('click', function() {
+              otherRateCard.remove();
+          });
+      }
+  });
+
   // validate the add room form
   function validateAddRoomForm() {
     resetErrors();
@@ -154,6 +278,31 @@ if(fileInput) {
     return isValid;
   }
   // validate the add room form
+
+  //validate other rates
+  function validateOtherRatesForm() {
+    resetErrors();
+    let isValid = true;
+
+    if(!rateType.value) {
+        displayError(rateType, "Type cannot be empty");
+        isValid = false;
+    }
+    else {
+      displayError(rateType, '');
+    }
+
+    if(!newRate.value) {
+      displayError(newRate, "New Rate cannot be empty");
+      isValid = false;
+    }
+    else {
+      displayError(newRate, '');
+    }
+
+    return isValid;
+  }
+  //validate other rates
   
   //upload all images to firebase
   function uploadImageToFirebase() {
