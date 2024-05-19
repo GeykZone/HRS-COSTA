@@ -481,6 +481,23 @@ textarea.error:focus {
   font-size: 0.85rem;
 }
 
+.costa-btn-b {
+  background-color: #19C4B8 !important;
+  color: #FFFFFF;
+  padding: var(--fifth-padding);
+  width: 135px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: var(--secondary-radius);
+  height: 35px;
+}
+
+.costa-btn-b:hover {
+  width: 135px; 
+  font-size: 0.75rem !important ;
+}
+
 main {
   overflow: hidden;
 }
@@ -2293,7 +2310,10 @@ main .projects-box .projects-box-section2 table tr td a.rejected {
   background-color: #000;
 }
 .main-content .courses-box .card-image img {
-  max-width: 100%;
+  width: 100%; /* Set the width to 100% */
+  height: auto; /* Allow the height to adjust automatically based on the aspect ratio */
+  object-fit: cover; /* Cover the entire container while maintaining the aspect ratio */
+  aspect-ratio: 16 / 9; /* Set the aspect ratio to 16:9 (or any other ratio you desire) */
 }
 @media (max-width: 1069px) {
   .main-content .courses-boxes .courses-box .card-image img {
@@ -2310,6 +2330,7 @@ main .projects-box .projects-box-section2 table tr td a.rejected {
   top: 20px;
   left: 20px;
   width: 60px;
+  height: 60px;
   border-radius: var(--main-radius);
   -webkit-border-radius: var(--main-radius);
   -moz-border-radius: var(--main-radius);

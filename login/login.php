@@ -58,17 +58,17 @@ if (isset($_COOKIE['hrsCostaToken'])) {
              <h1 class="forSignUp" style="color:rgba(255, 121, 19, 1); align-self:center;">Sign Up</h1>
             </div>
 
-			<input type="email" id="email" placeholder="Email" class="forSignUp" maxlength="50"/>
+			<input type="email" id="email" placeholder="Email *" class="forSignUp" maxlength="50"/>
 			<div id="email-error" class="error errormsg forSignUp"></div>
 
-			<input type="password" id="password" class="forSignUp" placeholder="Password" maxlength="50" />
+			<input type="password" id="password" class="forSignUp" placeholder="Password *" maxlength="50" />
 			<div id="password-error" class="error errormsg forSignUp"></div>
 
-            <input type="password" id="confirm-password" class="forSignUp" placeholder="Confirm Password" maxlength="50" />
+            <input type="password" id="confirm-password" class="forSignUp" placeholder="Confirm Password *" maxlength="50" />
 			<div id="confirm-password-error" class="error errormsg forSignUp"></div>
 
 			<h6 class="forVerification display-none" >Check your Email for your verification code. Please don't refresh the page.</h6>
-			<input type="text" class="forVerification display-none" id="verificationCode" placeholder="Gmail Verification Code" maxlength="50" />
+			<input type="text" class="forVerification display-none" id="verificationCode" placeholder="Gmail Verification Code *" maxlength="50" />
 			<div id="verificationCode-error" class="error errormsg forVerification display-none"></div>
 
             <div class="loginSignUp-button-container">
@@ -90,10 +90,10 @@ if (isset($_COOKIE['hrsCostaToken'])) {
             <h1 style="color:rgba(0, 199, 199, 1); font-family: Arial, Helvetica, sans-serif;">Hello</h1>
             <h1 style="color:rgba(255, 121, 19, 1);">Welcome!</h1>
             </div>
-			<input type="email" class="forSignUp" placeholder="Email / Username" id="emailOrUserLogin" maxlength="50" />
+			<input type="email" class="forSignUp" placeholder="Email / Username *" id="emailOrUserLogin" maxlength="50" />
 			<div id="emailOrUserLogin-error" class="error errormsg forSignUp"></div>
 
-			<input type="password" class="forSignUp" placeholder="Password" id="passwordLogin" maxlength="50" />
+			<input type="password" class="forSignUp" placeholder="Password *" id="passwordLogin" maxlength="50" />
 			<div id="passwordLogin-error" class="error errormsg forSignUp"></div>
 
             <div class="loginSignUp-button-container">

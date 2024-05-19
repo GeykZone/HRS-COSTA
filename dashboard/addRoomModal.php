@@ -12,33 +12,33 @@
           <form action="" class="room-form-container">
 
           <div class="input-container">
-            <input type="text" class="room-input" placeholder="Room Name" id="rooName" maxlength="50" />
+            <input type="text" class="room-input form-a" placeholder="Room Name *" id="rooName" maxlength="50" />
             <div id="rooName-error" class="room-error-message-label error"></div>
           </div>
 
           <div class="input-container">
-             <textarea id="roomDescription" placeholder="Room Description" maxlength="500" class="room-input"></textarea>
+             <textarea id="roomDescription" placeholder="Room Description *" maxlength="500" class="room-input  form-a"></textarea>
             <div id="roomDescription-error" class="room-error-message-label error"></div>
           </div>
 
           <div class="input-container">
-            <input type="number" class="room-input" placeholder="Maximum Capacity" id="maximumCapacity" maxlength="10" />
+            <input type="number" class="room-input  form-a" placeholder="Maximum Capacity *" id="maximumCapacity" maxlength="10" />
             <div id="maximumCapacity-error" class="room-error-message-label error"></div>
           </div>
 
           <div class="input-container">
-            <input type="text" class="room-input" placeholder="Published Rate" id="publishedRate" maxlength="10" />
+            <input type="text" class="room-input  form-a" placeholder="Published Rate *" id="publishedRate" maxlength="10" />
             <div id="publishedRate-error" class="room-error-message-label error"></div>
           </div>
 
           <div class="addOtherRate-container display-none">
             <div class="input-container">
-              <input type="text" class="room-input" placeholder="Rate Type" id="rateType" maxlength="50" />
+              <input type="text" class="room-input  form-b" placeholder="Rate Type *" id="rateType" maxlength="50" />
               <div id="rateType-error" class="room-error-message-label error"></div>
             </div>
 
             <div class="input-container">
-              <input type="text" class="room-input" placeholder="New Rate" id="newRate" maxlength="10" />
+              <input type="text" class="room-input  form-b" placeholder="New Rate *" id="newRate" maxlength="10" />
               <div id="newRate-error" class="room-error-message-label error"></div>
             </div>
 
@@ -58,6 +58,7 @@
             <span class="clickable costa-btn-a" id="showOtherRate">Show Other Rate</span>
             <span class="clickable costa-btn-a display-none" id="closeOtherRate">Close Other Rate</span>
           </div>
+          <div id="imagePreviewContainer-error" class="room-error-message-label error display-none" style="margin-top: -10px; margin-bottom: -10px;"></div>
           <div id="imagePreviewContainer"></div>
 
         </form>

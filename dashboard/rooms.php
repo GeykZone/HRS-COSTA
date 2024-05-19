@@ -62,9 +62,9 @@ include('controller/generalController.php')
             <?php include('addRoomModal.php') ?>
             <!-- resources-->
 
-            <div class="courses-box">
+            <!-- <div class="courses-box">
               <div class="card-image">
-                <img src="https://h-img1.cloudbeds.com/uploads/199021/cds-1_1_thumb~~65c4477f47757.png" style="background-color: white;" alt="" />
+                <img src="https://h-img1.cloudbeds.com/uploads/199021/cds-1_1_thumb~~65c4477f47757.png" class="hotel-room-logo" style="background-color: white;" alt="" />
                 <img src="https://h-img3.cloudbeds.com/uploads/199021/pbv_7_gallery~~614068a056257.jpg" alt="" />
               </div>
               <div class="courses-card-body">
@@ -79,7 +79,7 @@ include('controller/generalController.php')
                 <span><i class="fa-solid fa-dollar-sign"></i>165</span>
               </div>
             </div>
-            
+             -->
       
           </div>
           </div>
@@ -87,11 +87,8 @@ include('controller/generalController.php')
       </main>
     </div>
      <!-- Firebase SDK -->
-     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-storage-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
     <script>var userOrAdminDetails = <?php echo json_encode($response); ?>;</script>
     <script src="js/script.js"></script>
+    <script src="js/rooms.js"></script>
   </body>
 </html>

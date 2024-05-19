@@ -137,37 +137,39 @@
 .previewImage {
   max-width: 100px;
   max-height: 100px;
-  margin-right: 10px;
   margin-bottom: 10px;
 }
 
 .deleteButton {
   display: none;
-  position:relative;
-  width: 100px;
-  height: 20px;
-  background-color: rgba(26 25 25 / 0.26);
-  color: white;
-  border-radius: 0.5rem;
-  cursor: pointer;
 }
 
 .imageContainer {
   display: flex;
-  flex-wrap: wrap;
   flex-direction:column-reverse;
   justify-content: center;
+  justify-items: center;;
   gap: 5px;
 }
 
 .imageContainer:hover .deleteButton {
   display: flex;
   justify-content: center;
+  position:relative;
+  max-width: 100px;
+  height: 20px;
+  background-color: rgba(26 25 25 / 0.19);
+  color: white;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  padding-top: 3px;
+  padding-bottom: 20px;
 }
 
 #imagePreviewContainer {
   display: flex;
   flex-wrap: wrap;
+  gap: 5px;
 }
 
 
