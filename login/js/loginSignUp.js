@@ -185,6 +185,7 @@ googleLogin.forEach(function(element) {
 
 });
 
+//login manual method
 function loginManual() {
 
     const url = "controller/loginSignUpController.php";
@@ -198,15 +199,17 @@ function loginManual() {
     handlePostRequest(url,data )
     .then((response) => {
         var jsonResponse = JSON.parse(response);
-        alertMessage(`User is authorized.`, 'success', 3000);
         if(jsonResponse.userId) {
+            alertMessage(`User is authorized.`, 'success', 3000);
             window.location.reload(true);
         }
         else {
+            alertMessage(`Something went wrong: ${response}`, 'error', 3000);
             console.log(response)
         }
     })
     .catch((error) => {
+        alertMessage(`Something went wrong. ${error}`, 'error', 3000);
         console.log("Error:", error);
     });
 
@@ -222,6 +225,7 @@ confirmButton.addEventListener("click", function(event) {
     }
 });
 
+// event for login manual
 login.addEventListener("click", function(event) {
     event.preventDefault();
 
@@ -291,8 +295,6 @@ function handlePostRequest(url, data) {
 
 //create account after gmail is validated
 function createAccount() {
-    alertMessage(`Account created`, 'success', 3000);
-
     let newEmail = emailInput.value;
     let newPassword = passwordInput.value;
     let newUserName = extractUsername(newEmail);
@@ -311,15 +313,17 @@ function createAccount() {
     handlePostRequest(url, data)
         .then((response) => {
             var jsonResponse = JSON.parse(response);
-            alertMessage(`User is authorized.`, 'success', 3000);
             if(jsonResponse.userId) {
+                alertMessage(`Account created`, 'success', 3000);
                 window.location.reload(true);
             }
             else {
+                alertMessage(`Something went wrong: ${response}`, 'error', 3000);
                 console.log(response)
             }
         })
         .catch((error) => {
+            alertMessage(`Something went wrong: ${error}`, 'error', 3000);
             console.error("Error:", error);
         });
 }

@@ -31,22 +31,24 @@ include('controller/generalController.php')
             <div class="customer display-none">
               <label for="check-in-date">Check-in</label>
               <input type="date" id="check-in-date" class="costa-datePicker">
+              <div id="check-in-date-error" class="room-error-message-label error"></div>
             </div>
 
             <div class="customer display-none">
               <label for="check-out-date">Check-out</label>
               <input type="date" id="check-out-date" class="costa-datePicker">
+              <div id="check-out-date-error" class="room-error-message-label error"></div>
             </div>
             
            <div class="customer display-none">
               <label for="check-out-date" >Availability</label>
-              <span class="clickable costa-btn-a" >Search </span>
+              <span class="clickable costa-btn-a" id="searchAvailableRooms">Search </span>
            </div>
           </div>
 
           <div class="button-list">
             <span class="clickable costa-btn-a admin display-none" id="addRoomBtn">Add Room</span>
-            <span class="clickable costa-btn-a customer display-none">Book Now</span>
+            <span class="clickable costa-btn-a customer display-none" id="bookNOwBtn">Book Now</span>
           </div>
         </div>
 

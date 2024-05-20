@@ -47,7 +47,13 @@
   font-weight: 500;
   color: #4d4d4d;
 }
-
+.slider-message {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  color: #4d4d4d;
+}
 .swiper-navBtn {
   color: #000;
   height: 40px;

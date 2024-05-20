@@ -120,6 +120,7 @@ if( $response['role'] === 'customer') {
               <h2>Available Rooms</h2>
             </div>
           </div>
+          <div class="slider-message">There are no rooms available to display.</div>
           <div class="projects-box-section2">
           <?php include('slider.php');?>
           </div>

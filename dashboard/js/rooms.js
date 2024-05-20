@@ -15,6 +15,10 @@ let addRoomBtn = document.getElementById('addRoomBtn');
 let closeAddRoomsModal = document.getElementById('closeAddRoomsModal');
 let modal = document.querySelector('.details-modal');
 let imagePreviewContainerError = document.getElementById('imagePreviewContainer-error');
+let checkInDateInput = document.getElementById('check-in-date');
+let checkOutDateInput = document.getElementById('check-out-date');
+let searchAvailableRooms = document.getElementById('searchAvailableRooms');
+let bookNOwBtn = document.getElementById('bookNOwBtn');
 let imgCount = 0;
 let selectedFiles = [];
 let otherRateObject = [];
@@ -31,49 +35,70 @@ if(addImages) {
  });
 }
 
+function checkForSearchParams() {
+    // Create a URLSearchParams object with the current URL
+    let urlParams = new URLSearchParams(window.location.search);
+
+    // Check if the check-in date parameter exists
+    if (urlParams.has('checkInDateParam')) {
+        let checkInDate = urlParams.get('checkInDateParam');
+        checkInDateInput.value = checkInDate;
+    } else {
+        console.log("Check-in date parameter not found");
+    }
+
+    // Check if the check-out date parameter exists
+    if (urlParams.has('checkOutDateParam')) {
+        let checkOutDate = urlParams.get('checkOutDateParam');
+        checkOutDateInput.value = checkOutDate;
+    } else {
+        console.log("Check-out date parameter not found");
+    }
+}
+
 // Ensure the function is called as soon as the HTML document is fully loaded
 document.addEventListener('DOMContentLoaded', function() {
-    displayRoomUiValidator(userRole)
+    checkForSearchParams()
+    showAllrooms()
 });
 
-// Rooms Ui validator
-function displayRoomUiValidator(userRole) {
-    if(userRole === 'admin'){
+// Show all rooms
+function showAllrooms() {
+    const url = "controller/roomsController.php";
+    const data = {
+        queryAllRooms: true,
+        checkInDate: checkInDateInput.value,
+        checkOutDate: checkOutDateInput.value
+    };
 
-        const url = "controller/roomsController.php";
-        const data = {
-            queryAllRooms: true,
-        };
-    
-        handlePostRequest(url,data )
-        .then((response) => {
-            // console.log('response: ', response)
-            var jsonResponse = JSON.parse(response);
-            if(jsonResponse.rooms.length > 0) {
-                jsonResponse.rooms.forEach(room => {
-                    displayRooms(room);
-                });
+    handlePostRequest(url,data )
+    .then((response) => {
+        // console.log('response: ', response)
+        var jsonResponse = JSON.parse(response);
+        if(jsonResponse.rooms.length > 0) {
+            jsonResponse.rooms.forEach(room => {
+                displayRooms(room);
+            });
 
-                if (coursesBoxContainer) {
-                    const children = coursesBoxContainer.querySelectorAll('.courses-box');
-                    if (children.length === 1 && window.innerWidth > 1049) {
-                        coursesBoxContainer.classList.add('width-800px');
-                    }
-                    else{
-                        coursesBoxContainer.classList.remove('width-800px');
-                    }
+            if (coursesBoxContainer) {
+                const children = coursesBoxContainer.querySelectorAll('.courses-box');
+                if (children.length === 1 && window.innerWidth > 1049) {
+                    coursesBoxContainer.classList.add('width-800px');
+                }
+                else{
+                    coursesBoxContainer.classList.remove('width-800px');
                 }
             }
-            else {
-                alertMessage('There are no rooms available at this time.', 'warning', 3000);
-                console.log(response)
-            }
-        })
-        .catch((error) => {
-            alertMessage('Something went wrong, Error: ' + error, 'error', 3000);
-            console.log("Error:", error);
-        });
-    }
+        }
+        else {
+            alertMessage('There are no rooms available at this time.', 'warning', 3000);
+            console.log(response)
+        }
+    })
+    .catch((error) => {
+        alertMessage('Something went wrong, Error: ' + error, 'error', 3000);
+        console.log("Error:", error);
+    });
 }
 
 // display rooms
@@ -181,6 +206,60 @@ fileInput.addEventListener('change', function() {
 
     imgCount ++;
 });
+
+// event for searching available rooms
+searchAvailableRooms.addEventListener('click', function() {
+    if(searchAvailableRoomsValidator('fromSearch')) {
+        // Construct the URL with parameters
+        let url = `rooms.php?checkInDateParam=${checkInDateInput.value}&checkOutDateParam=${checkOutDateInput.value}`;
+        // Redirect to the constructed URL
+        window.location.href = url;
+    }
+})
+
+// book a room event
+bookNOwBtn.addEventListener('click', function() {
+    if(searchAvailableRoomsValidator('fromBooknow')) {
+        alert("You can book")
+    }
+})
+
+//validate the search bar for searching available rooms
+function searchAvailableRoomsValidator(btnFrom) {
+    let isValid = true;
+
+    if(!checkInDateInput.value) {
+        displayError(checkInDateInput, "Check-in date is invalid");
+        isValid = false;
+    }
+    else {
+        displayError(checkInDateInput, '');
+    }
+
+    if(!checkOutDateInput.value) {
+        displayError(checkOutDateInput, "Check-out date is invalid");
+        isValid = false;
+    }
+    else {
+        displayError(checkOutDateInput, '');
+    }
+    
+    if((checkOutDateInput.value != '' && checkInDateInput.value != '') && ((checkInDateInput.value > checkOutDateInput.value) || (checkInDateInput.value === checkOutDateInput.value))) {
+        displayError(checkInDateInput, "Check-in date is invalid");
+        displayError(checkOutDateInput, "Check-out date is invalid");
+        isValid = false;
+    }
+
+    if(btnFrom === 'fromSearch') {
+        if((!checkOutDateInput.value && !checkInDateInput.value)){
+            isValid = true;
+            displayError(checkInDateInput, '');
+            displayError(checkOutDateInput, '');
+        }
+    }
+
+    return isValid;
+}
   
 // Event delegation for delete buttons
 document.getElementById('imagePreviewContainer').addEventListener('click', function(event) {

@@ -1,5 +1,6 @@
 let userRole = userOrAdminDetails.role;
 let swiper;
+let sliderMessage = document.querySelector(".slider-message");
 
 function initializeSwiper() {
   if (swiper) {
@@ -72,9 +73,10 @@ function displaySliderRooms(userRole) {
                   displayRooms(room);
               });
               initializeSwiper();
+              sliderMessage.classList.add("display-none")
           }
           else {
-              alertMessage('Something went wrong, Error: ' + response, 'error', 3000);
+              sliderMessage.classList.remove("display-none")
               console.log(response)
           }
       })

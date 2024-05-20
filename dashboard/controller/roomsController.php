@@ -50,6 +50,10 @@ if (isset($inputData['saveRoomDetails'])) {
 
 // Check if inputData contains 'queryAllRooms'
 if (isset($inputData['queryAllRooms'])) {
+
+    $checkInDate = (isset($inputData['checkInDate']) ? $inputData['checkInDate'] : null); // Replace with your desired check-in date
+    $checkOutDate =  (isset($inputData['checkOutDate']) ? $inputData['checkOutDate'] : null); // Replace with your desired check-out date
+
     $selectRoomsSql = "
     SELECT 
         r.Id AS roomId,
@@ -68,10 +72,20 @@ if (isset($inputData['queryAllRooms'])) {
     LEFT JOIN 
         other_rate AS o_rate 
         ON r.Id = o_rate.roomId
+    LEFT JOIN checkins c
+    ON r.Id = c.roomId
+    AND (
+        DATE(c.checkInDate) <= ? AND DATE(c.checkOutDate) >= ? -- Overlapping with start date
+        OR DATE(c.checkInDate) <= ? AND DATE(c.checkOutDate) >= ? -- Overlapping with end date
+        OR DATE(c.checkInDate) >= ? AND DATE(c.checkOutDate) <= ? -- Completely within the date range
+    )
+    WHERE c.roomId IS NULL
     GROUP BY roomId ASC
     ";
 
     if ($stmt = $conn->prepare($selectRoomsSql)) {
+        // Bind the parameters to the SQL query
+        $stmt->bind_param('ssssss', $checkOutDate, $checkInDate, $checkOutDate, $checkInDate, $checkInDate, $checkOutDate);
         dynamicQuery($stmt);
     } else {
         $response['error'] = 'Failed to prepare the SQL statement.';
