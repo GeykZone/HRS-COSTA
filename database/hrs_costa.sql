@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 16, 2024 at 02:15 PM
+-- Generation Time: May 21, 2024 at 03:12 PM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -34,13 +34,20 @@ CREATE TABLE `access_token` (
   `expirationDate` date DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+-- --------------------------------------------------------
+
 --
--- Dumping data for table `access_token`
+-- Table structure for table `checkins`
 --
 
-INSERT INTO `access_token` (`Id`, `token`, `userId`, `expirationDate`) VALUES
-(88, 'VYA83Im20koDlWaHlDtDnJszSInajOSTMO8it6mrMgxLPQEtop', 49, '2024-06-11'),
-(89, 'OgzlHdDGq6V8DUEyzKMOxdhqnNVu2XM3v9iibKQ8DKbrmXZQMI', 49, '2024-06-12');
+CREATE TABLE `checkins` (
+  `Id` bigint(10) NOT NULL,
+  `roomId` bigint(10) NOT NULL,
+  `checkInDate` date NOT NULL,
+  `checkOutDate` date NOT NULL,
+  `paidAmount` float NOT NULL,
+  `userId` bigint(10) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -83,14 +90,38 @@ INSERT INTO `created_from_google` (`Id`, `userId`, `googleUserId`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `on_queue_rooms`
+--
+
+CREATE TABLE `on_queue_rooms` (
+  `Id` bigint(10) NOT NULL,
+  `roomId` bigint(10) NOT NULL,
+  `queueEndDateTime` datetime NOT NULL,
+  `checkInDate` date NOT NULL,
+  `checkOutDate` date NOT NULL,
+  `initalPay` float NOT NULL,
+  `userId` bigint(10) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `other_rate`
 --
 
 CREATE TABLE `other_rate` (
   `Id` bigint(10) NOT NULL,
   `type` varchar(225) NOT NULL,
-  `roomId` bigint(10) NOT NULL
+  `roomId` bigint(10) NOT NULL,
+  `amount` float NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `other_rate`
+--
+
+INSERT INTO `other_rate` (`Id`, `type`, `roomId`, `amount`) VALUES
+(2, 'Valentines Sale', 18, 1500);
 
 -- --------------------------------------------------------
 
@@ -122,8 +153,15 @@ CREATE TABLE `rooms` (
   `name` varchar(225) NOT NULL,
   `maximum` int(10) NOT NULL,
   `description` longtext NOT NULL,
-  `originalRate` decimal(10,0) NOT NULL
+  `originalRate` float NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `rooms`
+--
+
+INSERT INTO `rooms` (`Id`, `name`, `maximum`, `description`, `originalRate`) VALUES
+(18, 'Delux', 3, 'Test Room', 3000);
 
 -- --------------------------------------------------------
 
@@ -136,6 +174,13 @@ CREATE TABLE `room_image` (
   `Link` varchar(255) NOT NULL,
   `roomId` bigint(10) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `room_image`
+--
+
+INSERT INTO `room_image` (`Id`, `Link`, `roomId`) VALUES
+(25, 'https://firebasestorage.googleapis.com/v0/b/hrs-costa.appspot.com/o/images%2F1%20(2).jpg?alt=media&token=7335cacf-6d4c-4651-aa8f-d170b2ff76e8', 18);
 
 -- --------------------------------------------------------
 
@@ -160,7 +205,8 @@ CREATE TABLE `user` (
 INSERT INTO `user` (`id`, `username`, `email`, `password`, `role`, `createdDate`, `lastModifiedDate`) VALUES
 (49, 'Geykson Maravillas', 'matildogeykson@gmail.com', 'dHl1K0NwYXB2d3Z3QVZaQkhxSDhoWU1mSTdYSWd6VVVuWVZaVVhRcm1BMD0=', 'admin', '2024-04-28', '2024-04-28'),
 (50, 'Geykson Maravillas', 'jeykson.maravillas@gmail.com', 'akhnVXpsTVI3MEVkMFVwK3V3amN5NEoybFJwZ2ZFSFVQTHhDQzlneDRvYz0=', 'customer', '2024-05-07', '2024-05-07'),
-(51, 'Jeykson Maravillas', 'jeykson.maravillas@gmail.com', 'Vld4TG5aclZkcWo5cmp1N3NuOUozdz09', 'customer', '2024-05-07', '2024-05-07');
+(64, 'Geykson', 'geykson@alphasys.com.au', 'Vld4TG5aclZkcWo5cmp1N3NuOUozdz09', 'customer', '2024-05-20', '2024-05-20'),
+(65, 'Adornarenzmarion', 'adornarenzmarion@gmail.com', 'Vld4TG5aclZkcWo5cmp1N3NuOUozdz09', 'customer', '2024-05-21', '2024-05-21');
 
 --
 -- Indexes for dumped tables
@@ -173,6 +219,14 @@ ALTER TABLE `access_token`
   ADD PRIMARY KEY (`Id`),
   ADD UNIQUE KEY `tokken` (`token`),
   ADD KEY `userCorrespondingToken` (`userId`);
+
+--
+-- Indexes for table `checkins`
+--
+ALTER TABLE `checkins`
+  ADD PRIMARY KEY (`Id`),
+  ADD KEY `roomId` (`roomId`),
+  ADD KEY `userId` (`userId`);
 
 --
 -- Indexes for table `created_from_facebook`
@@ -188,6 +242,14 @@ ALTER TABLE `created_from_facebook`
 ALTER TABLE `created_from_google`
   ADD PRIMARY KEY (`Id`),
   ADD UNIQUE KEY `userId` (`userId`);
+
+--
+-- Indexes for table `on_queue_rooms`
+--
+ALTER TABLE `on_queue_rooms`
+  ADD PRIMARY KEY (`Id`),
+  ADD KEY `roomId` (`roomId`),
+  ADD KEY `userId` (`userId`);
 
 --
 -- Indexes for table `other_rate`
@@ -221,7 +283,7 @@ ALTER TABLE `room_image`
 --
 ALTER TABLE `user`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `password` (`password`);
+  ADD UNIQUE KEY `email` (`email`);
 
 --
 -- AUTO_INCREMENT for dumped tables
@@ -231,7 +293,13 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT for table `access_token`
 --
 ALTER TABLE `access_token`
-  MODIFY `Id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=90;
+  MODIFY `Id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=101;
+
+--
+-- AUTO_INCREMENT for table `checkins`
+--
+ALTER TABLE `checkins`
+  MODIFY `Id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `created_from_facebook`
@@ -246,10 +314,16 @@ ALTER TABLE `created_from_google`
   MODIFY `Id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
+-- AUTO_INCREMENT for table `on_queue_rooms`
+--
+ALTER TABLE `on_queue_rooms`
+  MODIFY `Id` bigint(10) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `other_rate`
 --
 ALTER TABLE `other_rate`
-  MODIFY `Id` bigint(10) NOT NULL AUTO_INCREMENT;
+  MODIFY `Id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `personal_information`
@@ -261,19 +335,19 @@ ALTER TABLE `personal_information`
 -- AUTO_INCREMENT for table `rooms`
 --
 ALTER TABLE `rooms`
-  MODIFY `Id` bigint(10) NOT NULL AUTO_INCREMENT;
+  MODIFY `Id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT for table `room_image`
 --
 ALTER TABLE `room_image`
-  MODIFY `Id` bigint(10) NOT NULL AUTO_INCREMENT;
+  MODIFY `Id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 
 --
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=52;
+  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=66;
 
 --
 -- Constraints for dumped tables
@@ -286,6 +360,13 @@ ALTER TABLE `access_token`
   ADD CONSTRAINT `userCorrespondingToken` FOREIGN KEY (`userId`) REFERENCES `user` (`id`) ON UPDATE CASCADE;
 
 --
+-- Constraints for table `checkins`
+--
+ALTER TABLE `checkins`
+  ADD CONSTRAINT `checkedInCorrespondingRoomId` FOREIGN KEY (`roomId`) REFERENCES `rooms` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `checkedInCorrespondingUserId` FOREIGN KEY (`userId`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
 -- Constraints for table `created_from_facebook`
 --
 ALTER TABLE `created_from_facebook`
@@ -296,6 +377,18 @@ ALTER TABLE `created_from_facebook`
 --
 ALTER TABLE `created_from_google`
   ADD CONSTRAINT `googleCorresponsingUserId` FOREIGN KEY (`userId`) REFERENCES `user` (`id`) ON UPDATE CASCADE;
+
+--
+-- Constraints for table `other_rate`
+--
+ALTER TABLE `other_rate`
+  ADD CONSTRAINT `rateCorresponsingRoomId` FOREIGN KEY (`roomId`) REFERENCES `rooms` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `room_image`
+--
+ALTER TABLE `room_image`
+  ADD CONSTRAINT `ImageCorresponsingRoomId` FOREIGN KEY (`roomId`) REFERENCES `rooms` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
