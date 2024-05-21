@@ -11,8 +11,8 @@ function encrypt_decrypt($action, $string) {
   $output = false;
 
   $encrypt_method = "AES-256-CBC";
-  $secret_key = 'GeykZone2366';
-  $secret_iv = 'mara114136';
+  $secret_key = 'H4$COST$';
+  $secret_iv = 'hrs114136';
 
   $key = hash('sha256', $secret_key);
 

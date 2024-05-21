@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 21, 2024 at 03:12 PM
+-- Generation Time: May 21, 2024 at 03:19 PM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -61,13 +61,6 @@ CREATE TABLE `created_from_facebook` (
   `fbUserId` char(225) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `created_from_facebook`
---
-
-INSERT INTO `created_from_facebook` (`Id`, `userId`, `fbUserId`) VALUES
-(85, 49, '2152625611741250');
-
 -- --------------------------------------------------------
 
 --
@@ -79,13 +72,6 @@ CREATE TABLE `created_from_google` (
   `userId` bigint(10) NOT NULL,
   `googleUserId` char(225) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `created_from_google`
---
-
-INSERT INTO `created_from_google` (`Id`, `userId`, `googleUserId`) VALUES
-(1, 50, '111101523218204530048');
 
 -- --------------------------------------------------------
 
@@ -115,13 +101,6 @@ CREATE TABLE `other_rate` (
   `roomId` bigint(10) NOT NULL,
   `amount` float NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `other_rate`
---
-
-INSERT INTO `other_rate` (`Id`, `type`, `roomId`, `amount`) VALUES
-(2, 'Valentines Sale', 18, 1500);
 
 -- --------------------------------------------------------
 
@@ -156,13 +135,6 @@ CREATE TABLE `rooms` (
   `originalRate` float NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `rooms`
---
-
-INSERT INTO `rooms` (`Id`, `name`, `maximum`, `description`, `originalRate`) VALUES
-(18, 'Delux', 3, 'Test Room', 3000);
-
 -- --------------------------------------------------------
 
 --
@@ -174,13 +146,6 @@ CREATE TABLE `room_image` (
   `Link` varchar(255) NOT NULL,
   `roomId` bigint(10) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `room_image`
---
-
-INSERT INTO `room_image` (`Id`, `Link`, `roomId`) VALUES
-(25, 'https://firebasestorage.googleapis.com/v0/b/hrs-costa.appspot.com/o/images%2F1%20(2).jpg?alt=media&token=7335cacf-6d4c-4651-aa8f-d170b2ff76e8', 18);
 
 -- --------------------------------------------------------
 
@@ -197,16 +162,6 @@ CREATE TABLE `user` (
   `createdDate` date NOT NULL DEFAULT current_timestamp(),
   `lastModifiedDate` date NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `user`
---
-
-INSERT INTO `user` (`id`, `username`, `email`, `password`, `role`, `createdDate`, `lastModifiedDate`) VALUES
-(49, 'Geykson Maravillas', 'matildogeykson@gmail.com', 'dHl1K0NwYXB2d3Z3QVZaQkhxSDhoWU1mSTdYSWd6VVVuWVZaVVhRcm1BMD0=', 'admin', '2024-04-28', '2024-04-28'),
-(50, 'Geykson Maravillas', 'jeykson.maravillas@gmail.com', 'akhnVXpsTVI3MEVkMFVwK3V3amN5NEoybFJwZ2ZFSFVQTHhDQzlneDRvYz0=', 'customer', '2024-05-07', '2024-05-07'),
-(64, 'Geykson', 'geykson@alphasys.com.au', 'Vld4TG5aclZkcWo5cmp1N3NuOUozdz09', 'customer', '2024-05-20', '2024-05-20'),
-(65, 'Adornarenzmarion', 'adornarenzmarion@gmail.com', 'Vld4TG5aclZkcWo5cmp1N3NuOUozdz09', 'customer', '2024-05-21', '2024-05-21');
 
 --
 -- Indexes for dumped tables
