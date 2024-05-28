@@ -40,6 +40,31 @@ function alertMessage(message, type, time) {
   });
 }
 
+function paymentMethodsOptions() {
+  const url = "controller/roomsController.php";
+  const data = {
+      queryPaymentMethods: true,
+  };
+
+  return handlePostRequest(url, data)
+      .then((response) => {
+          var jsonResponse = JSON.parse(response);
+          if (jsonResponse.rooms.length > 0) {
+              let paymentMethods = jsonResponse.rooms;
+              return paymentMethods;
+          } else {
+              alertMessage('There are no rooms available at this time.', 'warning', 3000);
+              console.log(response);
+              return null;
+          }
+      })
+      .catch((error) => {
+          alertMessage('Something went wrong, Error: ' + error, 'error', 3000);
+          console.log("Error:", error);
+          return null;
+      });
+}
+
 // Initialize Firebase
 if(typeof firebase !== 'undefined' && firebase.apps.length === 0){
   const firebaseConfig = {
@@ -77,6 +102,19 @@ function convertCurrencyStringToNumber(currencyString) {
   return numberValue;
 }
 
+// dynamuc currency convert for text value
+function dynamicCurrencyforTxtValue(value){
+  if (!isNaN(parseFloat(value))) {
+      let numericAmount = parseFloat(value);
+      let formattedCurrency = new Intl.NumberFormat('en-PH', { style: 'currency', currency: 'PHP' }).format(numericAmount);
+      value = formattedCurrency;
+
+      return value;
+  }
+
+  return 0;
+}
+
 // dynamic Currency Only Input
 function dynamicCurrencyOnlyInput(inputNUmber) {
 
@@ -91,6 +129,45 @@ function dynamicCurrencyOnlyInput(inputNUmber) {
   }
 }
 
+// dynamic picklist sign error () 
+function dynamicPicklistErrorSign (picklistClassName, isValid)
+{
+  // Create a style element
+  var style = document.createElement('style');
+  style.type = 'text/css';
+
+  if(!isValid) {
+
+    // Define the CSS rules
+    var cssRules = `
+    .${picklistClassName} .selectize-input {
+    border: solid 1px red !important;
+    }
+    `;
+  }
+  else {
+
+    // Define the CSS rules
+    var cssRules = `
+    .${picklistClassName} .selectize-input {
+      border: solid 1px dimgray !important;
+    }
+    `;
+  }
+
+
+  // Add the CSS rules to the style element
+  if (style.styleSheet) {
+    style.styleSheet.cssText = cssRules; // For IE8 and below
+  } else {
+    style.appendChild(document.createTextNode(cssRules)); // For other browsers
+  }
+
+  // Append the style element to the head of the document
+  document.head.appendChild(style);
+
+}
+ 
 // dynamic currency formatter
 function dynamicInputFieldCurrencyFormatter(inputField) {
   let enteredValue = inputField.value;
@@ -139,11 +216,18 @@ function displayError(inputElement, errorMessage) {
   }
 }
 
+function removeErrorLabel(forLabelcls) {
+  const errorLabel = document.querySelectorAll(`.${forLabelcls}`);
+  errorLabel.forEach(function(errorLbl) {
+    errorLbl.innerText = '';
+  })
+}
+
 //remove validation error on inputs
 function resetErrors(erroClass) {
   const errorElements = document.querySelectorAll('.'+erroClass);
   errorElements.forEach(function(errorElement) {
-      errorElement.innerText = "";
+      errorElement.value = "";
       errorElement.classList.remove("error");
   });
 }
@@ -174,6 +258,20 @@ function showOnlyCustomerUi() {
   customer.forEach(function(element) {
     element.classList.remove("display-none");
   });
+}
+
+function getTwoHoursFromNow() {
+  const now = new Date();
+  now.setHours(now.getHours() + 2);
+
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed
+  const day = String(now.getDate()).padStart(2, '0');
+  const hours = String(now.getHours()).padStart(2, '0');
+  const minutes = String(now.getMinutes()).padStart(2, '0');
+  const seconds = String(now.getSeconds()).padStart(2, '0');
+
+  return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 }
 
 // show only admin

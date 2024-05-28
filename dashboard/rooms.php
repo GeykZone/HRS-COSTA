@@ -64,6 +64,14 @@ include('controller/generalController.php')
             <?php include('addRoomModal.php') ?>
             <!-- resources-->
 
+            <!-- resources-->
+            <?php include('roomDeatailsModal.php') ?>
+            <!-- resources-->
+
+            <!-- resources-->
+            <?php include('singleRoomBookingModal.php') ?>
+            <!-- resources-->
+
             <!-- <div class="courses-box">
               <div class="card-image">
                 <img src="https://h-img1.cloudbeds.com/uploads/199021/cds-1_1_thumb~~65c4477f47757.png" class="hotel-room-logo" style="background-color: white;" alt="" />

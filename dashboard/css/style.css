@@ -493,6 +493,39 @@ textarea.error:focus {
   height: 35px;
 }
 
+.pick-list .selectize-input {
+  position: relative; /* Ensure the pseudo-element is positioned relative to the input */
+  padding-right: 30px; /* Space for the after content */
+  min-width: 10rem;
+  border-radius: 10px !important;
+  border: solid 1px dimgray !important;
+}
+
+.selectize-dropdown { 
+  border-radius: 10px !important;
+  scrollbar-width: 0px;
+}
+
+.selectize-dropdown-content {
+  border-radius: 10px;
+}
+
+/* For Webkit browsers (Chrome, Safari, Edge) */
+.selectize-dropdown-content::-webkit-scrollbar {
+  display: none;
+}
+
+/* For Firefox */
+.selectize-dropdown-content {
+  scrollbar-width: none; /* Hide scrollbar */
+  -ms-overflow-style: none; /* IE 10+ */
+}
+
+/* For all browsers */
+.selectize-dropdown-content {
+  overflow: scroll; /* Ensure the div is scrollable */
+}
+
 .costa-btn-b:hover {
   width: 135px; 
   font-size: 0.75rem !important ;
@@ -2294,8 +2327,41 @@ main .projects-box .projects-box-section2 table tr td a.rejected {
   -moz-border-radius: var(--first-radius);
   -ms-border-radius: var(--first-radius);
   -o-border-radius: var(--first-radius);
-  overflow: hidden;
+  overflow: visible;
   width: auto;
+}
+
+.roomCardHeader-Container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  justify-items: center;
+}
+
+.roomQuantityInShowAllRooms {
+  display: flex;
+  flex-direction: row;
+  padding: 5px 10px;
+  background-color: black;
+  border-radius: 5px;
+  color: white;
+}
+
+.roomQuantityInShowSingleRoom {
+  display: flex;
+  flex-direction: row;
+  padding: 5px 13px;
+  padding-top: 8px;
+  background-color: black;
+  border-radius: 5px;
+  color: white;
+  justify-content: center;
+  justify-items: center;
+}
+
+.selectize-dropdown .selected {
+  background-color: #19C4B8 !important;
+  color: #fff;
 }
 
 @media (max-width: 767px) {
@@ -2304,8 +2370,10 @@ main .projects-box .projects-box-section2 table tr td a.rejected {
   }
 }
 .main-content .courses-box .card-image {
+  border-radius: 10px 10px 0px 0px;
   position: relative;
   display: flex;
+  overflow: hidden;
   justify-content: center;
   background-color: #000;
 }
@@ -2357,7 +2425,7 @@ main .projects-box .projects-box-section2 table tr td a.rejected {
     font-size: 0.88rem;
   }
 }
-.main-content .courses-box .courses-card-body span {
+.main-content .courses-box .courses-card-body .roomDetailsViewBtn {
   font-size: 0.8rem;
   color: var(--white-color);
   position: absolute;

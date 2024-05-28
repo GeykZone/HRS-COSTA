@@ -4,7 +4,7 @@
 
 .details-modal {
   background: #ffffff;
-  border-radius: 0.5em;
+  border-radius: 10px;
   box-shadow: 0 10px 20px rgba(black, 0.2);
   left: 50%;
   max-width: 90%;
@@ -19,6 +19,10 @@
   flex-direction: column;
   z-index: 99999;
   transition: opacity 0.3s ease; /* transition effect */
+}
+
+#roomDetails {
+  width: 65em !important;
 }
 
 .details-modal.show {
@@ -36,24 +40,83 @@
   position: absolute;
   right: 0;
   top: 0;
+  margin-top: -10px;
   width: 4.5em;
 }
+
 
 .details-modal-close svg:hover {
     width: 12px;
     height: 12px;
 }
 
+.selectedRoom-container {
+  gap: 10px;
+  display: flex;
+  flex-direction: row;
+}
+
 .details-modal-close svg {
   display: block;
 }
 
+.modalNaveHead{
+  display: flex;
+  justify-content: space-between;
+  padding: 0px 15px;
+}
+
 .details-modal-title {
   color: #111827;
-  padding: 1.5em 2em;
+  padding: 15px 10px;
   pointer-events: all;
   position: relative;
-  width: calc(100% - 4.5em);
+  gap: 10px;
+  border-radius: 10px 10px 0px 0px;
+}
+
+.discription-body {
+  display: flex;
+  flex-direction: column;
+  background-color: #B8B8B838;
+  border-radius: 10px;
+  gap: 10px;
+  padding: 15px 10px;
+  margin-bottom: 15px;
+}
+
+.amenities-body {
+  padding: 15px 10px;
+  display: flex;
+  flex-direction: row;
+  gap: 15px;
+  background-color: #ffffff;
+  border-radius: 10px;
+}
+
+#description-text {
+  background-color: #ffffff;
+  padding: 10px;
+  border-radius: 10px;
+  color:  #5A5A5A;
+}
+
+.discription-header {
+  background-color: #B8B8B838;
+  padding: 15px 10px;
+  border-radius: 10px;
+}
+
+.description-container {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+#details-modal-titleId {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .details-modal-title h1 {
@@ -70,12 +133,24 @@
   width: calc(100% - 4.5em);
   display: flex;
   justify-content: flex-end;
+  gap: 5px;
+}
+
+#selectedPrice {
+  margin-right: auto;
+  margin-left: 65px;
+  background-color: silver;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 5px;
 }
 
 .details-modal-content {
   border-top: 1px solid #e0e0e0;
   border-bottom: 1px solid #e0e0e0;
-  padding: 2em;
+  padding: 15px 30px;
   pointer-events: all;
   overflow: auto;
 }
@@ -101,7 +176,47 @@
   gap: 10px;
 }
 
+.amenities-container  {
+  background-color: whitesmoke;
+  padding: 15px;
+  border-radius: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.amenityType-container {
+  background-color: #19C4B8;
+  padding: 15px;
+  border-radius: 10px;
+  color: #ffffff;
+}
+
+.viewRoomMainImage-container {
+  display: flex;
+  justify-content: center;
+}
+
+.viewRoomMainImage-container img{
+  border-radius: var(--secondary-margin);
+  width: 100%; /* Set the width to 100% */
+  height: auto; /* Allow the height to adjust automatically based on the aspect ratio */
+  object-fit: cover; /* Cover the entire container while maintaining the aspect ratio */
+  aspect-ratio: 16 / 9; /* Set the aspect ratio to 16:9 (or any other ratio you desire) */
+}
+
 .newAddedRate-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  background-color: white;
+  padding: 15px;
+  border-radius: 15px;
+  margin-bottom: 5px;
+}
+
+.newAmenity-container {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
@@ -116,6 +231,48 @@
   border-radius: 15px;
   padding: 10px 15px;
   color: white;
+}
+
+.amenity-card {
+  background-color: chocolate;
+  border-radius: 15px;
+  padding: 10px 15px;
+  color: white;
+}
+
+#addImages {
+  background-color: grey !important;
+  gap: 10px;
+  width: 150px;
+}
+
+
+#addImagesEvidence {
+  background-color: grey !important;
+  gap: 10px;
+  width: 250px;
+}
+
+.navActive {
+  background-color: #19C4B8 ;
+}
+
+.roomDetailsNavBar-container {
+  display: flex;
+  flex-direction: row;
+  justify-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 15px 15px;
+  background-color: #F2F5F4;
+  border-radius: 10px;
+  margin: 10px 20px
+}
+
+#singleRoomSliderContainerID {
+  background-color: #1C1D1D;
+  padding: 10px 10px;
+  border-radius: 10px;
 }
 
 .room-form-button-container {
@@ -152,6 +309,27 @@
   gap: 5px;
 }
 
+.paymentMethodMsg-container {
+  color: #7E7E7E;
+}
+
+.paymentMethodContainerDetails-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px;
+  justify-items: center;
+  align-items: center;
+
+  background-color: #E0E0E05E;
+  border-radius: 10px;
+}
+
+#qrImg-container img{
+  height: 200px;
+  width: 200px;
+}
+
 .imageContainer:hover .deleteButton {
   display: flex;
   justify-content: center;
@@ -167,6 +345,12 @@
 }
 
 #imagePreviewContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+#imagePreviewContainerSingleEvidence {
   display: flex;
   flex-wrap: wrap;
   gap: 5px;

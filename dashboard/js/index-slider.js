@@ -70,13 +70,18 @@ function displaySliderRooms(userRole) {
           var jsonResponse = JSON.parse(response);
           if(jsonResponse.rooms.length > 0) {
               jsonResponse.rooms.forEach(room => {
-                  displayRooms(room);
+                  displayRoomsInSlider(room);
               });
               initializeSwiper();
-              sliderMessage.classList.add("display-none")
+              if(sliderMessage){
+                sliderMessage.classList.add("display-none")
+              }
+             
           }
           else {
+            if(sliderMessage) {
               sliderMessage.classList.remove("display-none")
+            }
               console.log(response)
           }
       })
@@ -87,7 +92,7 @@ function displaySliderRooms(userRole) {
   }
 }
 
-function displayRooms(room) {
+function displayRoomsInSlider(room) {
 
   // console.log(`Room ID: ${room.roomId}`);
   // console.log(`Room Name: ${room.roomName}`);
@@ -105,14 +110,16 @@ function displayRooms(room) {
       let formattedCurrency = new Intl.NumberFormat('en-PH', { style: 'currency', currency: 'PHP' }).format(numericAmount);
       publishedAmount = formattedCurrency;
   }
+
+  let roomMainImage = JSON.parse(room.imageLink)[0].Link;
  
   const swiperCards = `
       <div class="card swiper-slide" id="swiperCard-${room.roomId}">
       <div class="image-box">
-          <img src="${room.imageLink}" alt="" />
+          <img src="${roomMainImage}" alt="" />
       </div>
       <div class="profile-details">
-          <img src="${room.imageLink}" alt="" />
+          <img src="${roomMainImage}" alt="" />
           <div class="name-job">
           <h3 class="name">${room.roomName}</h3>
           <h4 class="job">${room.roomDescription}</h4>
