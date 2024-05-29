@@ -60,7 +60,7 @@
 						<ul class="sf-menu" id="fh5co-primary-menu">
 							<li><a class="active" href="index.php">Home</a></li>
 							<li><a href="../login/login.php">Login</a></li>
-							<li><a href="blog.php">Blog</a></li>
+							<li><a href="blog.php">About Us</a></li>
 							<li><a href="contact.php">Contact</a></li>
 						</ul>
 					</nav>
