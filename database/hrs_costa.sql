@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 28, 2024 at 05:40 PM
+-- Generation Time: May 29, 2024 at 08:27 PM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -34,13 +34,6 @@ CREATE TABLE `access_token` (
   `expirationDate` date DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `access_token`
---
-
-INSERT INTO `access_token` (`Id`, `token`, `userId`, `expirationDate`) VALUES
-(118, '8IeJGnh5fTV7WMNwR8pYJdxH6GiF1ovkqDSrJ2iqbpZGdoE20E', 71, '2024-06-26');
-
 -- --------------------------------------------------------
 
 --
@@ -52,26 +45,6 @@ CREATE TABLE `amenity` (
   `amenityName` varchar(255) NOT NULL,
   `roomId` bigint(10) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `amenity`
---
-
-INSERT INTO `amenity` (`Id`, `amenityName`, `roomId`) VALUES
-(1, 'Comfort Room', 26),
-(2, 'Flat Screen Tv', 26),
-(3, 'Single Bed', 27),
-(4, 'Bed', 28),
-(5, 'Aircon', 28),
-(6, 'TV', 29),
-(7, 'Aircon', 29),
-(8, '3 Beds', 29),
-(9, '3 Beds', 30),
-(10, 'TV', 30),
-(11, '2 CR', 30),
-(12, 'AIrcon', 31),
-(13, '5 Beds', 31),
-(14, '2 CR', 31);
 
 -- --------------------------------------------------------
 
@@ -90,7 +63,10 @@ CREATE TABLE `check_ins` (
   `status` varchar(255) NOT NULL,
   `checkInQuantity` bigint(10) NOT NULL,
   `paymentMethodId` bigint(10) NOT NULL,
-  `totalAmount` float NOT NULL
+  `totalAmount` float NOT NULL,
+  `customerfullName` varchar(255) NOT NULL,
+  `customerCompleteAddress` varchar(255) NOT NULL,
+  `customerContactInfo` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -105,13 +81,6 @@ CREATE TABLE `created_from_facebook` (
   `fbUserId` char(225) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `created_from_facebook`
---
-
-INSERT INTO `created_from_facebook` (`Id`, `userId`, `fbUserId`) VALUES
-(87, 70, '2152625611741250');
-
 -- --------------------------------------------------------
 
 --
@@ -123,13 +92,6 @@ CREATE TABLE `created_from_google` (
   `userId` bigint(10) NOT NULL,
   `googleUserId` char(225) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `created_from_google`
---
-
-INSERT INTO `created_from_google` (`Id`, `userId`, `googleUserId`) VALUES
-(4, 71, '111101523218204530048');
 
 -- --------------------------------------------------------
 
@@ -143,20 +105,6 @@ CREATE TABLE `other_rate` (
   `roomId` bigint(10) NOT NULL,
   `amount` float NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `other_rate`
---
-
-INSERT INTO `other_rate` (`Id`, `type`, `roomId`, `amount`) VALUES
-(4, 'Promo Rate', 26, 1500),
-(5, 'Promo Rate', 27, 999),
-(6, 'Promo Rate', 28, 2500),
-(7, 'Holiday Rate', 28, 1500),
-(8, 'Promo Rate', 30, 1150),
-(9, 'Flash Rate', 30, 1000),
-(10, 'Flash Sale', 31, 4000),
-(11, 'Holiday Sale', 31, 3500);
 
 -- --------------------------------------------------------
 
@@ -196,25 +144,6 @@ INSERT INTO `payment_methods` (`Id`, `paymentMethodName`, `qrLink`, `paymentNumb
 -- --------------------------------------------------------
 
 --
--- Table structure for table `personal_information`
---
-
-CREATE TABLE `personal_information` (
-  `Id` bigint(10) NOT NULL,
-  `firstName` varchar(225) NOT NULL,
-  `lastName` varchar(225) NOT NULL,
-  `userId` bigint(10) NOT NULL,
-  `age` bigint(10) NOT NULL,
-  `address` varchar(225) NOT NULL,
-  `mobileNumber` char(12) NOT NULL,
-  `dateOfBirth` date NOT NULL,
-  `createdDate` date NOT NULL DEFAULT current_timestamp(),
-  `lastModifiedDate` date NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `rooms`
 --
 
@@ -227,18 +156,6 @@ CREATE TABLE `rooms` (
   `quantity` bigint(10) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `rooms`
---
-
-INSERT INTO `rooms` (`Id`, `name`, `maximum`, `description`, `originalRate`, `quantity`) VALUES
-(26, 'Test Room A', 3, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', 2500, 2),
-(27, 'Test Room B', 1, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', 1650, 1),
-(28, 'Test Room C', 4, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', 3500, 1),
-(29, 'Test Room D', 3, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', 2300, 3),
-(30, 'Test Room E', 3, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', 1299, 5),
-(31, 'Test Room SSS', 5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', 4500, 1);
-
 -- --------------------------------------------------------
 
 --
@@ -250,31 +167,6 @@ CREATE TABLE `room_image` (
   `Link` varchar(255) NOT NULL,
   `roomId` bigint(10) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `room_image`
---
-
-INSERT INTO `room_image` (`Id`, `Link`, `roomId`) VALUES
-(35, 'https://firebasestorage.googleapis.com/v0/b/hrs-costa.appspot.com/o/images%2F1%20(2).jpg?alt=media&token=59829482-380c-4165-8de7-fea4d934887f', 26),
-(36, 'https://firebasestorage.googleapis.com/v0/b/hrs-costa.appspot.com/o/images%2F1%20(3).jpg?alt=media&token=a6d514e8-5df9-4263-8611-c21a34bd2ee4', 26),
-(37, 'https://firebasestorage.googleapis.com/v0/b/hrs-costa.appspot.com/o/images%2F1%20(1).jpg?alt=media&token=ecf41c92-bb06-4ccb-be82-ca95f158ddaf', 27),
-(38, 'https://firebasestorage.googleapis.com/v0/b/hrs-costa.appspot.com/o/images%2F1.jpg?alt=media&token=193230e3-8080-4247-9e87-2562a0c74ef5', 28),
-(39, 'https://firebasestorage.googleapis.com/v0/b/hrs-costa.appspot.com/o/images%2F1%20(2).jpg?alt=media&token=22f5a9ff-e679-4091-9719-35ddee3b5a2f', 29),
-(40, 'https://firebasestorage.googleapis.com/v0/b/hrs-costa.appspot.com/o/images%2F1%20(1).jpg?alt=media&token=a5e33d1a-5161-4ab0-ad0b-8cb6eb1a6f5b', 29),
-(41, 'https://firebasestorage.googleapis.com/v0/b/hrs-costa.appspot.com/o/images%2F1.jpg?alt=media&token=ab5dc577-ac91-45de-b350-7403e78bb412', 29),
-(42, 'https://firebasestorage.googleapis.com/v0/b/hrs-costa.appspot.com/o/images%2F1%20(3).jpg?alt=media&token=8e3550ee-5a55-43a8-bacc-b83f0a30a0c9', 29),
-(43, 'https://firebasestorage.googleapis.com/v0/b/hrs-costa.appspot.com/o/images%2F1%20(4).jpg?alt=media&token=94391a32-96de-446b-9287-5ea308036e84', 29),
-(44, 'https://firebasestorage.googleapis.com/v0/b/hrs-costa.appspot.com/o/images%2F1669205776825_gallery~~638ec46771d51.jpg?alt=media&token=9dd5e730-2b95-4338-9de4-79b066547ce0', 29),
-(45, 'https://firebasestorage.googleapis.com/v0/b/hrs-costa.appspot.com/o/images%2F1%20(3).jpg?alt=media&token=1d0c707d-f066-4e31-a4e0-4b76607ae3bd', 30),
-(46, 'https://firebasestorage.googleapis.com/v0/b/hrs-costa.appspot.com/o/images%2F1%20(4).jpg?alt=media&token=b592abe1-3e20-4b2c-9941-072a6f4ff065', 30),
-(47, 'https://firebasestorage.googleapis.com/v0/b/hrs-costa.appspot.com/o/images%2F1669205776825_gallery~~638ec46771d51.jpg?alt=media&token=88c862fe-6c8f-48c5-bdd4-1f9b47f1b07f', 30),
-(48, 'https://firebasestorage.googleapis.com/v0/b/hrs-costa.appspot.com/o/images%2F1%20(2).jpg?alt=media&token=c30c6284-ce1a-41fd-af14-737f532e91f8', 31),
-(49, 'https://firebasestorage.googleapis.com/v0/b/hrs-costa.appspot.com/o/images%2F1.jpg?alt=media&token=d999cfc9-a259-4c6b-a7c8-b4202d2c4c58', 31),
-(50, 'https://firebasestorage.googleapis.com/v0/b/hrs-costa.appspot.com/o/images%2F1%20(3).jpg?alt=media&token=f74aa48d-e224-462c-be56-36c415934534', 31),
-(51, 'https://firebasestorage.googleapis.com/v0/b/hrs-costa.appspot.com/o/images%2F1%20(4).jpg?alt=media&token=38daa827-93ae-44e6-ace8-e37581b35e18', 31),
-(52, 'https://firebasestorage.googleapis.com/v0/b/hrs-costa.appspot.com/o/images%2F1669205776825_gallery~~638ec46771d51.jpg?alt=media&token=d85a8b6d-d6c4-4ef5-b291-a24939555368', 31),
-(53, 'https://firebasestorage.googleapis.com/v0/b/hrs-costa.appspot.com/o/images%2F1%20(1).jpg?alt=media&token=e2671d03-7765-4ab7-91cc-7df45b6c806c', 31);
 
 -- --------------------------------------------------------
 
@@ -291,14 +183,6 @@ CREATE TABLE `user` (
   `createdDate` date NOT NULL DEFAULT current_timestamp(),
   `lastModifiedDate` date NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `user`
---
-
-INSERT INTO `user` (`id`, `username`, `email`, `password`, `role`, `createdDate`, `lastModifiedDate`) VALUES
-(70, 'Geykson Maravillas', 'matildogeykson@gmail.com', 'WDQyaGxXdTZTUU5vT1VjeDk4bkd5VStoRm9UVmx1bHRkemFZc2FvZ1lKST0=', 'admin', '2024-05-22', '2024-05-22'),
-(71, 'Geykson Maravillas', 'jeykson.maravillas@gmail.com', 'bjlnRGVzM0V0NkRDR0xaQUhMcVkwNndyVVpCT0llYVJTclkvODkyQkdIQT0=', 'customer', '2024-05-26', '2024-05-26');
 
 --
 -- Indexes for dumped tables
@@ -365,13 +249,6 @@ ALTER TABLE `payment_methods`
   ADD UNIQUE KEY `paymentMethodName` (`paymentMethodName`);
 
 --
--- Indexes for table `personal_information`
---
-ALTER TABLE `personal_information`
-  ADD PRIMARY KEY (`Id`),
-  ADD UNIQUE KEY `userId` (`userId`);
-
---
 -- Indexes for table `rooms`
 --
 ALTER TABLE `rooms`
@@ -399,43 +276,43 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT for table `access_token`
 --
 ALTER TABLE `access_token`
-  MODIFY `Id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=119;
+  MODIFY `Id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=127;
 
 --
 -- AUTO_INCREMENT for table `amenity`
 --
 ALTER TABLE `amenity`
-  MODIFY `Id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `Id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT for table `check_ins`
 --
 ALTER TABLE `check_ins`
-  MODIFY `Id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `Id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
 
 --
 -- AUTO_INCREMENT for table `created_from_facebook`
 --
 ALTER TABLE `created_from_facebook`
-  MODIFY `Id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=88;
+  MODIFY `Id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=89;
 
 --
 -- AUTO_INCREMENT for table `created_from_google`
 --
 ALTER TABLE `created_from_google`
-  MODIFY `Id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `Id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `other_rate`
 --
 ALTER TABLE `other_rate`
-  MODIFY `Id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `Id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `payment_evidence`
 --
 ALTER TABLE `payment_evidence`
-  MODIFY `Id` bigint(10) NOT NULL AUTO_INCREMENT;
+  MODIFY `Id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT for table `payment_methods`
@@ -444,28 +321,22 @@ ALTER TABLE `payment_methods`
   MODIFY `Id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
--- AUTO_INCREMENT for table `personal_information`
---
-ALTER TABLE `personal_information`
-  MODIFY `Id` bigint(10) NOT NULL AUTO_INCREMENT;
-
---
 -- AUTO_INCREMENT for table `rooms`
 --
 ALTER TABLE `rooms`
-  MODIFY `Id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
+  MODIFY `Id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
 
 --
 -- AUTO_INCREMENT for table `room_image`
 --
 ALTER TABLE `room_image`
-  MODIFY `Id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=54;
+  MODIFY `Id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=68;
 
 --
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=72;
+  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=76;
 
 --
 -- Constraints for dumped tables
@@ -475,7 +346,7 @@ ALTER TABLE `user`
 -- Constraints for table `access_token`
 --
 ALTER TABLE `access_token`
-  ADD CONSTRAINT `userCorrespondingToken` FOREIGN KEY (`userId`) REFERENCES `user` (`id`) ON UPDATE CASCADE;
+  ADD CONSTRAINT `userCorrespondingToken` FOREIGN KEY (`userId`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `amenity`
@@ -495,13 +366,13 @@ ALTER TABLE `check_ins`
 -- Constraints for table `created_from_facebook`
 --
 ALTER TABLE `created_from_facebook`
-  ADD CONSTRAINT `fbCorresponsingUserId` FOREIGN KEY (`userId`) REFERENCES `user` (`id`) ON UPDATE CASCADE;
+  ADD CONSTRAINT `fbCorresponsingUserId` FOREIGN KEY (`userId`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `created_from_google`
 --
 ALTER TABLE `created_from_google`
-  ADD CONSTRAINT `googleCorresponsingUserId` FOREIGN KEY (`userId`) REFERENCES `user` (`id`) ON UPDATE CASCADE;
+  ADD CONSTRAINT `googleCorresponsingUserId` FOREIGN KEY (`userId`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `other_rate`
@@ -513,7 +384,7 @@ ALTER TABLE `other_rate`
 -- Constraints for table `payment_evidence`
 --
 ALTER TABLE `payment_evidence`
-  ADD CONSTRAINT `paymentEvidenceCorrespondingChekInId` FOREIGN KEY (`checkInId`) REFERENCES `amenity` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `paymentEvidenceCorrespondingChekInId` FOREIGN KEY (`checkInId`) REFERENCES `check_ins` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `room_image`
