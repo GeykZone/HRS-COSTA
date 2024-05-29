@@ -35,6 +35,7 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 auth.languageCode = 'en';
 const googleProvider = new GoogleAuthProvider();
+googleProvider.addScope('email');
 const fbProvider = new FacebookAuthProvider();
 const googleLogin =  document.querySelectorAll(".google");
 var toastMixin = Swal.mixin({
@@ -95,6 +96,7 @@ facebookLogin.forEach(function(element) {
         signInWithPopup(auth, fbProvider)
         .then((result) => {
             const user = result.user;
+            const fullDetails = result._tokenResponse
             const fbDetails = user.reloadUserInfo.providerUserInfo[0];
 
             //console.log('fb: ', fbDetails);
@@ -104,7 +106,7 @@ facebookLogin.forEach(function(element) {
                 fbUsername: fbDetails.displayName,
                 fbaAccessToken: generateRandomToken(50),
                 fbUSerId: fbDetails.rawId,
-                fbuserEmail: fbDetails.email,
+                fbuserEmail: fullDetails.email,
                 fbloginStatus: loginStatus,
                 newRole: newRole,
                 fromFacebook: true
@@ -145,6 +147,7 @@ googleLogin.forEach(function(element) {
         .then((result) => {
 
             const user = result.user;
+            const fullDetails = result._tokenResponse
             const googleDetails = user.reloadUserInfo.providerUserInfo[0];
 
             const url = "controller/loginSignUpController.php";
@@ -152,7 +155,7 @@ googleLogin.forEach(function(element) {
                 googleUsername: user.displayName,
                 googleAccessToken: generateRandomToken(50),
                 googleUSerId: googleDetails.rawId,
-                googleuserEmail: user.email,
+                googleuserEmail: fullDetails.email,
                 googleloginStatus: loginStatus,
                 newRole: newRole,
                 fromGoogle: true

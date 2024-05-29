@@ -668,7 +668,6 @@ imagePreviewContainerSingleEvidence.addEventListener('click', function(event) {
 // Event for adding rooms and it's additional details
 addRoomBtnDone.addEventListener('click', async function() {
     if(validateAddRoomForm()) {
-         resetErrors("form-a")
        // Call the function to upload images
        uploadImageToFirebase(selectedFiles, imageLink).then(() => {
             if (imageLink.length > 0) {
@@ -716,6 +715,8 @@ function saveRoomDetailsToDatabase() {
             setTimeout(function(){
                 window.location.reload(true);
             },3000)
+
+            resetErrors("form-a");
         }
         else {
             alertMessage('Something went wrong, Error: ' + response, 'error', 3000);
@@ -816,7 +817,8 @@ function querySingleRoomDetails(roomId) {
                 amenitiesBody.removeChild(amenitiesBody.firstChild);
             }
 
-            amenities.forEach(amenity => {
+            if(amenities) {
+                amenities.forEach(amenity => {
                 // Define the HTML to be inserted
                 const amenityHTML = `
                 <div class="amenityType-container" id="amenity-${amenity.Id}">
@@ -834,7 +836,7 @@ function querySingleRoomDetails(roomId) {
                     amenitiesBody.appendChild(tempDiv.firstChild);
                 }
 
-            })
+            })}
             
             const bookThisRoomButton = document.getElementById('bookThisRoom');
             const clonedButton = bookThisRoomButton.cloneNode(true);
@@ -1110,7 +1112,7 @@ publishedRate.addEventListener('input', function() {
 // add other rates event
 addRateNowBtn.addEventListener('click', function() {
     if (validateOtherRatesForm()) {
-        resetErrors("form-b")
+   
         let rateTypeValue = capitalizeFirstLetter(rateType.value);
         let newRateValue = parseCurrency(newRate.value);
         newRateValue = formatCurrency(newRateValue);
@@ -1161,13 +1163,15 @@ addRateNowBtn.addEventListener('click', function() {
             });
             otherRateObject.splice(indexToDelete, 1);
         });
+
+        resetErrors("form-b")
     }
 });
 
 // add amenity button
 addAmenityNowBtn.addEventListener('click', function() {
     if (validateAmenityForm()) {
-        resetErrors("form-c")
+        
         let amenityInputValue = capitalizeFirstLetter(amenityInput.value);
 
         let amenityCard = document.createElement('div');
@@ -1205,6 +1209,8 @@ addAmenityNowBtn.addEventListener('click', function() {
             });
             amenityObject.splice(indexToDelete, 1);
         });
+
+        resetErrors("form-c")
     }
 });
   
