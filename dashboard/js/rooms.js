@@ -39,6 +39,7 @@ let sFullName = document.getElementById('sFullName');
 let sCompleteAddress = document.getElementById('sCompleteAddress');
 let sAmountToPay = document.getElementById('sAmountToPay');
 let sContactInfo = document.getElementById('sContactInfo');
+let submitChanges = document.getElementById('submitChanges');
 let checkInDateParam = null;
 let checkOutDateParam = null;
 let imgCount = 0;
@@ -468,35 +469,75 @@ singleRoomBookingModalBtnDone.addEventListener('click', function() {
 function sendReservationRequest() {
     // alertMessage('Booking sent successfully. Please wait for approval.', 'success', 3000);
     const twoHoursFromNow = getTwoHoursFromNow();
+    let sTotalPay =  document.getElementById('sTotalPay')
+    let selectedSingleRoomName = document.getElementById('selectedSingleRoomName');
 
-    // const url = "controller/roomsController.php";
+    const url = "controller/roomsController.php";
     const data = {
         sendReservationRequest: true,
         singleBookingimageLink: singleBookingimageLink,
         quantity: sRoomQuantity.value,
-        paidAmount: convertCurrencyStringToNumber(publishedRate.value),
-        totalAmount: convertCurrencyStringToNumber(publishedRate.value),
+        paidAmount: convertCurrencyStringToNumber(sAmountToPay.value),
+        totalAmount: convertCurrencyStringToNumber(sTotalPay.innerText),
         roomId: singleBookingRoomId,
         userId: userOrAdminDetails.userId,
         queueDateTime: twoHoursFromNow,
-        paymentMethod: singleBookingPaymentMethod
+        paymentMethod: singleBookingPaymentMethod,
+        checkInDate: checkInDateParam,
+        checkOutDate: checkOutDateParam,
+        customerfullName: sFullName.value,
+        customerCompleteAddress: sCompleteAddress.value,
+        customerContactInfo: sContactInfo.value
     };
 
     handlePostRequest(url,data )
     .then((response) => {
+        let msg;
+        let endMsg;
 
-        console.log('response: ', response)
-        // var jsonResponse = JSON.parse(response);
-        // if(jsonResponse.roomId && jsonResponse.roomInserted === true) {
-        //     alertMessage(`Room ${jsonResponse.roomName} has been added successfully`, 'success', 3000);
-        //     setTimeout(function(){
-        //         window.location.reload(true);
-        //     },3000)
-        // }
-        // else {
-        //     alertMessage('Something went wrong, Error: ' + response, 'error', 3000);
-        //     console.log(response)
-        // }
+        endMsg = `We will notify you through the provided contact info if your reservation is successful or rejected.`
+        if(singleBookingPaymentMethod === 'Manual') {
+            msg = `\nExpected time to pay manually ${twoHoursFromNow}`
+            endMsg = `We will wait for you until ${twoHoursFromNow} to come and pay your reservation.`
+        }
+
+        // console.log('response: ', response)
+        var jsonResponse = JSON.parse(response);
+        if(jsonResponse.reserve === 'success') {
+            
+            Swal.fire({
+                title: 'Payment Due Details',
+                html: `
+                    <p><strong>Room Name:</strong> ${selectedSingleRoomName.innerText}</p>
+                    <p>${msg}</p>
+                    <p><strong>Payment Method:</strong> ${singleBookingPaymentMethod}</p>
+                    <p><strong>Check-in Date:</strong> ${checkInDateParam}</p>
+                    <p><strong>Check-out Date:</strong> ${checkOutDateParam}</p>
+                    <p><strong>Paid Amount (To be confirmed):</strong> ${sAmountToPay.value}</p>
+                    <p><strong>Payable Amount:</strong> ${sTotalPay.innerText}</p>
+                    <p><strong>Reservation Status:</strong> Pending</p>
+                    <br>
+                    <p><strong>Customer Details:</strong></p>
+                    <p><strong>Full Name:</strong> ${sFullName.value}</p>
+                    <p><strong>Complete Address:</strong> ${sCompleteAddress.value}</p>
+                    <p><strong>Contact Info (Email / Phone Number):</strong> ${sContactInfo.value}</p>
+                    <br>
+                    <p><strong>Message:</strong> ${endMsg}</p>
+                `,
+                icon: 'info',
+                position: 'center', // Can be 'top', 'top-start', 'top-end', 'center', 'center-start', 'center-end', 'bottom', 'bottom-start', 'bottom-end'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Reload the page when the user presses "OK"
+                    window.location.reload();
+                }
+            });
+            
+        }
+        else {
+            alertMessage('Something went wrong, Error: ' + response, 'error', 3000);
+            console.log(response)
+        }
     })
     .catch((error) => {
         alertMessage('Something went wrong, Error: ' + error, 'error', 3000);
@@ -1108,6 +1149,10 @@ newRate.addEventListener('input', function() {
 publishedRate.addEventListener('input', function() {
     dynamicCurrencyOnlyInput(publishedRate);
 });
+
+submitChanges.addEventListener('click', function(){
+    alert('Editing room details is currently in development');
+})
   
 // add other rates event
 addRateNowBtn.addEventListener('click', function() {

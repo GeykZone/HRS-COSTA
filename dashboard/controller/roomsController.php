@@ -61,6 +61,97 @@ if (isset($inputData['saveRoomDetails'])) {
     echo json_encode($response);
 }
 
+if (isset($inputData['sendReservationRequest'])) {
+    $singleBookingimageLink = $inputData['singleBookingimageLink'];
+    $quantity = $inputData['quantity'];
+    $paidAmount =  $inputData['paidAmount'];
+    $totalAmount = $inputData['totalAmount'];
+    $roomId = $inputData['roomId'];
+    $userId =  $inputData['userId'];
+    $queueDateTime =  $inputData['queueDateTime'];
+    $paymentMethod =  $inputData['paymentMethod'];
+    $checkInDate = $inputData['checkInDate'];
+    $checkOutDate = $inputData['checkOutDate'];
+    $customerfullName = $inputData['customerfullName'];
+    $customerCompleteAddress = $inputData['customerCompleteAddress'];
+    $customerContactInfo = $inputData['customerContactInfo'];
+    
+    $selectRoomsSql = " SELECT Id, quantity FROM `rooms` WHERE Id= ? AND quantity>=? ";
+
+    if ($stmt = $conn->prepare($selectRoomsSql)) {
+        $stmt->bind_param('ii', $roomId, $quantity);
+        roomQuery($stmt);
+
+        if(isset($response['notfound']) && $response['notfound'] === true) {
+            $response['error'] = 'The quantity you selected is greater than the actual.';
+        }
+        else {
+            if(@getPaymentMethod($paymentMethod)) {
+
+                $pmId = @getPaymentMethod($paymentMethod);
+                $reservationInsertSQL = "INSERT INTO `check_ins`(`roomId`, `checkInDate`, `checkOutDate`, `paidAmount`, `userId`, `queueDateTime`, `status`, `checkInQuantity`, `paymentMethodId`, `totalAmount`, `customerfullName`, `customerCompleteAddress`, `customerContactInfo`) 
+                VALUES ('$roomId','$checkInDate','$checkOutDate','$paidAmount','$userId','$queueDateTime','Pending','$quantity','$pmId','$totalAmount','$customerfullName','$customerCompleteAddress','$customerContactInfo')";
+                $reservationSent = dynamicInsert($reservationInsertSQL, 1);
+
+                if($reservationSent) {
+
+                    if($singleBookingimageLink) {
+                        $saveEvidence = @insertPaymentEvidence($reservationSent, $singleBookingimageLink);
+                    }
+
+                    $response['reserve'] = 'success';
+                   
+                }
+            }
+        }
+
+    } else {
+        $response['error'] = 'Failed to prepare the SQL statement.';
+    }
+
+    echo json_encode($response);
+}
+
+function getPaymentMethod($paymentMethodName) {
+    global $response;
+    global $conn;
+
+    $slectPaymentMethodSql = "
+    SELECT 
+        pm.Id AS paymentMethodId,
+        pm.paymentMethodName AS paymentMethodName,
+        pm.qrLink AS paymentMethodOrLink,
+        pm.paymentNumber AS paymentMethodPaymentNumber
+    FROM 
+        payment_methods AS pm
+    WHERE
+        pm.paymentMethodName = ?
+    ";
+
+    if ($stmt = $conn->prepare($slectPaymentMethodSql)) {
+        // Bind the parameter
+        $stmt->bind_param("s", $paymentMethodName);
+
+        // Execute the query
+        $stmt->execute();
+
+        // Get the result
+        $result = $stmt->get_result();
+
+        // Fetch the data
+        if ($row = $result->fetch_assoc()) {
+            return $row['paymentMethodId'];
+        }
+
+        // Close the statement
+        $stmt->close();
+    } else {
+        $response['error'] = 'Failed to prepare the SQL statement.';
+    }
+
+    return null;
+}
+
 // Check if inputData contains 'queryAllRooms'
 if (isset($inputData['queryAllRooms'])) {
 
@@ -104,7 +195,7 @@ if (isset($inputData['queryAllRooms'])) {
     LEFT JOIN 
         check_ins c 
         ON r.Id = c.roomId
-        AND c.status NOT IN ('pending', 'check-in')
+        AND c.status IN ('Pending', 'check-in')
         AND (
             DATE(c.checkInDate) <= ? AND DATE(c.checkOutDate) >= ? -- Overlapping with start date
             OR DATE(c.checkInDate) <= ? AND DATE(c.checkOutDate) >= ? -- Overlapping with end date
@@ -261,6 +352,29 @@ function insertRoomImages($roomId, $imageLink){
         }
     }
     
+    $sql .= implode(", ", $values);
+    $imagesIds = dynamicInsert($sql, count($imageLink));
+
+    if($imagesIds) {
+        return $imagesIds;
+    }
+    return false;
+}
+
+function insertPaymentEvidence($checkInId, $imageLink) {
+    global $conn;
+    $sql = "INSERT INTO `payment_evidence`(`Link`, `checkInId`) VALUES";
+    $values = [];
+
+    foreach ($imageLink as $image) {
+        if (isset($image['Link']) && is_string($image['Link'])) {
+            $escapedLink = mysqli_real_escape_string($conn, $image['Link']);
+            $values[] = "('$escapedLink', '$checkInId')";
+        } else {
+            throw new Exception("Invalid value found in \$imageLink array.");
+        }
+    }
+
     $sql .= implode(", ", $values);
     $imagesIds = dynamicInsert($sql, count($imageLink));
 
