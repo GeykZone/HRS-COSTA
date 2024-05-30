@@ -504,6 +504,8 @@ function sendReservationRequest() {
         // console.log('response: ', response)
         var jsonResponse = JSON.parse(response);
         if(jsonResponse.reserve === 'success') {
+
+            singleRoomBookingModalId.classList.remove('show');
             
             Swal.fire({
                 title: 'Payment Due Details',
