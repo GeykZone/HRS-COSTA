@@ -183,7 +183,8 @@ if (isset($inputData['queryAllRooms'])) {
                 ) ORDER BY o_rate.Id DESC
             ),
             ']'
-        ) AS otherRates
+        ) AS otherRates,
+        IFNULL(totalCheckIn.totalCheckInQuantity, 0) AS totalCheckInQuantity
     FROM 
         rooms AS r
     LEFT JOIN 
@@ -192,17 +193,28 @@ if (isset($inputData['queryAllRooms'])) {
     LEFT JOIN 
         other_rate AS o_rate 
         ON r.Id = o_rate.roomId
-    LEFT JOIN 
-        check_ins c 
-        ON r.Id = c.roomId
-        AND c.status IN ('Pending', 'check-in')
-        AND (
-            DATE(c.checkInDate) <= ? AND DATE(c.checkOutDate) >= ? -- Overlapping with start date
-            OR DATE(c.checkInDate) <= ? AND DATE(c.checkOutDate) >= ? -- Overlapping with end date
-            OR DATE(c.checkInDate) >= ? AND DATE(c.checkOutDate) <= ? -- Completely within the date range
-        )
-    WHERE c.roomId IS NULL
-    GROUP BY roomId ASC ";
+    LEFT JOIN (
+        SELECT 
+            roomId, 
+            SUM(checkInQuantity) AS totalCheckInQuantity 
+        FROM 
+            check_ins 
+        WHERE 
+            status IN ('Pending', 'Approved')
+            AND (
+                DATE(checkInDate) <= ? AND DATE(checkOutDate) >= ? -- Overlapping with start date
+                OR DATE(checkInDate) <= ? AND DATE(checkOutDate) >= ? -- Overlapping with end date
+                OR DATE(checkInDate) >= ? AND DATE(checkOutDate) <= ? -- Completely within the date range
+            )
+        GROUP BY roomId
+    ) AS totalCheckIn 
+    ON r.Id = totalCheckIn.roomId
+    WHERE (r.quantity - IFNULL(totalCheckIn.totalCheckInQuantity, 0)) > 0
+    GROUP BY r.Id, r.name, r.maximum, r.description, r.originalRate, r.quantity
+    ORDER BY r.Id ASC
+";
+
+
 
     if ($stmt = $conn->prepare($selectRoomsSql)) {
         // Bind the parameters to the SQL query
@@ -279,6 +291,59 @@ if (isset($inputData['querySingleRoom'])) {
     echo json_encode($response);
 }
 
+if (isset($inputData['openReservationNotification'])) {
+    $notificationId = $inputData['notificationId'];
+
+    $selectCheckInsSql = "
+    SELECT
+    ck.Id AS checkInId,
+    ck.checkInDate AS checkInDate,
+    ck.checkOutDate AS checkOutDate,
+    ck.paidAmount AS paidAmount,
+    ck.queueDateTime AS queueDateTime,
+    ck.status AS reservationStatus,
+    ck.checkInQuantity AS reservationQuantity,
+    ck.totalAmount AS reservationTotalPayable,
+    ck.customerfullName AS customerfullName,
+    ck.customerCompleteAddress AS customerCompleteAddress,
+    ck.customerContactInfo AS customerContactInfo,
+    ck.message AS reservationMessage,
+    CONCAT(
+        '[',
+        GROUP_CONCAT(
+            DISTINCT CONCAT(
+                '{\"Id\":\"', pe.Id, '\",\"Link\":\"', pe.Link, '\"}'
+            ) ORDER BY pe.Link DESC
+        ),
+        ']'
+    ) AS imageLinks,
+    r.name AS roomName,
+    r.maximum AS roomMaxCap,
+    pm.paymentMethodName AS paymentMethodName
+    FROM
+        check_ins AS ck
+    LEFT JOIN
+        rooms AS r
+        ON r.Id = ck.roomId
+    LEFT JOIN
+        payment_methods AS pm
+        ON pm.Id = ck.paymentMethodId
+    LEFT JOIN
+        payment_evidence AS pe
+        ON pe.checkInId = ck.Id
+    WHERE ck.Id = ?
+    ";
+
+    if ($stmt = $conn->prepare($selectCheckInsSql)) {
+        $stmt->bind_param('i', $notificationId);
+        roomQuery($stmt);
+    } else {
+        $response['error'] = 'Failed to prepare the SQL statement.';
+    }
+
+    echo json_encode($response);
+}
+
 // query payment methods
 if(isset($inputData['queryPaymentMethods'])) {
 
@@ -325,8 +390,20 @@ function roomQuery($stmt) {
                 'paymentMethodId' => isset($row['paymentMethodId']) ? $row['paymentMethodId'] : null,
                 'paymentMethodName' => isset($row['paymentMethodName']) ? $row['paymentMethodName'] : null,
                 'paymentMethodOrLink' => isset($row['paymentMethodOrLink']) ? $row['paymentMethodOrLink'] : null,
-                'paymentMethodPaymentNumber' => isset($row['paymentMethodPaymentNumber']) ? $row['paymentMethodPaymentNumber'] : null
-
+                'paymentMethodPaymentNumber' => isset($row['paymentMethodPaymentNumber']) ? $row['paymentMethodPaymentNumber'] : null,
+                'checkInId' => isset($row['checkInId']) ? $row['checkInId'] : null,
+                'checkInDate' => isset($row['checkInDate']) ? $row['checkInDate'] : null,
+                'checkOutDate' => isset($row['checkOutDate']) ? $row['checkOutDate'] : null,
+                'paidAmount' => isset($row['paidAmount']) ? $row['paidAmount'] : null,
+                'queueDateTime' => isset($row['queueDateTime']) ? $row['queueDateTime'] : null,
+                'reservationStatus' => isset($row['reservationStatus']) ? $row['reservationStatus'] : null,
+                'reservationQuantity' => isset($row['reservationQuantity']) ? $row['reservationQuantity'] : null,
+                'reservationTotalPayable' => isset($row['reservationTotalPayable']) ? $row['reservationTotalPayable'] : null,
+                'customerfullName' => isset($row['customerfullName']) ? $row['customerfullName'] : null,
+                'customerCompleteAddress' => isset($row['customerCompleteAddress']) ? $row['customerCompleteAddress'] : null,
+                'customerContactInfo' => isset($row['customerContactInfo']) ? $row['customerContactInfo'] : null,
+                'reservationMessage' => isset($row['reservationMessage']) ? $row['reservationMessage'] : null,
+                'totalCheckInQuantity' => isset($row['totalCheckInQuantity']) ? $row['totalCheckInQuantity'] : null
             ];
             $response['rooms'][] = $room;
         }

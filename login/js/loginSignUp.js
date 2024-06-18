@@ -88,6 +88,13 @@ signInButton.addEventListener('click', () => {
     });
 });
 
+function getLastPartOfUrl(url) {
+    // Split the URL by the '/' character
+    let parts = url.split('/');
+    // Return the last element of the array
+    return parts.pop();
+}
+
 //login using facebook
 facebookLogin.forEach(function(element) {
    
@@ -98,15 +105,20 @@ facebookLogin.forEach(function(element) {
             const user = result.user;
             const fullDetails = result._tokenResponse
             const fbDetails = user.reloadUserInfo.providerUserInfo[0];
+            let fbEMail = fullDetails.email;
 
-            //console.log('fb: ', fbDetails);
+            if(!fbEMail){
+                fbEMail = `${getLastPartOfUrl(fullDetails.federatedId)}@empty.email`;
+            }
+
+            console.log('fb: ', fullDetails);
 
             const url = "controller/loginSignUpController.php";
             const data = {
                 fbUsername: fbDetails.displayName,
                 fbaAccessToken: generateRandomToken(50),
                 fbUSerId: fbDetails.rawId,
-                fbuserEmail: fullDetails.email,
+                fbuserEmail: fbEMail,
                 fbloginStatus: loginStatus,
                 newRole: newRole,
                 fromFacebook: true
@@ -120,17 +132,20 @@ facebookLogin.forEach(function(element) {
                     window.location.reload(true);
                 }
                 else {
+                    alertMessage(`Something went wrong error details: ${jsonResponse.error}`, 'error', 5000);
                     console.log(response)
                 }
+                // console.log(response)
             })
             .catch((error) => {
-                console.log("Error:", error);
+                alertMessage(`Something went wrong error details: ${error}`, 'error', 3000);
+                console.log("Error:", error.message);
             });
           
         }).catch((error) => {
 
           const errorMessage = error.message;
-          alertMessage(errorMessage, 'error', 3000);
+          alertMessage(`Something went wrong error details: ${errorMessage}`, 'error', 3000);
           console.log('fb error: ',  error.message);
 
         });
@@ -170,16 +185,19 @@ googleLogin.forEach(function(element) {
                     window.location.reload(true);
                 }
                 else {
+                    alertMessage(`Something went wrong error details: ${jsonResponse.error}`, 'error', 5000);
                     console.log(response)
                 }
             })
             .catch((error) => {
-                console.log("Error:", error);
+                alertMessage(`Something went wrong error details: ${error}`, 'error', 3000);
+                console.log("Error:", error.message);
             });
           
         }).catch((error) => {
 
           const errorMessage = error.message;
+          alertMessage(`Something went wrong error details: ${errorMessage}`, 'error', 3000);
           alertMessage(errorMessage, 'error', 3000);
 
         });
@@ -207,7 +225,7 @@ function loginManual() {
             window.location.reload(true);
         }
         else {
-            alertMessage(`Something went wrong: ${response}`, 'error', 3000);
+            alertMessage(`Something went wrong error details: ${jsonResponse.error}`, 'error', 5000);
             console.log(response)
         }
     })

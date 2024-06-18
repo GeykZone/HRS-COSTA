@@ -31,6 +31,7 @@ let addAmenityNowBtn = document.getElementById('addAmenityNow');
 let amenityInput = document.getElementById('amenity');
 let imagePreviewContainerDelete = document.getElementById('imagePreviewContainer');
 let cardWrapper = document.querySelector('.card-wrapper');
+let cardWrapperEvidence = document.querySelector('.card-wrapper-evidence');
 let selectedPrice = document.getElementById('selectedPrice');
 let singleRoomBookingModalBtnDone = document.getElementById('singleRoomBookingModalBtnDone');
 let singleRoomPaymentPicklist = document.getElementById('single-room-payment-picklist');
@@ -57,16 +58,16 @@ let singleBookingPaymentMethod = null;
 let singleBookingRoomId;
 const coursesBoxContainer = document.querySelector('.courses-boxes');
 
-function initializeSwiper() {
+function initializeSwiper(className, swiperWrapperClass) {
   if (swiper) {
     swiper.destroy(true, true);
   }
 
-  swiper = new Swiper(".slide-container", {
+  swiper = new Swiper(`.${className}`, {
     slidesPerView: 4,
     spaceBetween: 20,
     sliderPerGroup: 4,
-    loop: shouldLoop(),
+    loop: shouldLoop(swiperWrapperClass),
     centerSlide: "true",
     fade: "true",
     grabCursor: "true",
@@ -98,16 +99,16 @@ function initializeSwiper() {
 
   let SwiperButtonLock = document.querySelectorAll('.swiper-button-lock');
 
-  if(shouldLoop()) {
+  if(shouldLoop(swiperWrapperClass)) {
     SwiperButtonLock.forEach(btn => {
         btn.classList.remove('swiper-button-lock');
     });
   }
 }
 
-function shouldLoop() {
+function shouldLoop(swiperWrapperClass) {
   // Get the number of slides within the swiper wrapper
-  let swiperWrapper = document.querySelector('.swiper-wrapper');
+  let swiperWrapper = document.querySelector(`.${swiperWrapperClass}`);
   let numSlides = swiperWrapper.querySelectorAll('.card').length;
   
   return numSlides >= 4;
@@ -214,7 +215,7 @@ function displayRooms(room) {
     let mainImage = images[0].Link;
     let otherRate = JSON.parse(room.otherRate);
 
-    console.log(otherRate)
+    // console.log(otherRate)
 
     // console.log(`Room ID: ${room.roomId}`);
     // console.log(`Room Name: ${room.roomName}`);
@@ -227,6 +228,7 @@ function displayRooms(room) {
     // console.log('---------------------');
     let publishedAmount = room.roomPublishedRate;
     publishedAmount = dynamicCurrencyforTxtValue(publishedAmount);
+    let totalAvailableRooms = parseInt(room.roomQuantity) - parseInt(room.totalCheckInQuantity);
    
     const courseBoxHTML = `
         <div class="courses-box" id="courses-box-${room.roomId}">
@@ -237,7 +239,7 @@ function displayRooms(room) {
             <div class="courses-card-body">
                 <div class="roomCardHeader-Container">
                     <h4>${room.roomName}</h4>
-                    <span class="roomQuantityInShowAllRooms"><h6>${room.roomQuantity} Available</h6></span>
+                    <span class="roomQuantityInShowAllRooms"><h6>${totalAvailableRooms} Available</h6></span>
                 </div>
                 <p>${room.roomDescription}</p>
                 <select id="select-${room.roomId}" class="pick-list selectAvailableRate"  placeholder="Select Available Rates...">  
@@ -458,6 +460,7 @@ singleRoomBookingModalBtnDone.addEventListener('click', function() {
                 sendReservationRequest();
              }
          }).catch(error => {
+             alertMessage('Error uploading images, Error: ' + error, 'error', 5000);
              console.error('Error uploading images:', error);
          });}
          else {
@@ -466,6 +469,7 @@ singleRoomBookingModalBtnDone.addEventListener('click', function() {
     }
 });
 
+// send booking request for single room booking
 function sendReservationRequest() {
     // alertMessage('Booking sent successfully. Please wait for approval.', 'success', 3000);
     const twoHoursFromNow = getTwoHoursFromNow();
@@ -537,7 +541,7 @@ function sendReservationRequest() {
             
         }
         else {
-            alertMessage('Something went wrong, Error: ' + response, 'error', 3000);
+            alertMessage('Something went wrong, Error: ' + jsonResponse.error, 'error', 5000);
             console.log(response)
         }
     })
@@ -547,9 +551,11 @@ function sendReservationRequest() {
     });
 }
 
+// single room booking validation
 function singleBookingPaymentFormValidation() {
 
     let isValid = true;
+    let sTotalPay =  document.getElementById('sTotalPay')
 
     if (!singleBookingPaymentMethod ) {
         displayError(singleRoomPaymentPicklist, "Payment Method cannot be empty");
@@ -610,6 +616,15 @@ function singleBookingPaymentFormValidation() {
     else {
         imagePreviewContainerSingleEvidenceError.classList.add('display-none')
         displayError(imagePreviewContainerSingleEvidence, "");
+    }
+
+    if( convertCurrencyStringToNumber(sAmountToPay.value) > convertCurrencyStringToNumber(sTotalPay.innerText)) {
+
+        displayError(sAmountToPay, "Amount to Pay is greater than actual Total payable.");
+        isValid = false;
+    }
+    else {
+        displayError(sAmountToPay, '');
     }
 
     return isValid;
@@ -762,7 +777,7 @@ function saveRoomDetailsToDatabase() {
             resetErrors("form-a");
         }
         else {
-            alertMessage('Something went wrong, Error: ' + response, 'error', 3000);
+            alertMessage('Something went wrong, Error: ' + jsonResponse.error, 'error', 5000);
             console.log(response)
         }
     })
@@ -828,9 +843,9 @@ function querySingleRoomDetails(roomId) {
             }
 
             imageLink.forEach(img => {
-                displayRoomsInSlider(img);
+                displayRoomsInSlider(img, cardWrapper);
             });
-            initializeSwiper();
+            initializeSwiper('slide-container', 'wrapper-forRoomDetails');
 
             document.querySelectorAll('.imageList').forEach(imgList => {
                 imgList.addEventListener('click', function() {
@@ -970,7 +985,7 @@ function singleRoomBookingPayment(paymentDetails) {
             });
         })
 
-        console.log(paymentMethods.paymentMethodName)
+        // console.log(paymentMethods.paymentMethodName)
 
         // Add new options to the Selectize instance
         selectizeInstance.addOption(options);
@@ -1101,7 +1116,7 @@ function singleRoomDetailsRatesPickList(roomMap){
         let mainSelected = $(`#select-${roomMap.roomId}`)
         let selectizeMainSelected = mainSelected[0].selectize;
         selectTizedSearch(selectizeMainSelected, selectedPrice.innerText);
-        console.log(selectedPrice.innerText)
+        // console.log(selectedPrice.innerText)
     });
 
     return selectizeInstance.getValue();
@@ -1392,7 +1407,7 @@ async function uploadImageToFirebase(selectedFiles, imageLink) {
     await Promise.all(uploadPromises);
 }
 
-function displayRoomsInSlider(room) {
+function displayRoomsInSlider(room, wrapper) {
 
     // console.log(`Room ID: ${room.roomId}`);
     // console.log(`Room Name: ${room.roomName}`);
@@ -1417,8 +1432,8 @@ function displayRoomsInSlider(room) {
   
     const cardSwiperContainer = tempDiv.firstElementChild;
   
-    if (cardWrapper) {
-        cardWrapper.appendChild(cardSwiperContainer);
+    if (wrapper) {
+        wrapper.appendChild(cardSwiperContainer);
     }
   }
 

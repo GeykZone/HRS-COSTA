@@ -83,7 +83,7 @@
 						<span><i class="ti-location-pin"></i></span>
 						<div class="desc">
 							<h3>Accessible Location</h3>
-							<p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts. Separated they live in Bookmarksgrove right at the coast of the Semantics, a large language ocean.</p>
+							<p>The Costa Del Sol Resort Hotel is conveniently located in a prime area, making it easy for guests to explore nearby attractions and beaches. Whether you want to relax by the pool or go sightseeing.</p>
 						</div>
 					</div>
 				</div>
@@ -91,8 +91,8 @@
 					<div class="services">
 						<span><i class="ti-alarm-clock"></i></span>
 						<div class="desc">
-							<h3>Open 24/7</h3>
-							<p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts. Separated they live in Bookmarksgrove right at the coast of the Semantics, a large language ocean.</p>
+							<h3>Convenient Stay Time</h3>
+							<p>Costa Del Sol Resort Hotel offers a convenient vacation staying Time. Costa Del Sol Resort Hotel is perfect for travelers seeking a convenient and memorable stay.</p>
 						</div>
 					</div>
 				</div>
@@ -101,7 +101,7 @@
 						<span><i class="ti-calendar"></i></span>
 						<div class="desc">
 							<h3>Reservation</h3>
-							<p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts. Separated they live in Bookmarksgrove right at the coast of the Semantics, a large language ocean.</p>
+							<p>The Costa Del Sol Resort Hotel has a fair reservation rule, providing a seamless booking experience with transparency and flexibility. Guests can easily secure their desired dates for a stress-free stay at this luxurious resort.</p>
 						</div>
 					</div>
 				</div>
@@ -110,7 +110,7 @@
 						<span><i class="ti-user"></i></span>
 						<div class="desc">
 							<h3>Friendly Staff</h3>
-							<p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts. Separated they live in Bookmarksgrove right at the coast of the Semantics, a large language ocean.</p>
+							<p>Costa Del Sol Resort Hotel boasts a team of welcoming and accommodating staff members who are dedicated to ensuring a pleasant and enjoyable stay for all guests.</p>
 						</div>
 					</div>
 				</div>
@@ -118,17 +118,8 @@
 					<div class="services">
 						<span><i class="ti-signal"></i></span>
 						<div class="desc">
-							<h3>Free Wifi</h3>
-							<p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts. Separated they live in Bookmarksgrove right at the coast of the Semantics, a large language ocean.</p>
-						</div>
-					</div>
-				</div>
-				<div class="col-md-4">
-					<div class="services">
-						<span><i class="ti-location-pin"></i></span>
-						<div class="desc">
-							<h3>Accessible Location</h3>
-							<p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts. Separated they live in Bookmarksgrove right at the coast of the Semantics, a large language ocean.</p>
+							<h3>Reliable Signals</h3>
+							<p>Stay connected during your vacation at Costa Del Sol Resort Hotel with reliable wifi, internet, and data signal. Enjoy seamless browsing and communication while relaxing at our beautiful resort.</p>
 						</div>
 					</div>
 				</div>
@@ -138,8 +129,7 @@
 
 	<footer id="footer" class="fh5co-bg-color">
 		<div class="container">
-			<div class="row">
-				HRS COSTA BETA 2024
+			<div class="row footer-watermark">
 			</div>
 		</div>
 	</footer>

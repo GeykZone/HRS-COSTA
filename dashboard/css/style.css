@@ -288,6 +288,7 @@ div.loader h1 span {
   background: var(--main-color-concept);
   padding: var(--third-padding);
   position: sticky;
+  z-index: 1000;
 }
 .clickable {
   cursor: pointer !important;
@@ -493,6 +494,45 @@ textarea.error:focus {
   height: 35px;
 }
 
+.costa-btn-b:hover {
+  width: 135px; 
+  font-size: 0.75rem !important ;
+}
+
+.costa-btn-c {
+  background-color: #19C43E !important;
+  color: #FFFFFF;
+  padding: var(--fifth-padding);
+  width: 135px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: var(--secondary-radius);
+  height: 35px;
+}
+
+.costa-btn-c:hover {
+  width: 135px; 
+  font-size: 0.75rem !important ;
+}
+
+.costa-btn-d {
+  background-color: #C41919 !important;
+  color: #FFFFFF;
+  padding: var(--fifth-padding);
+  width: 135px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: var(--secondary-radius);
+  height: 35px;
+}
+
+.costa-btn-d:hover {
+  width: 135px; 
+  font-size: 0.75rem !important ;
+}
+
 .pick-list .selectize-input {
   position: relative; /* Ensure the pseudo-element is positioned relative to the input */
   padding-right: 30px; /* Space for the after content */
@@ -524,11 +564,6 @@ textarea.error:focus {
 /* For all browsers */
 .selectize-dropdown-content {
   overflow: scroll; /* Ensure the div is scrollable */
-}
-
-.costa-btn-b:hover {
-  width: 135px; 
-  font-size: 0.75rem !important ;
 }
 
 main {

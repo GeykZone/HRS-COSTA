@@ -72,6 +72,10 @@ include('controller/generalController.php')
             <?php include('singleRoomBookingModal.php') ?>
             <!-- resources-->
 
+            <!-- resources-->
+            <?php include('openReservationNotificationModal.php') ?>
+            <!-- resources-->
+
             <!-- <div class="courses-box">
               <div class="card-image">
                 <img src="https://h-img1.cloudbeds.com/uploads/199021/cds-1_1_thumb~~65c4477f47757.png" class="hotel-room-logo" style="background-color: white;" alt="" />
@@ -100,5 +104,7 @@ include('controller/generalController.php')
     <script>var userOrAdminDetails = <?php echo json_encode($response); ?>;</script>
     <script src="js/script.js"></script>
     <script src="js/rooms.js"></script>
+    <script src="js/notificationListener.js"></script>
+    <script src="js/swiper-bundle.min.js"></script>
   </body>
 </html>

@@ -27,7 +27,17 @@
       </div>
         <div class="room-form-container">
           <div class="viewRoomMainImage-container"><img src="" alt="main-image" id="viewRoomMainImage"></div>
-          <div class="slider-container" id="singleRoomSliderContainerID"><?php include('slider.php');?></div>
+          <div class="slider-container" id="singleRoomSliderContainerID">
+          <div class="container swiper">
+              <div class="slide-container">
+              <div class="card-wrapper swiper-wrapper wrapper-forRoomDetails">
+              </div>
+              </div>
+              <div class="swiper-button-next swiper-navBtn"></div>
+              <div class="swiper-button-prev swiper-navBtn"></div>
+              <div class="swiper-pagination"></div>
+          </div>
+          </div>
         </div>
       <div class="amenities-container">
         <div class="amenities-header">

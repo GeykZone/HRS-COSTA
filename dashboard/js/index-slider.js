@@ -122,7 +122,6 @@ function displayRoomsInSlider(room) {
           <img src="${roomMainImage}" alt="" />
           <div class="name-job">
           <h3 class="name">${room.roomName}</h3>
-          <h4 class="job">${room.roomDescription}</h4>
           </div>
       </div>
       </div>

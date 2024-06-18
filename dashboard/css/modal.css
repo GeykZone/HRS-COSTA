@@ -198,6 +198,17 @@
   justify-content: center;
 }
 
+.viewRoomMainImage-paymentEvidence {
+  display: flex;
+  justify-content: center;
+}
+
+.viewRoomMainImage-paymentEvidence img{
+  border-radius: var(--secondary-margin);
+  width: 50%; /* Set the width to 100% */
+  height: auto; /* Allow the height to adjust automatically based on the aspect ratio */
+}
+
 .viewRoomMainImage-container img{
   border-radius: var(--secondary-margin);
   width: 100%; /* Set the width to 100% */

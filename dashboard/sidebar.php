@@ -17,13 +17,13 @@
         </a>
         </li>
 
-        <li class="admin">
+        <li class="">
         <a class="sidebar-link">
              <i class="fa-solid fa-arrow-right-from-bracket"></i><span>Checkouts</span>
         </a>
         </li>
 
-        <li class="admin">
+        <li class="">
         <a class="sidebar-link">
         <i class="fa-solid fa-check-to-slot"></i></i
             ><span>Check In</span>
