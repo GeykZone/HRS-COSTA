@@ -52,6 +52,15 @@ a {
 ::-webkit-scrollbar-thumb:hover {
   background: var(--main-color-concept);
 }
+
+.background-green{
+  background-color: #19C43E !important;
+}
+
+.background-red{
+  background-color: #C41919 !important;
+}
+
 .toggle {
   min-width: 70px;
   height: 30px;

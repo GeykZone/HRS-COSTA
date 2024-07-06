@@ -2,6 +2,54 @@ let userRole = userOrAdminDetails.role;
 let swiper;
 let sliderMessage = document.querySelector(".slider-message");
 
+function initializeSwiperWithParam(className, swiperWrapperClass) {
+  if (swiper) {
+    swiper.destroy(true, true);
+  }
+
+  swiper = new Swiper(`.${className}`, {
+    slidesPerView: 4,
+    spaceBetween: 20,
+    sliderPerGroup: 4,
+    loop: shouldLoop(swiperWrapperClass),
+    centerSlide: "true",
+    fade: "true",
+    grabCursor: "true",
+    pagination: {
+      el: ".swiper-pagination",
+      clickable: true,
+      dynamicBullets: true,
+    },
+    navigation: {
+      nextEl: ".swiper-button-next",
+      prevEl: ".swiper-button-prev",
+    },
+
+    breakpoints: {
+      0: {
+        slidesPerView: 1,
+      },
+      520: {
+        slidesPerView: 2,
+      },
+      768: {
+        slidesPerView: 3,
+      },
+      1000: {
+        slidesPerView: 4,
+      },
+    },
+  });
+
+  let SwiperButtonLock = document.querySelectorAll('.swiper-button-lock');
+
+  if(shouldLoop(swiperWrapperClass)) {
+    SwiperButtonLock.forEach(btn => {
+        btn.classList.remove('swiper-button-lock');
+    });
+  }
+}
+
 function initializeSwiper() {
   if (swiper) {
     swiper.destroy(true, true);
@@ -137,3 +185,34 @@ function displayRoomsInSlider(room) {
       cardWrapper.appendChild(cardSwiperContainer);
   }
 }
+
+function displayRoomsInSliderWithWrapper(room, wrapper) {
+
+  // console.log(`Room ID: ${room.roomId}`);
+  // console.log(`Room Name: ${room.roomName}`);
+  // console.log(`Room Max Capacity: ${room.roomMaxCap}`);
+  // console.log(`Room Description: ${room.roomDescription}`);
+  // console.log(`Room Published Rate: ${room.roomPublishedRate}`);
+  // console.log(`Image Link: ${room.imageLink}`);
+  // console.log(`Other Rate: ${room.otherRate}`);
+  // console.log(`Other Rate Amount: ${room.otherRateAmount}`);
+  // console.log('---------------------');
+ 
+  const swiperCards = `
+      <div class="card swiper-slide" id="swiperCard-${room.Id}">
+      <div class="image-box" style="border: solid white 2px; border-radius: 10px">
+          <img src="${room.Link}" class="clickable imageList" id="image--${room.Id}" alt="" />
+      </div>
+      </div>
+  `;
+
+  const tempDiv = document.createElement('div');
+  tempDiv.innerHTML = swiperCards;
+
+  const cardSwiperContainer = tempDiv.firstElementChild;
+
+  if (wrapper) {
+      wrapper.appendChild(cardSwiperContainer);
+  }
+}
+

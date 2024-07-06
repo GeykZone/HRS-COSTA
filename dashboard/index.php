@@ -34,6 +34,9 @@ if( $response['role'] === 'customer') {
 
         <div class="main-view">
           <div class="main-content">
+          <!-- resources-->
+          <?php include('openReservationNotificationModal.php') ?>
+          <!-- resources-->
         
         <div class="head-card-box">   
         <div class="flash-card">
@@ -216,7 +219,8 @@ if( $response['role'] === 'customer') {
     </div>
     <script>var userOrAdminDetails = <?php echo json_encode($response); ?>;</script>
     <script src="js/script.js"></script>
-    <script src="js/index-slider.js"></script>
     <script src="js/swiper-bundle.min.js"></script>
+    <script src="js/index-slider.js"></script>
+    <script src="js/notificationListener.js"></script>
   </body>
 </html>

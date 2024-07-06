@@ -10,6 +10,7 @@ let logoutButton = document.querySelector(".logout-button");
 let customer = document.querySelectorAll(".customer");
 let admin = document.querySelectorAll(".admin");
 let toLandingPage = document.querySelectorAll(".toLandingPage");
+let cardWrapperEvidence = document.querySelector('.card-wrapper-evidence');
 let activePage = window.location.pathname;
 let getSideBarStatus = false;
 let storage;
@@ -284,6 +285,210 @@ function showOnlyAdminUi() {
   });
 
   
+}
+
+// dynamic confirmation modal
+function dynamicConfirmationMessage(modalValue) {
+   let leftButton = ' #265df2';
+   let rightButton = ' #265df2';
+   let logoColor = ' #265df2';
+   let leftClass = '';
+   let rightClass = '';
+   let custoMIcon = 'fa-regular fa-face-smile';
+   let title = 'Default Title';
+   let message = 'Hello this is a default message.';
+   let leftButtonText = 'Left Button';
+   let RightButtonText = 'Right Button';
+   let mainClass = 'custom-confirmation';
+   let messageBoxCustomClass = 'message-box';
+   let displayBox = 'modal-hide';
+   let messageBoxPlaceHolder = 'Message Box'
+   
+    if (modalValue?.logo !== undefined && !modalValue.logo.length < 1) {
+        custoMIcon = modalValue.logo;
+    }
+    if (modalValue?.message !== undefined && !modalValue.message.length < 1) {
+        message = modalValue.message;
+    }
+    if (modalValue?.title !== undefined && !modalValue.title.length < 1) {
+      title = modalValue.title;
+    }
+    if (modalValue?.logoColor !== undefined && !modalValue.logoColor.length < 1) {
+      logoColor = modalValue.logoColor;
+    }
+    if (modalValue?.buttonLeftCustomClass !== undefined && !modalValue.buttonLeftCustomClass.length < 1) {
+        leftClass = modalValue.buttonLeftCustomClass;
+    }
+    if (modalValue?.buttonRightCustomClass !== undefined && !modalValue.buttonRightCustomClass.length < 1) {
+        rightClass = modalValue.buttonRightCustomClass;
+    }
+    if (modalValue?.buttonLeftCustomText !== undefined && !modalValue.buttonLeftCustomText.length < 1) {
+        leftButtonText = modalValue.buttonLeftCustomText;
+    }
+    if (modalValue?.buttonRightCustomText !== undefined && !modalValue.buttonRightCustomText.length < 1) {
+        RightButtonText = modalValue.buttonRightCustomText;
+    }
+    if (modalValue?.buttonLeftCustomColor !== undefined && !modalValue.buttonLeftCustomColor.length < 1) {
+        leftButton = modalValue.buttonLeftCustomColor;
+    }
+    if (modalValue?.buttonRightCustomColor !== undefined && !modalValue.buttonRightCustomColor.length < 1) {
+        rightButton = modalValue.buttonRightCustomColor;
+    }
+    if (modalValue?.mainClass !== undefined && !modalValue.mainClass.length < 1) {
+        mainClass = modalValue.mainClass;
+    }
+    if (modalValue?.displayBox !== undefined && modalValue.displayBox == true) {
+        displayBox = ''
+    }
+    if (modalValue?.messageBoxCustomClass !== undefined && !modalValue.messageBoxCustomClass.length < 1) {
+      messageBoxCustomClass = modalValue.messageBoxCustomClass;
+    }
+    if (modalValue?.messageBoxPlaceHolder !== undefined && !modalValue.messageBoxPlaceHolder.length < 1) {
+      messageBoxPlaceHolder = modalValue.messageBoxPlaceHolder;
+    }
+
+   // Create style element and append CSS to it
+   const style = document.createElement('style');
+   style.innerHTML = `
+     /* Google Fonts - Poppins */
+     @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap");
+
+     .${mainClass} {
+       font-family: "Poppins", sans-serif;
+       position: fixed;
+       height: 100%;
+       width: 100%;
+       background: #010F1AA2;
+       z-index: 999999;
+     }
+     .${mainClass} button {
+       font-size: 15px;
+       font-weight: 400;
+       color: #fff;
+       padding: 14px 22px;
+       border: none;
+       border-radius: 6px;
+       cursor: pointer;
+     }
+     .${mainClass} button:hover {
+      font-size: 12px !important;
+     }
+
+      .${mainClass} .custom-modal-confirm-button {
+       background-color: ${leftButton};
+     }
+     
+      .${mainClass} .custom-modal-cancel-button {
+      background-color: ${rightButton};
+     }
+
+     .${mainClass} button.show-modal,
+     .modal-box {
+       position: fixed;
+       left: 50%;
+       top: 50%;
+       transform: translate(-50%, -50%);
+       box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+     }
+     .${mainClass}.active .show-modal {
+       display: none;
+     }
+     
+     .${mainClass} .modal-box {
+       display: flex;
+       flex-direction: column;
+       align-items: center;
+       max-width: 380px;
+       width: 100%;
+       padding: 30px 20px;
+       border-radius: 24px;
+       background-color: #fff;
+       opacity: 0;
+       pointer-events: none;
+       transition: all 0.3s ease;
+       transform: translate(-50%, -50%) scale(1.2);
+     }
+     .${mainClass}.active .modal-box {
+       opacity: 1;
+       pointer-events: auto;
+       transform: translate(-50%, -50%) scale(1);
+     }
+     .${mainClass} .modal-box i {
+       font-size: 70px;
+       color: ${logoColor};
+     }
+     .${mainClass} .modal-box h2 {
+       margin-top: 20px;
+       font-size: 25px;
+       font-weight: 500;
+       color: #333;
+     }
+     .${mainClass} .modal-box h3 {
+       font-size: 16px;
+       font-weight: 400;
+       color: #333;
+       text-align: center;
+     }
+     .${mainClass} .modal-box .buttons {
+       margin-top: 25px;
+     }
+     .${mainClass} .modal-box button {
+       padding: 12px 12px;
+       margin: 0 10px;
+       width: 110px;
+     }
+     .modal-hide {
+      display: none !important;
+     }
+     
+    .${mainClass} .${messageBoxCustomClass} {
+      height: 10rex;
+      width: 283px;
+      border-radius: 0.5rem;
+      padding: 5px 12px;
+      border: 1.9px solid black;
+    }
+
+    .${mainClass} .${messageBoxCustomClass}-container {
+      display: flex;
+      flex-direction: column;
+      margin-top: 20px !important;
+      gap: 5px;
+    }
+
+    .${mainClass} .${messageBoxCustomClass}-error-message-label {
+      color: red !important;
+      font-size: 12px;
+      font-weight:300;
+      align-self: flex-start;
+      margin-left: 4px;
+    }
+
+   `;
+   document.head.appendChild(style);
+
+   // Create section element and append HTML to it
+   const section = document.createElement('section');
+   section.classList.add(`${mainClass}`, 'active', 'modal-hide');
+   section.innerHTML = `
+     <div class="modal-box">
+      <!-- fa-circle-check -->
+       <i class="${custoMIcon}"></i>
+       <h2>${title}</h2>
+       <h3>${message}</h3>
+
+       <div class='${messageBoxCustomClass}-container ${displayBox}'>
+          <textarea  placeholder="${messageBoxPlaceHolder} *" maxlength="500" class="${messageBoxCustomClass}"></textarea>
+          <div class="${messageBoxCustomClass}-error-message-label modal-hide">Input a valid ${messageBoxPlaceHolder}.</div>
+       </div>
+
+       <div class="buttons">
+         <button class="custom-modal-confirm-button ${leftClass}">${leftButtonText}</button>
+         <button class="custom-modal-cancel-button ${rightClass}">${RightButtonText}</button>
+       </div>
+     </div>
+   `;
+   document.body.insertBefore(section, document.body.firstChild);
 }
 
 // redirect to landing page

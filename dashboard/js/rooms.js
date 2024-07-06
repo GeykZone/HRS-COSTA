@@ -17,8 +17,6 @@ let addRoomBtn = document.getElementById('addRoomBtn');
 let closeAddRoomsModal = document.getElementById('closeAddRoomsModal');
 let closeroomDetails = document.getElementById('closeroomDetails');
 let singleRoomBookingModalCLose = document.getElementById('singleRoomBookingModalCLose');
-let addRoomModal = document.getElementById('addRoomModal');
-let roomDetailsModal = document.getElementById('roomDetails');
 let singleRoomBookingModalId = document.getElementById('singleRoomBookingModalId');
 let imagePreviewContainerError = document.getElementById('imagePreviewContainer-error');
 let imagePreviewContainerSingleEvidenceError = document.getElementById('imagePreviewContainerSingleEvidence-error')
@@ -31,7 +29,6 @@ let addAmenityNowBtn = document.getElementById('addAmenityNow');
 let amenityInput = document.getElementById('amenity');
 let imagePreviewContainerDelete = document.getElementById('imagePreviewContainer');
 let cardWrapper = document.querySelector('.card-wrapper');
-let cardWrapperEvidence = document.querySelector('.card-wrapper-evidence');
 let selectedPrice = document.getElementById('selectedPrice');
 let singleRoomBookingModalBtnDone = document.getElementById('singleRoomBookingModalBtnDone');
 let singleRoomPaymentPicklist = document.getElementById('single-room-payment-picklist');
@@ -58,7 +55,7 @@ let singleBookingPaymentMethod = null;
 let singleBookingRoomId;
 const coursesBoxContainer = document.querySelector('.courses-boxes');
 
-function initializeSwiper(className, swiperWrapperClass) {
+function initializeSwiperWithParam(className, swiperWrapperClass) {
   if (swiper) {
     swiper.destroy(true, true);
   }
@@ -843,9 +840,9 @@ function querySingleRoomDetails(roomId) {
             }
 
             imageLink.forEach(img => {
-                displayRoomsInSlider(img, cardWrapper);
+                displayRoomsInSliderWithWrapper(img, cardWrapper);
             });
-            initializeSwiper('slide-container', 'wrapper-forRoomDetails');
+            initializeSwiperWithParam('slide-container', 'wrapper-forRoomDetails');
 
             document.querySelectorAll('.imageList').forEach(imgList => {
                 imgList.addEventListener('click', function() {
@@ -1407,7 +1404,7 @@ async function uploadImageToFirebase(selectedFiles, imageLink) {
     await Promise.all(uploadPromises);
 }
 
-function displayRoomsInSlider(room, wrapper) {
+function displayRoomsInSliderWithWrapper(room, wrapper) {
 
     // console.log(`Room ID: ${room.roomId}`);
     // console.log(`Room Name: ${room.roomName}`);

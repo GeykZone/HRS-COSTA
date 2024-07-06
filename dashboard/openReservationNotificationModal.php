@@ -22,7 +22,7 @@
         </div>
         
         <div class="discription-header customer">
-            <h3> <i class="fa-regular fa-comment"></i> Reservation Rejection Message : <span id="rejectionMessage">Loading...</span> </h3>
+            <h3> <i class="fa-regular fa-comment"></i> Rejection Reason : <span id="rejectionMessage">Loading...</span> </h3>
         </div>
 
         <div class="discription-header">

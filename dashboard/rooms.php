@@ -103,8 +103,8 @@ include('controller/generalController.php')
      <!-- Firebase SDK -->
     <script>var userOrAdminDetails = <?php echo json_encode($response); ?>;</script>
     <script src="js/script.js"></script>
-    <script src="js/rooms.js"></script>
-    <script src="js/notificationListener.js"></script>
     <script src="js/swiper-bundle.min.js"></script>
+    <script src="js/notificationListener.js"></script>
+    <script src="js/rooms.js"></script>
   </body>
 </html>

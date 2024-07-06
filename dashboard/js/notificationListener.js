@@ -1,11 +1,43 @@
-$(document).ready(function() {
+let addRoomModal = document.getElementById('addRoomModal');
+let roomDetailsModal = document.getElementById('roomDetails');
+let defaultNotficationNumber = 0;
+let currentUserRole = userOrAdminDetails.role;
+let notificationPostData;
+let ReservationCheckInId;
+let openReservationNotificationModal = document.getElementById('openReservationNotificationModal');
+let closeReservationNotification = document.getElementById('closeReservationNotification');
 
-    let defaultNotficationNumber = 0;
-    let currentUserRole = userOrAdminDetails.role;
-    let notificationPostData;
-    let ReservationCheckInId;
-    let openReservationNotificationModal = document.getElementById('openReservationNotificationModal');
-    let closeReservationNotification = document.getElementById('closeReservationNotification');
+$(document).ready(function() {
+   dynamicConfirmationMessage({
+        logo: 'fa-regular fa-thumbs-up', 
+        message: 'Do you really want to approve this pending request?', 
+        title: 'Approval', 
+        logoColor: '#19C43E', 
+        buttonLeftCustomClass: 'approve',
+        buttonRightCustomClass: 'cancelApprove',
+        buttonLeftCustomText: 'Approve',
+        buttonRightCustomText: 'Cancel',
+        buttonLeftCustomColor: '#19C43E',
+        buttonRightCustomColor: '#C41919',
+        mainClass: 'checkin-approval-confirmation'
+    })
+
+    dynamicConfirmationMessage({
+        logo: 'fa-regular fa-thumbs-down', 
+        message: 'Do you really want to reject this pending request?', 
+        title: 'Rejection', 
+        logoColor: '#F56F02', 
+        buttonLeftCustomClass: 'reject',
+        buttonRightCustomClass: 'cancelReject',
+        buttonLeftCustomText: 'Reject',
+        buttonRightCustomText: 'Cancel',
+        buttonLeftCustomColor: '#F56F02',
+        buttonRightCustomColor: '#C41919',
+        mainClass: 'checkin-rejection-confirmation',
+        displayBox: true,
+        messageBoxCustomClass: 'reject-message-box',
+        messageBoxPlaceHolder: 'Rejection Reason'
+    })
 
     if(currentUserRole === 'customer') {
         notificationPostData = {
@@ -77,16 +109,22 @@ $(document).ready(function() {
         newNotification.textContent = `Room ${notificationData.roomName} - Reservation ${notificationData.status} - Payable ${dynamicCurrencyforTxtValue(notificationData.total)}
          - Requested by ${notificationData.userFullname} - Quantity ${notificationData.roomQuantity}`;
         newNotification.id = `notif-${notificationData.Id}`;
+        if(notificationData.status === 'rejected'){
+            newNotification.classList.add('background-red');
+        }
+        else if(notificationData.status === 'approved'){
+            newNotification.classList.add('background-green');
+        }
         notificationContainer.appendChild(newNotification);
         const notificationId = notificationData.Id;
 
 
         newNotification.addEventListener('click', function(){
-            openReserationNotification(notificationId);
+            openReservationNotification(notificationId);
         })
     }
 
-    function openReserationNotification(notificationId) {
+    function openReservationNotification(notificationId) {
         openReservationNotificationModal.classList.add('show');
 
         const url = "controller/roomsController.php";
@@ -138,9 +176,9 @@ $(document).ready(function() {
                 }
 
                 imageJSON.forEach(img => {
-                    displayRoomsInSlider(img, cardWrapperEvidence);
+                    displayRoomsInSliderWithWrapper(img, cardWrapperEvidence);
                 });
-                initializeSwiper('slide-container-evidence', 'wrapper-evidence');
+                initializeSwiperWithParam('slide-container-evidence', 'wrapper-evidence');
 
                 document.querySelectorAll('.imageList').forEach(imgList => {
                     imgList.addEventListener('click', function() {
@@ -171,13 +209,110 @@ $(document).ready(function() {
         });
     }
 
+    function closeAllOpenedModal(){
+        document.querySelector('.checkin-approval-confirmation').classList.add('modal-hide');
+        document.querySelector('.checkin-rejection-confirmation').classList.add('modal-hide');
+        if (addRoomModal && addRoomModal.classList.contains('show')) {
+            addRoomModal.classList.remove('show');
+        }
+        if (roomDetailsModal && roomDetailsModal.classList.contains('show')) {
+            roomDetailsModal.classList.remove('show');
+        }
+        if (openReservationNotificationModal && openReservationNotificationModal.classList.contains('show')) {
+            openReservationNotificationModal.classList.remove('show');
+        }
+        if (closeReservationNotification && closeReservationNotification.classList.contains('show')) {
+            closeReservationNotification.classList.remove('show');
+        }
+    }
+
+    function approveCheckInRequest() {
+        const url = "controller/notificationListenerController.php";
+        const data = {
+            approve: true,
+            ReservationCheckInId: ReservationCheckInId,
+        };
+        handlePostRequest(url,data )
+        .then((response) => {
+            var jsonResponse = JSON.parse(response);
+            if(jsonResponse.approved === true) {    
+                alertMessage('You have successfully approved a check-in reservation request.', 'success', 3000);
+            }
+            else {
+                alertMessage('Approve failed. Something went wrong.', 'warning', 3000);
+                console.log(response)
+            }
+        })
+        .catch((error) => {
+            alertMessage('Something went wrong, Error: ' + error, 'error', 3000);
+            console.log("Error:", error);
+        });
+
+        closeAllOpenedModal();
+    }
+
+    function rejectCheckInRequest() {
+        const rejectMessageBox =  document.querySelector('.reject-message-box');
+        const rejectMessageBoxLabel = document.querySelector('.reject-message-box-error-message-label');
+        let rejectable = true;
+
+        if(rejectMessageBox && rejectMessageBox.value.length < 1){
+            rejectMessageBoxLabel.classList.remove('modal-hide');
+            rejectable = false;
+        }
+        else{
+            if(!rejectMessageBoxLabel.classList.contains('modal-hide')){
+                rejectMessageBoxLabel.classList.add('modal-hide');
+                rejectable = true;
+            }
+        }
+
+        if(rejectable){
+            const url = "controller/notificationListenerController.php";
+            const data = {
+                reject: true,
+                ReservationCheckInId: ReservationCheckInId,
+                rejectionReason: rejectMessageBox.value
+            };
+            handlePostRequest(url,data )
+            .then((response) => {
+                var jsonResponse = JSON.parse(response);
+                if(jsonResponse.rejected === true) {    
+                    alertMessage('You have successfully rejected a check-in reservation request.', 'success', 3000);
+                }
+                else {
+                    alertMessage('Rejection failed. Something went wrong.', 'warning', 3000);
+                    console.log(response)
+                }
+            })
+            .catch((error) => {
+                alertMessage('Something went wrong, Error: ' + error, 'error', 3000);
+                console.log("Error:", error);
+            });
+
+            closeAllOpenedModal();
+        }
+    }
+
     document.getElementById('approveReservation').addEventListener('click', function(){
-        alert(ReservationCheckInId)
+        document.querySelector('.checkin-approval-confirmation').classList.remove('modal-hide');
+    })
+    document.querySelector('.approve').addEventListener('click', function() {
+       approveCheckInRequest();
+    });
+    document.querySelector('.cancelApprove').addEventListener('click', function(){
+        document.querySelector('.checkin-approval-confirmation').classList.add('modal-hide');
     })
 
     document.getElementById('rejectReservation').addEventListener('click', function(){
-        alert(`Reject ${ReservationCheckInId}`)
+        document.querySelector('.checkin-rejection-confirmation').classList.remove('modal-hide');
     })
+    document.querySelector('.reject').addEventListener('click', function() {
+        rejectCheckInRequest();
+     });
+     document.querySelector('.cancelReject').addEventListener('click', function(){
+         document.querySelector('.checkin-rejection-confirmation').classList.add('modal-hide');
+     })
 
     function clearNotifications() {
         const notificationContainer = document.querySelector('.notification-container');
