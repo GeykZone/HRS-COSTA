@@ -53,6 +53,8 @@ let amenityCount = 0
 let swiper;
 let singleBookingPaymentMethod = null;
 let singleBookingRoomId;
+let multibookingELement 
+const multiBookingLabel =  document.querySelector('.multi-booking-toggle-label');
 const coursesBoxContainer = document.querySelector('.courses-boxes');
 
 function initializeSwiperWithParam(className, swiperWrapperClass) {
@@ -111,6 +113,28 @@ function shouldLoop(swiperWrapperClass) {
   return numSlides >= 4;
 }
 
+function handleMultibookingToggle(event) {
+    const checkbox = event.target;
+    if (checkbox.checked) {
+        multiBookingLabel.textContent = 'Multi Booking On'
+
+        multibookingELement.forEach(val => {
+            if(val.classList.contains('display-none')){
+                val.classList.remove('display-none')
+            }
+        })
+        
+
+    } else {
+        multiBookingLabel.textContent = 'Multi Booking Off'
+        multibookingELement.forEach(val => {
+            if(!val.classList.contains('display-none')){
+                val.classList.add('display-none')
+            }
+        })
+    }
+}
+
 // select image button
 if(addImages) {
   addImages.addEventListener('click', function() {
@@ -155,6 +179,11 @@ function checkForSearchParams() {
 document.addEventListener('DOMContentLoaded', function() {
     checkForSearchParams()
     showAllrooms()
+    if(userOrAdminDetails.role === 'admin' ||(!checkInDateParam  && !checkOutDateParam)){
+    document.querySelectorAll('.room-page-title').forEach(title => {
+        title.innerHTML = 'All Rooms';
+    })
+}
 });
 
 // Show all rooms
@@ -241,6 +270,26 @@ function displayRooms(room) {
                 <p>${room.roomDescription}</p>
                 <select id="select-${room.roomId}" class="pick-list selectAvailableRate"  placeholder="Select Available Rates...">  
                 </select>
+
+                <div class="multi-booking-element other-booking-options-container display-none">
+                    <div class="bookin-checkBox-container">
+                        <div class="input-container">
+                            <label class="multi-booking-quantity-label">Select</label>
+                            <label class="switch">
+                            <input type="checkbox">
+                            <span class="slider"></span>
+                            </label>
+                            <div class="room-error-message-label form-d-label error"></div>
+                        </div>
+                    </div>
+                    <div class="quantity-booking-field-container">
+                        <div class="input-container">
+                            <label class="multi-booking-quantity-label">Desired Room Quantity</label>
+                            <input type="number" class="room-input  form-d" placeholder="Room Quantity *" id="sRoomQuantity" maxlength="10" />
+                            <div id="sRoomQuantity-error" class="room-error-message-label form-d-label error"></div>
+                        </div>
+                    </div>
+                </div>
                 <br>
                 <span id="viewDetailsBtn-${room.roomId}" class="clickable roomDetailsViewBtn costa-btn-b">View Room Details</span>
             </div>
@@ -320,6 +369,8 @@ function displayRooms(room) {
     selectizeInstance.on('change', function(value) {
         document.getElementById(`dispayAmount-${room.roomId}`).innerText = dynamicCurrencyforTxtValue(value);
     });
+
+    multibookingELement = document.querySelectorAll('.multi-booking-element');
 }
   
 // event for previewig selected image
@@ -806,11 +857,12 @@ function querySingleRoomDetails(roomId) {
     const data = {
         querySingleRoom: true,
         roomId: roomId,
+        checkInDate: checkInDateInput.value,
+        checkOutDate: checkOutDateInput.value
     };
 
     handlePostRequest(url,data )
     .then((response) => {
-        // console.log('response: ', response)
         var jsonResponse = JSON.parse(response);
         if(jsonResponse.rooms.length > 0) {
             let roomName = jsonResponse.rooms[0].roomName;
@@ -818,7 +870,10 @@ function querySingleRoomDetails(roomId) {
             let roomMaxCap = jsonResponse.rooms[0].roomMaxCap;
             let roomDescription = jsonResponse.rooms[0].roomDescription;
             let roomPublishedRate = jsonResponse.rooms[0].roomPublishedRate;
-            let quantity = jsonResponse.rooms[0].roomQuantity;
+            let quantity = jsonResponse.rooms[0].totalCheckInQuantity;
+            if(quantity == 0){
+                quantity = jsonResponse.rooms[0].roomQuantity
+            }
             let imageLink = JSON.parse(jsonResponse.rooms[0].imageLink);
             let otherRate = JSON.parse(jsonResponse.rooms[0].otherRate);
             let amenities = JSON.parse(jsonResponse.rooms[0].amenities);

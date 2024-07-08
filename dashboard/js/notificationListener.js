@@ -294,6 +294,31 @@ $(document).ready(function() {
         }
     }
 
+    function markAsRead() {
+        const url = "controller/notificationListenerController.php";
+        const data = {
+            markAsRead: true,
+            ReservationCheckInId: ReservationCheckInId,
+        };
+        handlePostRequest(url,data )
+        .then((response) => {
+            var jsonResponse = JSON.parse(response);
+            if(jsonResponse.read === true) {    
+                alertMessage('Notification was confirmed by the customer.', 'success', 3000);
+            }
+            else {
+                alertMessage('Something went wrong confirming.', 'warning', 3000);
+                console.log(response)
+            }
+        })
+        .catch((error) => {
+            alertMessage('Something went wrong, Error: ' + error, 'error', 3000);
+            console.log("Error:", error);
+        });
+
+        closeAllOpenedModal();
+    }
+
     document.getElementById('approveReservation').addEventListener('click', function(){
         document.querySelector('.checkin-approval-confirmation').classList.remove('modal-hide');
     })
@@ -313,6 +338,10 @@ $(document).ready(function() {
      document.querySelector('.cancelReject').addEventListener('click', function(){
          document.querySelector('.checkin-rejection-confirmation').classList.add('modal-hide');
      })
+
+    document.getElementById('markAsRead').addEventListener('click', function(){
+        markAsRead();
+    })
 
     function clearNotifications() {
         const notificationContainer = document.querySelector('.notification-container');

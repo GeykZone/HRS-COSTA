@@ -98,6 +98,6 @@
       <div class="details-modal-footer">
         <span class="clickable costa-btn-d admin" id="rejectReservation" style="width: 10rem;">Reject</span>
         <span class="clickable costa-btn-c admin" id="approveReservation" style="width: 10rem;">Approve</span>
-        <span class="clickable costa-btn-a customer" id="markAsRead" style="width: 10rem;">Mark as Read</span>
+        <span class="clickable costa-btn-a customer" id="markAsRead" style="width: 10rem;">Confirm</span>
       </div>
 </div>

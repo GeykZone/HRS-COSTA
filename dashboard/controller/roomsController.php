@@ -76,10 +76,29 @@ if (isset($inputData['sendReservationRequest'])) {
     $customerCompleteAddress = $inputData['customerCompleteAddress'];
     $customerContactInfo = $inputData['customerContactInfo'];
     
-    $selectRoomsSql = " SELECT Id, quantity FROM `rooms` WHERE Id= ? AND quantity>=? ";
+    $selectRoomsSql = " SELECT r.Id AS Id, r.quantity AS quantity,
+        IFNULL(totalCheckIn.totalCheckInQuantity, 0) AS totalCheckInQuantity
+        FROM `rooms` AS r
+        LEFT JOIN (
+            SELECT 
+                roomId, 
+                SUM(checkInQuantity) AS totalCheckInQuantity 
+            FROM 
+                check_ins 
+            WHERE 
+                status IN ('Pending', 'Approved')
+                AND (
+                    DATE(checkInDate) <= ? AND DATE(checkOutDate) >= ? -- Overlapping with start date
+                    OR DATE(checkInDate) <= ? AND DATE(checkOutDate) >= ? -- Overlapping with end date
+                    OR DATE(checkInDate) >= ? AND DATE(checkOutDate) <= ? -- Completely within the date range
+                )
+            GROUP BY roomId
+        ) AS totalCheckIn 
+        ON r.Id = totalCheckIn.roomId
+        WHERE Id= ? AND (r.quantity - IFNULL(totalCheckIn.totalCheckInQuantity, 0))>=? ";
 
     if ($stmt = $conn->prepare($selectRoomsSql)) {
-        $stmt->bind_param('ii', $roomId, $quantity);
+        $stmt->bind_param('ssssssii', $checkOutDate, $checkInDate, $checkOutDate, $checkInDate, $checkInDate, $checkOutDate, $roomId, $quantity);
         roomQuery($stmt);
 
         if(isset($response['notfound']) && $response['notfound'] === true) {
@@ -231,6 +250,8 @@ if (isset($inputData['queryAllRooms'])) {
 if (isset($inputData['querySingleRoom'])) {
 
     $roomId = $inputData['roomId'];
+    $checkInDate = (isset($inputData['checkInDate']) ? $inputData['checkInDate'] : null); // Replace with your desired check-in date
+    $checkOutDate =  (isset($inputData['checkOutDate']) ? $inputData['checkOutDate'] : null); // Replace with your desired check-out date
 
     $selectRoomsSql = "
     SELECT 
@@ -266,7 +287,8 @@ if (isset($inputData['querySingleRoom'])) {
                 ) ORDER BY am.amenityName DESC
             ),
             ']'
-        ) AS amenities
+        ) AS amenities,
+        IFNULL(totalCheckIn.totalCheckInQuantity, 0) AS totalCheckInQuantity
     FROM 
         rooms AS r
     LEFT JOIN 
@@ -278,11 +300,27 @@ if (isset($inputData['querySingleRoom'])) {
     LEFT JOIN 
         amenity AS am 
         ON r.Id = am.roomId
-    WHERE r.Id = ?
+    LEFT JOIN (
+        SELECT 
+            roomId, 
+            SUM(checkInQuantity) AS totalCheckInQuantity 
+        FROM 
+            check_ins 
+        WHERE 
+            status IN ('Pending', 'Approved')
+            AND (
+                DATE(checkInDate) <= ? AND DATE(checkOutDate) >= ? -- Overlapping with start date
+                OR DATE(checkInDate) <= ? AND DATE(checkOutDate) >= ? -- Overlapping with end date
+                OR DATE(checkInDate) >= ? AND DATE(checkOutDate) <= ? -- Completely within the date range
+            )
+        GROUP BY roomId
+    ) AS totalCheckIn 
+    ON r.Id = totalCheckIn.roomId
+    WHERE r.Id = ? AND (r.quantity - IFNULL(totalCheckIn.totalCheckInQuantity, 0)) > 0
     ";
 
     if ($stmt = $conn->prepare($selectRoomsSql)) {
-        $stmt->bind_param('i', $roomId);
+        $stmt->bind_param('ssssssi', $checkOutDate, $checkInDate, $checkOutDate, $checkInDate, $checkInDate, $checkOutDate,$roomId);
         roomQuery($stmt);
     } else {
         $response['error'] = 'Failed to prepare the SQL statement.';
@@ -403,7 +441,8 @@ function roomQuery($stmt) {
                 'customerCompleteAddress' => isset($row['customerCompleteAddress']) ? $row['customerCompleteAddress'] : null,
                 'customerContactInfo' => isset($row['customerContactInfo']) ? $row['customerContactInfo'] : null,
                 'reservationMessage' => isset($row['reservationMessage']) ? $row['reservationMessage'] : null,
-                'totalCheckInQuantity' => isset($row['totalCheckInQuantity']) ? $row['totalCheckInQuantity'] : null
+                'totalCheckInQuantity' => isset($row['totalCheckInQuantity'])? $row['totalCheckInQuantity'] : null
+
             ];
             $response['rooms'][] = $room;
         }

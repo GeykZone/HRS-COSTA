@@ -10,6 +10,4 @@
 -Rejected
 
 # todo next
--mark as read
--fix the quantity
 -bulk booking

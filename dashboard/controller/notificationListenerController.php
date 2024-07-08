@@ -27,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['listening'])) {
                   ON ci.roomId = r.Id
                   LEFT JOIN user AS u
                   ON ci.userId = u.Id
-                  WHERE notificationStatus = 'Unread'";
+                  WHERE notificationStatus = 'unread'";
 
         if ($userId) {
             $query .= " AND userId = '$userId'  AND (status = 'approved' OR status = 'rejected')";
@@ -105,6 +105,30 @@ if (isset($inputData['reject'])) {
        $response['rejected'] = true;
     } else {
        $response['rejected'] = false;
+    }
+
+
+   echo json_encode($response);
+}
+
+if (isset($inputData['markAsRead'])) {
+    global  $conn;
+    $ReservationCheckInId = $inputData['ReservationCheckInId'];
+
+    $table = "check_ins";
+
+    $data = [
+        'notificationStatus' => 'read',
+    ];
+
+    $conditions = [
+        'id' => $ReservationCheckInId
+    ];
+
+    if (updateRecord($table, $data, $conditions, $conn)) {
+       $response['read'] = true;
+    } else {
+       $response['read'] = false;
     }
 
 
