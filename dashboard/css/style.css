@@ -2991,3 +2991,14 @@ main .projects-box .projects-box-section2 table tr td a.rejected {
   gap: 5px;
   justify-content: space-between;
 }
+
+.input-quntity-field-container{
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 200px;
+}
+
+.input-room-quantity-multi{
+  width: 200px !important;
+}

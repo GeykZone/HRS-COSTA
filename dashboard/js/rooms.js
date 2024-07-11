@@ -53,7 +53,8 @@ let amenityCount = 0
 let swiper;
 let singleBookingPaymentMethod = null;
 let singleBookingRoomId;
-let multibookingELement 
+let multibookingELement;
+let checkedRoomItems = [];
 const multiBookingLabel =  document.querySelector('.multi-booking-toggle-label');
 const coursesBoxContainer = document.querySelector('.courses-boxes');
 
@@ -265,7 +266,7 @@ function displayRooms(room) {
             <div class="courses-card-body">
                 <div class="roomCardHeader-Container">
                     <h4>${room.roomName}</h4>
-                    <span class="roomQuantityInShowAllRooms"><h6>${totalAvailableRooms} Available</h6></span>
+                    <span class="roomQuantityInShowAllRooms"><h6 id="roomQuantityInShowAllRooms-${room.roomId}">${totalAvailableRooms} Available</h6></span>
                 </div>
                 <p>${room.roomDescription}</p>
                 <select id="select-${room.roomId}" class="pick-list selectAvailableRate"  placeholder="Select Available Rates...">  
@@ -274,19 +275,19 @@ function displayRooms(room) {
                 <div class="multi-booking-element other-booking-options-container display-none">
                     <div class="bookin-checkBox-container">
                         <div class="input-container">
-                            <label class="multi-booking-quantity-label">Select</label>
+                            <label class="multi-booking-quantity-select-label" id="roomSelectLabel-${room.roomId}">Select</label>
                             <label class="switch">
-                            <input type="checkbox">
+                            <input type="checkbox" class="roomSelect-toggler" id="roomSelect-${room.roomId}">
                             <span class="slider"></span>
                             </label>
                             <div class="room-error-message-label form-d-label error"></div>
                         </div>
                     </div>
                     <div class="quantity-booking-field-container">
-                        <div class="input-container">
-                            <label class="multi-booking-quantity-label">Desired Room Quantity</label>
-                            <input type="number" class="room-input  form-d" placeholder="Room Quantity *" id="sRoomQuantity" maxlength="10" />
-                            <div id="sRoomQuantity-error" class="room-error-message-label form-d-label error"></div>
+                        <div class="input-quntity-field-container">
+                            <label class="multi-booking-quantity-input-label">Desired Room Quantity</label>
+                            <input type="number" class="room-input input-room-quantity-multi form-d" placeholder="Room Quantity *" id="inputRoomQuantity-${room.roomId}" maxlength="10" />
+                            <div id="inputRoomQuantity-${room.roomId}-error" class="room-error-message-label quantity-input-error form-d-label error"></div>
                         </div>
                     </div>
                 </div>
@@ -369,6 +370,24 @@ function displayRooms(room) {
     selectizeInstance.on('change', function(value) {
         document.getElementById(`dispayAmount-${room.roomId}`).innerText = dynamicCurrencyforTxtValue(value);
     });
+
+    const roomSelectLabel = document.getElementById(`roomSelectLabel-${room.roomId}`);
+    const roomSelectToggle = document.getElementById(`roomSelect-${room.roomId}`);
+    // const roomSelectInput = document.getElementById(`inputRoomQuantity-${room.roomId}`);
+    // const roomSelectErrorMsg = document.getElementById(`inputRoomQuantity-${room.roomId}-error`);
+
+    roomSelectToggle.addEventListener('click', function(e){
+        if(e.target.checked){
+            roomSelectLabel.textContent = 'Deselect'
+            checkedRoomItems.push(room.roomId);
+        }
+        else{
+            roomSelectLabel.textContent = 'Select'
+            updateArray(checkedRoomItems, parseInt(room.roomId), 'deselect', true)
+        }
+
+        console.log(checkedRoomItems);
+    })
 
     multibookingELement = document.querySelectorAll('.multi-booking-element');
 }
@@ -494,9 +513,87 @@ searchAvailableRooms.addEventListener('click', function() {
 // bulk booking room event
 bookNOwBtn.addEventListener('click', function() {
     if(searchAvailableRoomsValidator('fromBooknow')) {
-        alert("Bulk booking is currently under development.")
+        if(checkedRoomItems.length > 0) {
+            multiBookingValidation();
+        }
+        else{
+            alertMessage('Selecte atleast one available room.', 'warning', 5000);
+        }
     }
 })
+
+function multiBookingValidation() {
+    const otherBookingOptionsContainers = document.querySelectorAll('.other-booking-options-container');
+    otherBookingOptionsContainers.forEach(otherBookingOptionContainer => {
+        const inputFieldQuntity = otherBookingOptionContainer.querySelector('.input-room-quantity-multi');
+        const inputFieldQuantityLabel = otherBookingOptionContainer.querySelector('.quantity-input-error');
+        const roomSelectToggler = otherBookingOptionContainer.querySelector('.roomSelect-toggler');
+        const inputFieldQuntityId = inputFieldQuntity.id;
+        const roomId = inputFieldQuntityId.replace(/\D/g, '');
+        const getCurrentQuantityId = document.getElementById( `roomQuantityInShowAllRooms-${roomId}`);
+        let currentAvailable = getCurrentQuantityId.textContent.replace(/[^\d.,]/g, '');
+        currentAvailable = parseInt(currentAvailable);
+
+
+        if(inputFieldQuntity.value.length < 1 && roomSelectToggler.checked){
+            inputFieldQuntity.classList.add("error");
+            inputFieldQuantityLabel.textContent = 'Invalid Quantity';
+        }
+        else if(inputFieldQuntity.value.length > 0 && roomSelectToggler.checked && (parseInt(inputFieldQuntity.value) > parseInt(currentAvailable))){
+            inputFieldQuntity.classList.add("error");
+            inputFieldQuantityLabel.textContent = 'The quantity you selected is greater than the actual.';
+        }
+        else{
+            if(inputFieldQuntity.value > 0 && roomSelectToggler.checked)
+            {inputFieldQuntity.classList.remove("error");
+            inputFieldQuantityLabel.textContent = '';
+
+            let updatedValue = { id: parseInt(roomId), quantity: parseInt(inputFieldQuntity.value) };
+            checkedRoomItems = updateArray(checkedRoomItems, parseInt(roomId), updatedValue, false);
+            console.log('update: '+JSON.stringify(checkedRoomItems));}
+        }
+        
+    })
+}
+
+//update the value of selected room in multi select booking
+function updateArray(arr, oldValue, newValue, isdeselect) {
+
+    const index = arr.indexOf(oldValue);
+    if(!isdeselect && newValue != 'deselect'){
+        if (index != -1) {
+            arr[index] = { ...arr[index], ...newValue };
+        }
+        else{
+            arr.forEach((val,index) => {
+                if((val.id == newValue.id)){
+                    if (index != -1) {
+                        arr[index] = { ...arr[index], ...newValue };
+                    }
+                }
+            })
+        }
+    }
+    else {
+        arr.forEach((val,index) => {
+            if(val.id){
+                if((val.id == oldValue)){
+                    if (index > -1) {
+                        checkedRoomItems.splice(index, 1);
+                    }
+                }
+            }
+            else{
+                if((val == oldValue)){
+                    if (index > -1) {
+                        checkedRoomItems.splice(index, 1);
+                    }
+                }
+            }
+        })
+    }
+    return arr;
+}
 
 // single booking room event
 singleRoomBookingModalBtnDone.addEventListener('click', function() {
