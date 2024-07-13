@@ -55,10 +55,12 @@ a {
 
 .background-green{
   background-color: #19C43E !important;
+  border-color: #19C43E !important;;
 }
 
 .background-red{
   background-color: #C41919 !important;
+  border-color: #C41919 !important;
 }
 
 .toggle {

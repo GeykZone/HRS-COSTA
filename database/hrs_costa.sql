@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 29, 2024 at 08:27 PM
+-- Generation Time: Jul 13, 2024 at 01:17 PM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -66,7 +66,9 @@ CREATE TABLE `check_ins` (
   `totalAmount` float NOT NULL,
   `customerfullName` varchar(255) NOT NULL,
   `customerCompleteAddress` varchar(255) NOT NULL,
-  `customerContactInfo` varchar(255) NOT NULL
+  `customerContactInfo` varchar(255) NOT NULL,
+  `notificationStatus` varchar(255) NOT NULL DEFAULT 'Unread',
+  `message` varchar(500) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -130,16 +132,6 @@ CREATE TABLE `payment_methods` (
   `qrLink` varchar(255) NOT NULL,
   `paymentNumber` char(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `payment_methods`
---
-
-INSERT INTO `payment_methods` (`Id`, `paymentMethodName`, `qrLink`, `paymentNumber`) VALUES
-(1, 'Gcash', 'https://firebasestorage.googleapis.com/v0/b/hrs-costa.appspot.com/o/system%20images%2F1200px-QR_Code_Example.svg.png?alt=media&token=9030b11c-f9dc-405a-8ae0-d2e3070a4cf6', '+639542568956'),
-(2, 'Palawan', 'https://firebasestorage.googleapis.com/v0/b/hrs-costa.appspot.com/o/system%20images%2FExample-QR-code.webp?alt=media&token=721e322f-a9ca-410a-9cf6-c793e081a278', '+639256455892'),
-(3, 'Maya', 'https://firebasestorage.googleapis.com/v0/b/hrs-costa.appspot.com/o/system%20images%2FQR_code_for_mobile_English_Wikipedia.svg?alt=media&token=8f208533-a12c-4ccb-9414-66134f1294d0', '+639856265623'),
-(4, 'Manual', '', '');
 
 -- --------------------------------------------------------
 
@@ -276,43 +268,43 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT for table `access_token`
 --
 ALTER TABLE `access_token`
-  MODIFY `Id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=127;
+  MODIFY `Id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=153;
 
 --
 -- AUTO_INCREMENT for table `amenity`
 --
 ALTER TABLE `amenity`
-  MODIFY `Id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `Id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 
 --
 -- AUTO_INCREMENT for table `check_ins`
 --
 ALTER TABLE `check_ins`
-  MODIFY `Id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
+  MODIFY `Id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=63;
 
 --
 -- AUTO_INCREMENT for table `created_from_facebook`
 --
 ALTER TABLE `created_from_facebook`
-  MODIFY `Id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=89;
+  MODIFY `Id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=97;
 
 --
 -- AUTO_INCREMENT for table `created_from_google`
 --
 ALTER TABLE `created_from_google`
-  MODIFY `Id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `Id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `other_rate`
 --
 ALTER TABLE `other_rate`
-  MODIFY `Id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `Id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT for table `payment_evidence`
 --
 ALTER TABLE `payment_evidence`
-  MODIFY `Id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `Id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
 
 --
 -- AUTO_INCREMENT for table `payment_methods`
@@ -324,19 +316,19 @@ ALTER TABLE `payment_methods`
 -- AUTO_INCREMENT for table `rooms`
 --
 ALTER TABLE `rooms`
-  MODIFY `Id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
+  MODIFY `Id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
 
 --
 -- AUTO_INCREMENT for table `room_image`
 --
 ALTER TABLE `room_image`
-  MODIFY `Id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=68;
+  MODIFY `Id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=79;
 
 --
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=76;
+  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=90;
 
 --
 -- Constraints for dumped tables
