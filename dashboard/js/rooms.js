@@ -17,6 +17,7 @@ let addRoomBtn = document.getElementById('addRoomBtn');
 let closeAddRoomsModal = document.getElementById('closeAddRoomsModal');
 let closeroomDetails = document.getElementById('closeroomDetails');
 let singleRoomBookingModalCLose = document.getElementById('singleRoomBookingModalCLose');
+let multiRoomBookingModalCLose = document.getElementById('multiRoomBookingModalCLose');
 let singleRoomBookingModalId = document.getElementById('singleRoomBookingModalId');
 let imagePreviewContainerError = document.getElementById('imagePreviewContainer-error');
 let imagePreviewContainerSingleEvidenceError = document.getElementById('imagePreviewContainerSingleEvidence-error')
@@ -38,6 +39,7 @@ let sCompleteAddress = document.getElementById('sCompleteAddress');
 let sAmountToPay = document.getElementById('sAmountToPay');
 let sContactInfo = document.getElementById('sContactInfo');
 let submitChanges = document.getElementById('submitChanges');
+let multiBookingPaymentModal = document.getElementById('multiBookingPaymentModal');
 let checkInDateParam = null;
 let checkOutDateParam = null;
 let imgCount = 0;
@@ -517,12 +519,13 @@ bookNOwBtn.addEventListener('click', function() {
             multiBookingValidation();
         }
         else{
-            alertMessage('Selecte atleast one available room.', 'warning', 5000);
+            alertMessage('Select atleast one available room.', 'warning', 5000);
         }
     }
 })
 
 function multiBookingValidation() {
+    let openMultiBookingModal = false;
     const otherBookingOptionsContainers = document.querySelectorAll('.other-booking-options-container');
     otherBookingOptionsContainers.forEach(otherBookingOptionContainer => {
         const inputFieldQuntity = otherBookingOptionContainer.querySelector('.input-room-quantity-multi');
@@ -534,26 +537,53 @@ function multiBookingValidation() {
         let currentAvailable = getCurrentQuantityId.textContent.replace(/[^\d.,]/g, '');
         currentAvailable = parseInt(currentAvailable);
 
-
         if(inputFieldQuntity.value.length < 1 && roomSelectToggler.checked){
             inputFieldQuntity.classList.add("error");
             inputFieldQuantityLabel.textContent = 'Invalid Quantity';
+            openMultiBookingModal = false;
         }
         else if(inputFieldQuntity.value.length > 0 && roomSelectToggler.checked && (parseInt(inputFieldQuntity.value) > parseInt(currentAvailable))){
             inputFieldQuntity.classList.add("error");
             inputFieldQuantityLabel.textContent = 'The quantity you selected is greater than the actual.';
+            openMultiBookingModal = false;
         }
         else{
-            if(inputFieldQuntity.value > 0 && roomSelectToggler.checked)
-            {inputFieldQuntity.classList.remove("error");
-            inputFieldQuantityLabel.textContent = '';
+            if(inputFieldQuntity.value > 0 && roomSelectToggler.checked){
+                inputFieldQuntity.classList.remove("error");
+                inputFieldQuantityLabel.textContent = '';
 
-            let updatedValue = { id: parseInt(roomId), quantity: parseInt(inputFieldQuntity.value) };
-            checkedRoomItems = updateArray(checkedRoomItems, parseInt(roomId), updatedValue, false);
-            console.log('update: '+JSON.stringify(checkedRoomItems));}
+                // Get the Selectize instance
+                let selectizeInstance = $(`#select-${roomId}`)[0].selectize;
+                // Get the value of the Selectize instance
+                let selectedValue = convertCurrencyStringToNumber(selectizeInstance.getValue());
+                let totalPayable = selectedValue * parseInt(inputFieldQuntity.value);
+
+                let updatedValue = { id: parseInt(roomId), 
+                                     quantity: parseInt(inputFieldQuntity.value), 
+                                     selectedAmount:selectedValue, 
+                                     totalPayable:totalPayable };
+                checkedRoomItems = updateArray(checkedRoomItems, parseInt(roomId), updatedValue, false);
+                openMultiBookingModal = true;
+            }
         }
         
     })
+
+    if(openMultiBookingModal) {
+        console.log('update: ', JSON.parse(JSON.stringify(checkedRoomItems)));
+
+        //open modal
+        if(multiBookingPaymentModal.classList.contains('display-none')){
+            multiBookingPaymentModal.classList.remove('display-none');
+        }
+        if (multiRoomBookingModalCLose) {
+            multiRoomBookingModalCLose.addEventListener('click', function() {
+                if(!multiBookingPaymentModal.classList.contains('display-none')){
+                    multiBookingPaymentModal.classList.add('display-none');
+                }
+            });
+        }
+    }
 }
 
 //update the value of selected room in multi select booking
@@ -654,7 +684,10 @@ function sendReservationRequest() {
         var jsonResponse = JSON.parse(response);
         if(jsonResponse.reserve === 'success') {
 
-            singleRoomBookingModalId.classList.remove('show');
+            if( !singleRoomBookingModalId.classList.contains('display-none')){
+                singleRoomBookingModalId.classList.add('display-none');
+            }
+            
             
             Swal.fire({
                 title: 'Payment Due Details',
@@ -936,12 +969,21 @@ function saveRoomDetailsToDatabase() {
 function handleRoomDetailsViewBtnClick(event) {
     var elementId = event.target.id;
     var numberPart = elementId.match(/\d+/)[0];
-    roomDetailsModal.classList.add('show');
-    singleRoomBookingModalId.classList.remove('show');
+
+    if(roomDetailsModal.classList.contains('display-none')){
+        roomDetailsModal.classList.remove('display-none');
+    }
+
+    if( !singleRoomBookingModalId.classList.contains('display-none')){
+        singleRoomBookingModalId.classList.add('display-none');
+    }
+
     if (closeroomDetails) {
         closeroomDetails.addEventListener('click', function() {
             
-            roomDetailsModal.classList.remove('show');
+        if(!roomDetailsModal.classList.contains('display-none')){
+            roomDetailsModal.classList.add('display-none');
+        }
      });
     }
     // console.log("Clicked element ID:", numberPart);
@@ -1066,11 +1108,17 @@ function querySingleRoomDetails(roomId) {
 
                     singleRoomBookingPayment(paymentDetails)
 
-                    singleRoomBookingModalId.classList.add('show');
-                    roomDetailsModal.classList.remove('show');
+                    if( singleRoomBookingModalId.classList.contains('display-none')){
+                        singleRoomBookingModalId.classList.remove('display-none');
+                    }
+                    if(!roomDetailsModal.classList.contains('display-none')){
+                        roomDetailsModal.classList.add('display-none');
+                    }
                     if (singleRoomBookingModalCLose) {
                         singleRoomBookingModalCLose.addEventListener('click', function() {
-                            singleRoomBookingModalId.classList.remove('show');
+                            if( !singleRoomBookingModalId.classList.contains('display-none')){
+                                singleRoomBookingModalId.classList.add('display-none');
+                            }
                      });
                     }
                 }
@@ -1589,14 +1637,20 @@ function displayRoomsInSliderWithWrapper(room, wrapper) {
 // to show the add room addRoomModal
 if (addRoomBtn) {
     addRoomBtn.addEventListener('click', function() {
-      addRoomModal.classList.add('show');
+      if(addRoomModal.classList.contains('display-none'))
+      {
+         addRoomModal.classList.remove('display-none');
+      }
     });
-  }
+}
   
 // to cloase the add room addRoomModal
 if (closeAddRoomsModal) {
   closeAddRoomsModal.addEventListener('click', function() {
-    addRoomModal.classList.remove('show'); // add the show class to display the addRoomModal
+    if(!addRoomModal.classList.contains('display-none'))
+    {
+       addRoomModal.classList.add('display-none');
+    }
  });
 }
 

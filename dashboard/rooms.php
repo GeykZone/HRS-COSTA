@@ -14,6 +14,26 @@ include('controller/generalController.php')
     <title class="room-page-title"  >Available Rooms</title>
   </head>
   <body>
+    <!-- resources-->
+    <?php include('roomDeatailsModal.php') ?>
+    <!-- resources-->
+
+    <!-- resources-->
+    <?php include('singleRoomBookingModal.php') ?>
+    <!-- resources-->
+
+    <!-- resources-->
+    <?php include('multiRoomBookingModal.php') ?>
+    <!-- resources-->
+
+    <!-- resources-->
+    <?php include('openReservationNotificationModal.php') ?>
+    <!-- resources-->
+
+    <!-- resources-->
+    <?php include('addRoomModal.php') ?>
+    <!-- resources-->
+
     <div class="page-content">
       
       <!--place sidebar here-->
@@ -24,6 +44,8 @@ include('controller/generalController.php')
          <!--place header here-->
          <?php include('header.php'); ?>
         <!--place header here-->
+
+        <link rel="stylesheet" href="css/modal.css" />
         
         <div class="nav-tab">
           <div class="nav-list">
@@ -76,22 +98,6 @@ include('controller/generalController.php')
           </div>
 
           <div class="courses-boxes">
-
-            <!-- resources-->
-            <?php include('addRoomModal.php') ?>
-            <!-- resources-->
-
-            <!-- resources-->
-            <?php include('roomDeatailsModal.php') ?>
-            <!-- resources-->
-
-            <!-- resources-->
-            <?php include('singleRoomBookingModal.php') ?>
-            <!-- resources-->
-
-            <!-- resources-->
-            <?php include('openReservationNotificationModal.php') ?>
-            <!-- resources-->
 
             <!-- <div class="courses-box">
               <div class="card-image">

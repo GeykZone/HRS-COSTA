@@ -21,8 +21,8 @@
   transition: opacity 0.3s ease; /* transition effect */
 }
 
-#roomDetails {
-  width: 65em !important;
+#roomDetailsContent {
+  width: 70vw !important;
 }
 
 .details-modal.show {
@@ -244,6 +244,14 @@
   color: white;
 }
 
+.details-modal-back {
+  position: fixed;
+  height: 100%;
+  width: 100%;
+  background: #010F1AA2;
+  z-index: 999999;
+}
+
 .amenity-card {
   background-color: chocolate;
   border-radius: 15px;
@@ -259,6 +267,12 @@
 
 
 #addImagesEvidence {
+  background-color: grey !important;
+  gap: 10px;
+  width: 250px;
+}
+
+#addImagesEvidenceForMultiBooking {
   background-color: grey !important;
   gap: 10px;
   width: 250px;
@@ -372,7 +386,7 @@
   height: 5rex;
   border-radius: 0.5rem;
   padding: 5px 12px;
-  border: 1.9px solid black;
+  border: 1.0px solid #756d6d
 }
 
 #roomDescription {

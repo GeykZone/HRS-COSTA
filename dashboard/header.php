@@ -10,8 +10,9 @@
         .notification-drop {
         font-family: 'Ubuntu', sans-serif;
         color: #444;
-        
+        position: relative;
         }
+
         .notification-drop .item {
         padding: 10px;
         font-size: 18px;
@@ -24,6 +25,7 @@
         .notification-drop .item i {
         margin-left: 10px;
         }
+        /* .notification-drop styling */
         .notification-drop .item ul {
         display: none;
         position: absolute;
@@ -33,11 +35,13 @@
         right: 0;
         border-top: 1px solid #ddd;
         border-radius: 10px;
-        z-index: 1000 !important;
         width: 500px;
         overflow: hidden;
-
+        -webkit-box-shadow: -3px 5px 36px -22px rgba(0,0,0,0.81);
+        -moz-box-shadow: -3px 5px 36px -22px rgba(0,0,0,0.81);
+        box-shadow: -3px 5px 36px -22px rgba(0,0,0,0.81);
         }
+        
         .notification-drop .item ul li {
         font-size: 16px;
         padding: 15px 15px 15px 25px;
@@ -66,6 +70,10 @@
         .notification-bell{
         font-size: 20px;
         }
+        
+        .notification-bell:hover{
+        font-size: 18px !important;
+        }
 
         .btn__badge {
         background: #FF5D5D;
@@ -85,9 +93,10 @@
 
         .pulse-button:hover {
         -webkit-animation: none;
+        font-size: 11px;
         }
 
-        @-webkit-keyframes pulse {
+        /* @-webkit-keyframes pulse {
         0% {
             -moz-transform: scale(0.9);
             -ms-transform: scale(0.9);
@@ -108,7 +117,7 @@
             transform: scale(0.9);
             box-shadow: 0 0 0 0 rgba(255, 0, 0, 0);
         }
-        }
+        } */
 
         #empty-notif {
             color: #3F3F3FBB;
@@ -137,6 +146,6 @@
     </ul>
     </li>
     </ul>
-    <span class="clickable header_icon logout-button" style="width: 10px; margin-right: 15px;"><i class="fa-solid fa-power-off fa-lg"></i></span>
+    <span class="clickable header_icon logout-button" style="width: 10px; margin-right: 20px;"><i class="fa-solid fa-arrow-right-from-bracket"></i></span>
     </div>
 </div>

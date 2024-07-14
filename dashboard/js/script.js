@@ -16,6 +16,23 @@ let getSideBarStatus = false;
 let storage;
 let rateDeleteCount = 0;
 
+dynamicConfirmationMessage({
+  logo: 'fa-solid fa-arrow-right-from-bracket', 
+  message: 'Do you really want to logout?', 
+  title: 'Logout', 
+  logoColor: '#19C4B8', 
+  buttonLeftCustomClass: 'logout-proceed',
+  buttonRightCustomClass: 'cancel-logout',
+  buttonLeftCustomText: 'Logout',
+  buttonRightCustomText: 'Cancel',
+  buttonLeftCustomColor: '#19C4B8',
+  buttonRightCustomColor: '#C41919',
+  mainClass: 'logout-confirmation',
+  displayBox: false,
+  messageBoxCustomClass: 'logout-message-box',
+  messageBoxPlaceHolder: 'Rejection Reason'
+})
+
 // intialize sweet alert
 var toastMixin = Swal.mixin({
   toast: true,
@@ -359,7 +376,7 @@ function dynamicConfirmationMessage(modalValue) {
        height: 100%;
        width: 100%;
        background: #010F1AA2;
-       z-index: 999999;
+       z-index: 9999999999;
      }
      .${mainClass} button {
        font-size: 15px;
@@ -500,6 +517,13 @@ toLandingPage.forEach(function(element) {
 
 // logout session
 if (logoutButton) { logoutButton.onclick = () => {
+    document.querySelector('.logout-confirmation').classList.remove('modal-hide');      
+  };
+}
+document.querySelector('.cancel-logout').addEventListener('click', function(){
+  document.querySelector('.logout-confirmation').classList.add('modal-hide');
+})
+document.querySelector('.logout-proceed').addEventListener('click', function(){
     const url = "../login/controller/loginSignUpController.php";
     const data = {
         logout: true
@@ -508,7 +532,7 @@ if (logoutButton) { logoutButton.onclick = () => {
     .then((response) => {
         var jsonResponse = JSON.parse(response);
         if(jsonResponse.logout) {
-           window.location.reload(true);
+          window.location.reload(true);
         }
         else {
             alertMessage('Something went wrong, unknown error.', 'error', 3000);
@@ -519,9 +543,7 @@ if (logoutButton) { logoutButton.onclick = () => {
         alertMessage('Something went wrong, Error: ' + error, 'error', 3000);
         console.log("Error:", error);
     });
-      
-  };
-}
+})
 
 // others default 
 getBarItem.onclick = () => {

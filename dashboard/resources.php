@@ -26,5 +26,6 @@
 <link rel="stylesheet" href="css/swiper-bundle.min.css" />
 <link rel="stylesheet" href="css/slider.css" />
 <link rel="stylesheet" href="css/customSwitch.css" />
+<link rel="stylesheet" href="css/modal.css" />
 
 

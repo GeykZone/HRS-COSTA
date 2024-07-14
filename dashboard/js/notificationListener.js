@@ -125,7 +125,9 @@ $(document).ready(function() {
     }
 
     function openReservationNotification(notificationId) {
-        openReservationNotificationModal.classList.add('show');
+        if(openReservationNotificationModal.classList.contains('display-none')){
+            openReservationNotificationModal.classList.remove('display-none');
+        }
 
         const url = "controller/roomsController.php";
         const data = {
@@ -212,17 +214,17 @@ $(document).ready(function() {
     function closeAllOpenedModal(){
         document.querySelector('.checkin-approval-confirmation').classList.add('modal-hide');
         document.querySelector('.checkin-rejection-confirmation').classList.add('modal-hide');
-        if (addRoomModal && addRoomModal.classList.contains('show')) {
-            addRoomModal.classList.remove('show');
+        if (addRoomModal && !addRoomModal.classList.contains('display-none')) {
+            addRoomModal.classList.add('display-none');
         }
-        if (roomDetailsModal && roomDetailsModal.classList.contains('show')) {
-            roomDetailsModal.classList.remove('show');
+        if (roomDetailsModal && !roomDetailsModal.classList.contains('display-none')) {
+            roomDetailsModal.classList.add('display-none');
         }
-        if (openReservationNotificationModal && openReservationNotificationModal.classList.contains('show')) {
-            openReservationNotificationModal.classList.remove('show');
+        if (openReservationNotificationModal && !openReservationNotificationModal.classList.contains('display-none')) {
+            openReservationNotificationModal.classList.add('display-none');
         }
-        if (closeReservationNotification && closeReservationNotification.classList.contains('show')) {
-            closeReservationNotification.classList.remove('show');
+        if (closeReservationNotification && !closeReservationNotification.classList.contains('display-none')) {
+            closeReservationNotification.classList.add('display-none');
         }
     }
 
@@ -351,7 +353,11 @@ $(document).ready(function() {
     }
 
     closeReservationNotification.addEventListener('click', function() {
-        openReservationNotificationModal.classList.remove('show');
+        if( !openReservationNotificationModal.classList.contains('display-none'))
+        {
+            !openReservationNotificationModal.classList.add('display-none')
+        }
+       
     })
 
     $(".notification-drop .item").on('click',function() {

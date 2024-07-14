@@ -1,5 +1,5 @@
-<link rel="stylesheet" href="css/modal.css" />
-<div class="details-modal" id="openReservationNotificationModal">
+<div class="details-modal-back display-none" id="openReservationNotificationModal">
+<div class="details-modal show" >
       <div class="details-modal-title" id="details-modal-titleId">
         <div class="modalNaveHead">
           <h1 id="reservationStatus">Loading...</h1>
@@ -100,4 +100,5 @@
         <span class="clickable costa-btn-c admin" id="approveReservation" style="width: 10rem;">Approve</span>
         <span class="clickable costa-btn-a customer" id="markAsRead" style="width: 10rem;">Confirm</span>
       </div>
+</div>
 </div>

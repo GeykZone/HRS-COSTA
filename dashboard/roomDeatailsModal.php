@@ -1,5 +1,5 @@
-<link rel="stylesheet" href="css/modal.css" />
-<div class="details-modal" id="roomDetails">
+<div class="details-modal-back display-none" id="roomDetails">
+<div class="details-modal show" id="roomDetailsContent">
       <div class="details-modal-title" id="details-modal-titleId">
         <div class="modalNaveHead">
           <h1 id="roomName"></h1>
@@ -52,4 +52,5 @@
         <span class="clickable costa-btn-a customer" id="bookThisRoom">Book Now</span>
         <span class="clickable costa-btn-a admin" id="submitChanges" style="width: 10rem;">Edit Details</span>
       </div>
+</div>
 </div>
