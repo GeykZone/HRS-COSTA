@@ -13,11 +13,48 @@
       <div class="details-modal-content">
       <div class="room-form-container">
 
-        <div class="discription-header">
+
+        <div class="multiBookOpenReciept" style="margin-bottom: -10px;">
+            <h3> <i class="fa-solid fa-receipt"></i> Multi Booked Room List: </h3>
+        </div>
+
+        <div class="multiBookOpenReciept-container multiBookOpenReciept display-none">
+            <!-- <div class="multiBookOpenReciept-child">
+                 <div><span>Selected Room: </span><span>sample</span></div>
+                 <div><span>Selected Room: </span><span>sample</span></div>
+                 <div><span>Selected Room: </span><span>sample</span></div>
+            </div>
+
+            <div class="multiBookOpenReciept-child">
+                 <div><span>Selected Room: </span><span>sample</span></div>
+                 <div><span>Selected Room: </span><span>sample</span></div>
+                 <div><span>Selected Room: </span><span>sample</span></div>
+            </div>
+
+            <div class="multiBookOpenReciept-child">
+                 <div><span>Selected Room: </span><span>sample</span></div>
+                 <div><span>Selected Room: </span><span>sample</span></div>
+                 <div><span>Selected Room: </span><span>sample</span></div>
+            </div>
+
+            <div class="multiBookOpenReciept-child">
+                 <div><span>Selected Room: </span><span>sample</span></div>
+                 <div><span>Selected Room: </span><span>sample</span></div>
+                 <div><span>Selected Room: </span><span>sample</span></div>
+            </div>
+
+            <div class="multiBookOpenReciept-child">
+                 <div><span>Selected Room: </span><span>sample</span></div>
+                 <div><span>Selected Room: </span><span>sample</span></div>
+                 <div><span>Selected Room: </span><span>sample</span></div>
+            </div> -->
+        </div>
+
+        <div class="discription-header singleBooking">
                 <h3> <i class="fa-solid fa-hotel"></i> Room Name : <span id="reservedRoomName">Loading...</span> </h3>
         </div>
 
-        <div class="discription-header">
+        <div class="discription-header singleBooking">
             <h3> <i class="fa-solid fa-users"></i> Room Capacity : <span id="reservedRoomCapacity">Loading...</span> </h3>
         </div>
         

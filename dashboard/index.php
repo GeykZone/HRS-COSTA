@@ -22,6 +22,9 @@ if( $response['role'] === 'customer') {
     <div class="loader">
       <h1>Loading<span>....</span></h1>
     </div>
+    <!-- resources-->
+    <?php include('openReservationNotificationModal.php') ?>
+    <!-- resources-->
     <div class="page-content index-page">
       <!--place sidebar here-->
       <?php include('sidebar.php');?>
@@ -34,9 +37,6 @@ if( $response['role'] === 'customer') {
 
         <div class="main-view">
           <div class="main-content">
-          <!-- resources-->
-          <?php include('openReservationNotificationModal.php') ?>
-          <!-- resources-->
         
         <div class="head-card-box">   
         <div class="flash-card">

@@ -61,6 +61,7 @@ if (isset($inputData['saveRoomDetails'])) {
     echo json_encode($response);
 }
 
+// send reservation request for single booking
 if (isset($inputData['sendReservationRequest'])) {
     $singleBookingimageLink = $inputData['singleBookingimageLink'];
     $quantity = $inputData['quantity'];
@@ -102,7 +103,7 @@ if (isset($inputData['sendReservationRequest'])) {
         roomQuery($stmt);
 
         if(isset($response['notfound']) && $response['notfound'] === true) {
-            $response['error'] = 'The quantity you selected is greater than the actual.';
+            $response['error'] = 'The entered room quantity exceeds the available amount, or the quantity has changed. Please refresh the page and try again. Thank you.';
         }
         else {
             if(@getPaymentMethod($paymentMethod)) {
@@ -129,6 +130,102 @@ if (isset($inputData['sendReservationRequest'])) {
     }
 
     echo json_encode($response);
+}
+
+// send reservation request for multi booking
+if (isset($inputData['sendReservationRequestMultiBooking'])) {
+
+    $roomList = $inputData['roomList'];
+    $multiBookPaidAmount = $inputData['paidAmount'];
+    $multiBookTotalAmount = $inputData['totalAmount'];
+    $userId = $inputData['userId'];
+    $queueDateTime =  $inputData['queueDateTime'];
+    $paymentMethod =  $inputData['paymentMethod'];
+    $checkInDate = $inputData['checkInDate'];
+    $checkOutDate = $inputData['checkOutDate'];
+    $customerfullName = $inputData['customerfullName'];
+    $customerCompleteAddress = $inputData['customerCompleteAddress'];
+    $customerContactInfo = $inputData['customerContactInfo'];
+    $multiBookingimageLink = $inputData['multiBookingimageLink'];
+    $isBookingValid = true;
+
+    foreach ($roomList as $room) {
+        $roomId =  $room['id'] ;
+        $quantity = $room['quantity'];
+
+        $selectRoomsSql = " SELECT r.Id AS Id, r.quantity AS quantity,
+        IFNULL(totalCheckIn.totalCheckInQuantity, 0) AS totalCheckInQuantity
+        FROM `rooms` AS r
+        LEFT JOIN (
+            SELECT 
+                roomId, 
+                SUM(checkInQuantity) AS totalCheckInQuantity 
+            FROM 
+                check_ins 
+            WHERE 
+                status IN ('Pending', 'Approved')
+                AND (
+                    DATE(checkInDate) <= ? AND DATE(checkOutDate) >= ? -- Overlapping with start date
+                    OR DATE(checkInDate) <= ? AND DATE(checkOutDate) >= ? -- Overlapping with end date
+                    OR DATE(checkInDate) >= ? AND DATE(checkOutDate) <= ? -- Completely within the date range
+                )
+            GROUP BY roomId
+        ) AS totalCheckIn 
+        ON r.Id = totalCheckIn.roomId
+        WHERE Id= ? AND (r.quantity - IFNULL(totalCheckIn.totalCheckInQuantity, 0))>=? ";
+
+        if ($stmt = $conn->prepare($selectRoomsSql)) {
+            $stmt->bind_param('ssssssii', $checkOutDate, $checkInDate, $checkOutDate, $checkInDate, $checkInDate, $checkOutDate, $roomId, $quantity);
+            roomQuery($stmt);
+
+            if(isset($response['notfound']) && $response['notfound'] === true) {
+                $response['error'] = 'The room quantity has changed. Please refresh the page and try again. Thank you.';
+                $isBookingValid = false;
+                break;
+            }
+
+        } else {
+            $response['error'] = 'Failed to prepare the SQL statement.';
+        }
+
+    }
+
+    if($isBookingValid){
+        $multiBookInsertQuery = "INSERT INTO `multibook`(`paidAmount`, `totalAmount`) VALUES ('$multiBookPaidAmount','$multiBookTotalAmount')";
+        $multiBookInsertion = dynamicInsert($multiBookInsertQuery, 1);
+        
+        if($multiBookInsertion) {
+            $multiBookId = $multiBookInsertion;
+            foreach ($roomList as $room) {
+                $roomId =  $room['id'] ;
+                $quantity = $room['quantity'];
+                $totalAmount = $room['totalPayable'];
+                $paidAmount =  $room['totalPayable'];
+
+                if(@getPaymentMethod($paymentMethod)) {
+
+                    $pmId = @getPaymentMethod($paymentMethod);
+                    $MultiReservationInsertSQL = "INSERT INTO `check_ins`(`roomId`, `checkInDate`, `checkOutDate`, `paidAmount`, `userId`, `queueDateTime`, `status`, `checkInQuantity`, `paymentMethodId`, `totalAmount`, `customerfullName`, `customerCompleteAddress`, `customerContactInfo`, `multiBookId` ) 
+                    VALUES ('$roomId','$checkInDate','$checkOutDate','$paidAmount','$userId','$queueDateTime','Pending','$quantity','$pmId','$totalAmount','$customerfullName','$customerCompleteAddress','$customerContactInfo', '$multiBookId')";
+                    $multiReservation = dynamicInsert($MultiReservationInsertSQL, 1);
+        
+                    if($multiReservation) {
+        
+                        if($multiBookingimageLink) {
+                            $saveEvidence = @insertPaymentEvidence($multiReservation, $multiBookingimageLink);
+                        }
+        
+                        $response['reserve'] = 'success';
+                       
+                    }
+                }
+            }
+        }
+
+    }
+
+    echo json_encode($response);
+    
 }
 
 function getPaymentMethod($paymentMethodName) {
@@ -380,6 +477,95 @@ if (isset($inputData['openReservationNotification'])) {
     }
 
     echo json_encode($response);
+}
+
+if (isset($inputData['openMultiReservationNotification'])) {
+    $notificationId = $inputData['notificationId'];
+
+    $selectCheckInsSql = "
+        SELECT
+        ck.Id AS checkInId,
+        ck.checkInDate AS checkInDate,
+        ck.checkOutDate AS checkOutDate,
+        ck.paidAmount AS paidAmount,
+        ck.queueDateTime AS queueDateTime,
+        ck.status AS reservationStatus,
+        ck.checkInQuantity AS reservationQuantity,
+        ck.totalAmount AS reservationTotalPayable,
+        ck.customerfullName AS customerfullName,
+        ck.customerCompleteAddress AS customerCompleteAddress,
+        ck.customerContactInfo AS customerContactInfo,
+        ck.message AS reservationMessage,
+        r.name AS roomName,
+        r.maximum AS roomMaxCap,
+        pm.paymentMethodName AS paymentMethodName
+        FROM
+            check_ins AS ck
+        LEFT JOIN
+            rooms AS r
+            ON r.Id = ck.roomId
+        LEFT JOIN
+            payment_methods AS pm
+            ON pm.Id = ck.paymentMethodId
+        WHERE ck.multiBookId = ?
+    ";
+    
+    $newRows = [];
+    
+    if ($stmt = $conn->prepare($selectCheckInsSql)) {
+        $stmt->bind_param('i', $notificationId);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        if ($result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                $newRows[] = $row;
+            }
+        } else {
+            $response['error'] = 'No records found.';
+        }
+    } else {
+        $response['error'] = 'Failed to prepare the SQL statement.';
+    }
+
+    foreach ($newRows as &$row) {
+        $checkInId = $row['checkInId'];
+    
+        $selectImageLinksSql = "
+            SELECT
+                CONCAT(
+                    '[',
+                    GROUP_CONCAT(
+                        DISTINCT CONCAT(
+                            '{\"Id\":\"', pe.Id, '\",\"Link\":\"', pe.Link, '\"}'
+                        ) ORDER BY pe.Link DESC
+                    ),
+                    ']'
+                ) AS imageLinks
+            FROM
+                payment_evidence AS pe
+            WHERE pe.checkInId = ?
+        ";
+    
+        if ($stmt = $conn->prepare($selectImageLinksSql)) {
+            $stmt->bind_param('i', $checkInId);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            if ($result->num_rows > 0) {
+                $imageRow = $result->fetch_assoc();
+                $row['imageLinks'] = $imageRow['imageLinks'];
+            } else {
+                $row['imageLinks'] = '[]';
+            }
+        } else {
+            $response['error'] = 'Failed to prepare the SQL statement for imageLinks.';
+        }
+    }
+    unset($row);
+    
+    // Return the results as a JSON response
+    echo json_encode(['newRows' => $newRows, 'rowCount' => count($newRows)]);
+    exit();    
+    
 }
 
 // query payment methods

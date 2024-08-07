@@ -334,11 +334,11 @@
   gap: 5px;
 }
 
-.paymentMethodMsg-container {
+.pm-msg-container {
   color: #7E7E7E;
 }
 
-.paymentMethodContainerDetails-container {
+.pm-container {
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -350,7 +350,7 @@
   border-radius: 10px;
 }
 
-#qrImg-container img{
+.pm-qr img{
   height: 200px;
   width: 200px;
 }
@@ -376,6 +376,12 @@
 }
 
 #imagePreviewContainerSingleEvidence {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+#imagePreviewContainermultiEvidence {
   display: flex;
   flex-wrap: wrap;
   gap: 5px;
@@ -425,4 +431,97 @@ details summary:focus {
 
 details summary::-webkit-details-marker {
   display: none;
+}
+
+.reciept-container-calculation {
+  display: flex;
+  flex-direction: column;
+  background-color: #F2F5F4;
+  border-radius: 15px;
+  padding: 20px 20px;
+  min-height: 300px;
+  max-height: 500px; /* Set this to the desired height */
+  overflow-y: auto; /* Enable vertical scrolling */
+  gap: 10px;
+  width: 420px;
+  /* align-items: center; */
+}
+
+.reciept-container-calculation::-webkit-scrollbar-track {
+  border-radius: 10px;
+}
+
+.reciept-container-calculation::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  border: 3px solid #e2e2e2;
+}
+
+.multiBookOpenReciept-container {
+  display: flex;
+  flex-direction: column;
+  background-color: #F2F5F4;
+  border-radius: 15px;
+  padding: 20px 20px;
+  min-height: 200px;
+  max-height: 300px; /* Set this to the desired height */
+  overflow-y: auto; /* Enable vertical scrolling */
+  gap: 20px;
+  width: 100%;
+  /* align-items: center; */
+}
+
+.multiBookOpenReciept-container::-webkit-scrollbar-track {
+  border-radius: 10px;
+}
+
+.multiBookOpenReciept-container::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  border: 3px solid #e2e2e2;
+}
+
+.multiBookOpenReciept-child {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.multiBookOpenReciept-child div {
+  border-radius: 10px;
+  background-color: #e0e0e0;
+  color: #5A5A5A;
+  padding: 10px;
+}
+
+
+.calculation-info-container {
+  display: flex;
+  flex-direction: column;
+  background-color: #F2F5F4;
+  border-radius: 15px;
+  padding: 20px 20px;
+  min-height: 100px;
+  max-height: 300px; /* Set this to the desired height */
+  overflow-y: auto; /* Enable vertical scrolling */
+  gap: 10px;
+  /* align-items: center; */
+}
+
+.calculation-info-container::-webkit-scrollbar-track {
+  border-radius: 10px;
+}
+
+.calculation-info-container::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  border: 3px solid #e2e2e2;
+}
+
+.calculation-info-peer-room {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.calculation-info-peer-room div {
+  color: #adacac;
+  font-size: 18px;
+  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
 }

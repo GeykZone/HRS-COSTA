@@ -1,10 +1,13 @@
 let fileInput = document.getElementById('fileInput');
 let fileInputSingleBookEvidence = document.getElementById('fileInputSingleBookEvidence');
+let fileInputmultiBookEvidence = document.getElementById('fileInputmultiBookEvidence');
 let addImages = document.getElementById('addImages');
 let addImagesEvidence = document.getElementById('addImagesEvidence');
+let addImagesEvidenceMultbooking = document.getElementById('addImagesEvidenceForMultiBooking');
 let addRoomBtnDone = document.getElementById('addRoomBtnDone');
 let imagePreviewContainer = document.getElementById('imagePreviewContainer');
 let imagePreviewContainerSingleEvidence = document.getElementById('imagePreviewContainerSingleEvidence')
+let imagePreviewContainermultiEvidence = document.getElementById('imagePreviewContainermultiEvidence')
 let newRate = document.getElementById('newRate');
 let maximumCapacity = document.getElementById('maximumCapacity');
 let publishedRate = document.getElementById('publishedRate');
@@ -21,6 +24,7 @@ let multiRoomBookingModalCLose = document.getElementById('multiRoomBookingModalC
 let singleRoomBookingModalId = document.getElementById('singleRoomBookingModalId');
 let imagePreviewContainerError = document.getElementById('imagePreviewContainer-error');
 let imagePreviewContainerSingleEvidenceError = document.getElementById('imagePreviewContainerSingleEvidence-error')
+let imagePreviewContainermultiEvidenceError = document.getElementById('imagePreviewContainermultiEvidence-error')
 let checkInDateInput = document.getElementById('check-in-date');
 let checkOutDateInput = document.getElementById('check-out-date');
 let searchAvailableRooms = document.getElementById('searchAvailableRooms');
@@ -32,28 +36,38 @@ let imagePreviewContainerDelete = document.getElementById('imagePreviewContainer
 let cardWrapper = document.querySelector('.card-wrapper');
 let selectedPrice = document.getElementById('selectedPrice');
 let singleRoomBookingModalBtnDone = document.getElementById('singleRoomBookingModalBtnDone');
+let multiRoomBookingModalBtnDone = document.getElementById('multiRoomBookingModalBtnDone');
 let singleRoomPaymentPicklist = document.getElementById('single-room-payment-picklist');
+let multiRoomPaymentPicklist = document.getElementById('multi-room-payment-picklist');
 let sRoomQuantity = document.getElementById('sRoomQuantity');
 let sFullName = document.getElementById('sFullName');
+let ForMultiBookingFullName = document.getElementById('ForMultiBookingFullName');
 let sCompleteAddress = document.getElementById('sCompleteAddress');
+let ForMultiBookingCompleteAddress = document.getElementById('ForMultiBookingCompleteAddress');
 let sAmountToPay = document.getElementById('sAmountToPay');
+let ForMultiBookingAmountToPay = document.getElementById('ForMultiBookingAmountToPay');
 let sContactInfo = document.getElementById('sContactInfo');
+let ForMultiBookingContactInfo = document.getElementById('ForMultiBookingContactInfo');
 let submitChanges = document.getElementById('submitChanges');
 let multiBookingPaymentModal = document.getElementById('multiBookingPaymentModal');
 let checkInDateParam = null;
 let checkOutDateParam = null;
 let imgCount = 0;
 let imgCountSingleBookEvidence = 0;
+let imgCountMultiBookEvidence = 0;
 let selectedFiles = [];
 let selectedFilesSingleBook = [];
+let selectedFilesMultiBook = [];
 let otherRateObject = [];
 let amenityObject = [];
 let imageLink = [];
 let singleBookingimageLink = [];
+let multiBookingimageLink = [];
 let otherRateCount = 0;
 let amenityCount = 0
 let swiper;
 let singleBookingPaymentMethod = null;
+let multibookingPaymentMethod = null;
 let singleBookingRoomId;
 let multibookingELement;
 let checkedRoomItems = [];
@@ -151,6 +165,14 @@ if(addImagesEvidence) {
     addImagesEvidence.addEventListener('click', function() {
         fileInputSingleBookEvidence.value = "";
         fileInputSingleBookEvidence.click();
+   });
+}
+
+// add image evidence button for multi booking
+if(addImagesEvidenceMultbooking) {
+    addImagesEvidenceMultbooking.addEventListener('click', function() {
+        fileInputmultiBookEvidence.value = "";
+        fileInputmultiBookEvidence.click();
    });
 }
 
@@ -267,7 +289,7 @@ function displayRooms(room) {
             </div>
             <div class="courses-card-body">
                 <div class="roomCardHeader-Container">
-                    <h4>${room.roomName}</h4>
+                    <h4 id="cardRoomName-${room.roomId}">${room.roomName}</h4>
                     <span class="roomQuantityInShowAllRooms"><h6 id="roomQuantityInShowAllRooms-${room.roomId}">${totalAvailableRooms} Available</h6></span>
                 </div>
                 <p>${room.roomDescription}</p>
@@ -502,6 +524,60 @@ fileInputSingleBookEvidence.addEventListener('change', function() {
     imgCountSingleBookEvidence ++;
 })
 
+// file input multi book evidence event listener
+fileInputmultiBookEvidence.addEventListener('change', function() {
+    let files = this.files;
+    const previewContainer = document.getElementById('imagePreviewContainermultiEvidence');
+
+    for (let i = 0; i < files.length; i++) {
+
+        const file = files[i];
+
+        // Check if the file is an image
+        imagePreviewContainermultiEvidenceError.classList.add('display-none')
+        if (!file.type.startsWith('image/')) {
+            imagePreviewContainermultiEvidenceError.classList.remove('display-none')
+            displayError(imagePreviewContainermultiEvidence, "Selected file is not an image. Please select an image file.");
+            continue; // Skip non-image files
+        }
+        
+        let reader = new FileReader();
+
+        reader.onload = function() {
+            const imageContainer = document.createElement('div');
+            imageContainer.classList.add('imageContainer');
+            imageContainer.id = 'imageContainer-'+ imgCountMultiBookEvidence;
+            if(files.length > 1)
+            {
+            imageContainer.id = 'imageContainer-'+ i;
+            }
+
+            const image = new Image();
+            image.src = reader.result;
+            image.classList.add('previewImage');
+
+            const deleteButton = document.createElement('span');
+            deleteButton.classList.add('deleteButton','fa-regular', 'fa-circle-xmark');
+            imageContainer.appendChild(image);
+            imageContainer.appendChild(deleteButton);
+
+            previewContainer.appendChild(imageContainer);
+
+            
+            selectedFilesMultiBook.push({
+            id:imageContainer.id,
+            file:file
+            });
+            // console.log(selectedFiles);
+        }
+
+        reader.readAsDataURL(file);
+        displayError(imagePreviewContainermultiEvidence, "");
+    }
+
+    imgCountMultiBookEvidence ++;
+})
+
 // event for searching available rooms
 searchAvailableRooms.addEventListener('click', function() {
     if(searchAvailableRoomsValidator('fromSearch')) {
@@ -524,8 +600,9 @@ bookNOwBtn.addEventListener('click', function() {
     }
 })
 
+// multi booking validation
 function multiBookingValidation() {
-    let openMultiBookingModal = false;
+    let openMultiBookingModal = true;
     const otherBookingOptionsContainers = document.querySelectorAll('.other-booking-options-container');
     otherBookingOptionsContainers.forEach(otherBookingOptionContainer => {
         const inputFieldQuntity = otherBookingOptionContainer.querySelector('.input-room-quantity-multi');
@@ -547,34 +624,39 @@ function multiBookingValidation() {
             inputFieldQuantityLabel.textContent = 'The quantity you selected is greater than the actual.';
             openMultiBookingModal = false;
         }
+        else if(inputFieldQuntity.value.length > 0 && roomSelectToggler.checked && (parseInt(inputFieldQuntity.value) < 1)){
+            inputFieldQuntity.classList.add("error");
+            inputFieldQuantityLabel.textContent = 'The quantity you selected is invalid.';
+            openMultiBookingModal = false;
+        }
         else{
-            if(inputFieldQuntity.value > 0 && roomSelectToggler.checked){
+            if(inputFieldQuntity.value.length > 0 && roomSelectToggler.checked){
                 inputFieldQuntity.classList.remove("error");
                 inputFieldQuantityLabel.textContent = '';
+                const getRoomName = document.getElementById(`cardRoomName-${roomId}`).textContent;
 
                 // Get the Selectize instance
                 let selectizeInstance = $(`#select-${roomId}`)[0].selectize;
                 // Get the value of the Selectize instance
                 let selectedValue = convertCurrencyStringToNumber(selectizeInstance.getValue());
-                let totalPayable = selectedValue * parseInt(inputFieldQuntity.value);
+                let totalPayable =  selectedValue * parseInt(inputFieldQuntity.value);
 
                 let updatedValue = { id: parseInt(roomId), 
                                      quantity: parseInt(inputFieldQuntity.value), 
                                      selectedAmount:selectedValue, 
-                                     totalPayable:totalPayable };
+                                     totalPayable: parseFloat(totalPayable),
+                                     roomName: getRoomName };
                 checkedRoomItems = updateArray(checkedRoomItems, parseInt(roomId), updatedValue, false);
-                openMultiBookingModal = true;
             }
         }
         
     })
 
     if(openMultiBookingModal) {
-        console.log('update: ', JSON.parse(JSON.stringify(checkedRoomItems)));
-
         //open modal
         if(multiBookingPaymentModal.classList.contains('display-none')){
             multiBookingPaymentModal.classList.remove('display-none');
+            proceedToBookMultiBooking();
         }
         if (multiRoomBookingModalCLose) {
             multiRoomBookingModalCLose.addEventListener('click', function() {
@@ -584,6 +666,139 @@ function multiBookingValidation() {
             });
         }
     }
+}
+
+// proceed to book for multi booking
+function proceedToBookMultiBooking(){
+    // console.log('update: ', JSON.parse(JSON.stringify(checkedRoomItems)));
+    // Select the container where the new elements will be inserted
+    const calculationInfoContainer = document.querySelector('.calculation-info-container');
+    const findCalculationInfoPeerRoom = calculationInfoContainer.querySelectorAll('.calculation-info-peer-room');
+
+    if(findCalculationInfoPeerRoom){
+        findCalculationInfoPeerRoom.forEach((roomItem, index ) => {
+            calculationInfoContainer.removeChild(roomItem);
+        })
+    }
+
+    checkedRoomItems.forEach((roomItem, index ) => {
+        // Create the main div element
+        const calculationInfoPeerRoom = document.createElement('div');
+        calculationInfoPeerRoom.classList.add('calculation-info-peer-room');
+        calculationInfoPeerRoom.id = `calculation-${roomItem.id}`;
+
+        // Define the content to be inserted
+        const content = `
+            <div><span>Room Name: </span><span>${roomItem.roomName}</span></div>
+            <div><span>Booked Quantity: </span><span>${roomItem.quantity}</span></div>
+            <div><span>Room Price: </span><span>${dynamicCurrencyforTxtValue(roomItem.selectedAmount)}</span></div>
+            <div><span>Total Payable: </span><span>${dynamicCurrencyforTxtValue(roomItem.totalPayable)}</span></div>
+        `;
+
+        // Set the innerHTML of the main div element
+        calculationInfoPeerRoom.innerHTML = content;
+
+        // Append the created element to the container
+        calculationInfoContainer.appendChild(calculationInfoPeerRoom);
+    })
+
+    // console.log(checkedRoomItems)
+    const total = checkedRoomItems.reduce((acc, item) => acc + item.totalPayable, 0);
+    // console.log(total);
+    
+    document.getElementById('ForMultiBookingTotalPay').textContent = dynamicCurrencyforTxtValue(total);
+    paymentMethodsOptions().then(val => {
+        let paymentMethods = val;
+
+        // Destroy existing Selectize instance if it exists
+        if ($('#multi-room-payment-picklist')[0].selectize) {
+            $('#multi-room-payment-picklist')[0].selectize.destroy();
+        }
+
+        let selectize = $('#multi-room-payment-picklist').selectize({
+            options: [],
+            optgroups: [
+                { value: 'Payment Methods', label: 'Payment Methods' }
+            ],
+            optgroupField: 'optgroup',
+            labelField: 'text',
+            valueField: 'value',
+            searchField: ['text'],
+            render: {
+                optgroup_header: function (data, escape) {
+                    return '<div class="optgroup-header">' + escape(data.label) + '</div>';
+                }
+            }
+        });
+        let selectizeInstance = selectize[0].selectize;
+
+        // Create the new options array
+        let options = [];
+
+        paymentMethods.forEach(function(method){
+            options.push({
+                value: method.paymentMethodName,
+                text: method.paymentMethodName
+            });
+        })
+
+        // console.log(paymentMethods.paymentMethodName)
+
+        // Add new options to the Selectize instance
+        selectizeInstance.addOption(options);
+
+        // Refresh the options in the dropdown
+        selectizeInstance.refreshOptions(false);
+
+        // Set the default selected value to 'none'
+        selectizeInstance.setValue('none');
+
+        let paymentMethodMsgContainer = document.querySelector('.paymentMethodMsgForMultiBooking-container');
+        let roomFormButtonContainer = document.getElementById('addImagesEvidenceForMultiBooking-container');
+        let paymentMethodContainerDetailsContainer = document.querySelector('.paymentMethodContainerDetailsForMultiBooking');
+
+        paymentMethodContainerDetailsContainer.classList.add('display-none')
+        paymentMethodMsgContainer.classList.add('display-none')
+        roomFormButtonContainer.classList.remove('display-none');
+
+        multibookingPaymentMethod =null;
+
+        selectizeInstance.on('change', function(value) {
+            multibookingPaymentMethod = value;
+            
+            let paymenthMethodHeaderName = document.getElementById('paymenthMethodHeaderNameForMultiBooking');
+            paymenthMethodHeaderName.innerText = multibookingPaymentMethod;
+            let paymentNumber = document.getElementById('paymentNumber-for-multibooking');
+            let paymentMethodMsg = document.getElementById('paymentMethodMsgForMultiBooking');
+            let qrImageId = document.getElementById('qrImageId-for-multibooking');
+
+
+            paymentMethodContainerDetailsContainer.classList.add('display-none')
+            paymentMethodMsgContainer.classList.add('display-none')
+            roomFormButtonContainer.classList.remove('display-none');
+            if(multibookingPaymentMethod) {
+                paymentMethodContainerDetailsContainer.classList.remove('display-none')
+                paymentMethodMsgContainer.classList.remove('display-none')
+
+                paymentMethods.forEach(function(method, indexNumber){
+                    if(multibookingPaymentMethod === method.paymentMethodName){
+                        paymentNumber.innerText = method.paymentMethodPaymentNumber;
+                        qrImageId.src = method.paymentMethodOrLink;
+                    }
+                })
+
+                paymentMethodMsg.innerText = `You have selected ${multibookingPaymentMethod} as your payment method. Please be aware that we will review the image evidence you provide before confirming your reservation.`;
+                
+                if(multibookingPaymentMethod === 'Manual'){
+                    imagePreviewContainermultiEvidenceError.classList.add('display-none')
+                    displayError(imagePreviewContainermultiEvidence, "");
+                    paymentMethodContainerDetailsContainer.classList.add('display-none')
+                    roomFormButtonContainer.classList.add('display-none');
+                    paymentMethodMsg.innerText = 'You have chosen the manual payment method. Please note that we will hold your reservation for 2 hours while we wait for you to come and complete the payment.'
+                }
+            }
+        });
+    })
 }
 
 //update the value of selected room in multi select booking
@@ -632,23 +847,46 @@ singleRoomBookingModalBtnDone.addEventListener('click', function() {
         if(singleBookingPaymentMethod != 'Manual'){
             uploadImageToFirebase(selectedFilesSingleBook, singleBookingimageLink).then(() => {
              if (singleBookingimageLink.length > 0) {
-                sendReservationRequest();
+                sendReservationRequestSingleBooking();
              }
          }).catch(error => {
              alertMessage('Error uploading images, Error: ' + error, 'error', 5000);
              console.error('Error uploading images:', error);
          });}
          else {
-            sendReservationRequest();
+            sendReservationRequestSingleBooking();
          }
     }
 });
 
+//multi booking room event
+multiRoomBookingModalBtnDone.addEventListener('click', function() {
+    if(multiBookingPaymentFormValidation()){
+        // console.log('book')
+        // Call the function to upload images
+        if(multibookingPaymentMethod != 'Manual'){
+            console.log(multibookingPaymentMethod)
+            uploadImageToFirebase(selectedFilesMultiBook, multiBookingimageLink).then(() => {
+                if (multiBookingimageLink.length > 0) {
+                    console.log('image link for multi booking = ' +JSON.stringify(multiBookingimageLink));
+                    sendReservationRequestMultiBooking();
+                }
+            }).catch(error => {
+                alertMessage('Error uploading images, Error: ' + error, 'error', 5000);
+                console.error('Error uploading images:', error);
+            });
+        }
+        else {
+            sendReservationRequestMultiBooking();
+        }
+    }
+});
+
 // send booking request for single room booking
-function sendReservationRequest() {
+function sendReservationRequestSingleBooking() {
     // alertMessage('Booking sent successfully. Please wait for approval.', 'success', 3000);
     const twoHoursFromNow = getTwoHoursFromNow();
-    let sTotalPay =  document.getElementById('sTotalPay')
+    let sTotalPay =  document.getElementById('sTotalPay');
     let selectedSingleRoomName = document.getElementById('selectedSingleRoomName');
 
     const url = "controller/roomsController.php";
@@ -673,11 +911,13 @@ function sendReservationRequest() {
     .then((response) => {
         let msg;
         let endMsg;
+        let showIfManual = '';
 
         endMsg = `We will notify you through the provided contact info if your reservation is successful or rejected.`
         if(singleBookingPaymentMethod === 'Manual') {
             msg = `\nExpected time to pay manually ${twoHoursFromNow}`
             endMsg = `We will wait for you until ${twoHoursFromNow} to come and pay your reservation.`
+            showIfManual = `<div><span>${msg}</span></div>`;
         }
 
         // console.log('response: ', response)
@@ -687,36 +927,193 @@ function sendReservationRequest() {
             if( !singleRoomBookingModalId.classList.contains('display-none')){
                 singleRoomBookingModalId.classList.add('display-none');
             }
+
+            dynamicConfirmationMessage({
+                mainClass: 'singlePaymentDueDetails',
+                isForReciept: true,
+                frameWidth: '500px',
+                customHTMLElements: `<style>
+                                        .reciept-title-container{
+                                            display: flex;
+                                            flex-direction: column;
+                                            width: 420px;
+                                            margin-bottom: 10px;
+                                        }
+
+                                        .confirm-singlePayment-receipt-container {
+                                            display: flex;
+                                            flex-direction: column;
+                                            width: 420px;
+                                            margin-bottom: 10px;
+                                            align-items: flex-end
+                                        }
+
+                                    </style>
+                                    <div class='reciept-title-container'>
+                                        <div>
+                                            <div><span>📃 Payment Due Details</span></div>
+                                        </div>
+                                    </div>
+                                    <div class="reciept-container-calculation">
+                                        <div class="calculation-info-peer-room">
+                                            <div><span>${selectedSingleRoomName.innerText}</span></div>
+                                            ${showIfManual}
+                                            <div><span>Payment Method: </span><span>${singleBookingPaymentMethod}</span></div>
+                                            <div><span>Check-in Date: </span><span>${checkInDateParam}</span></div>
+                                            <div><span>Check-out Date: </span><span>${checkOutDateParam}</span></div>
+                                            <div><span>Paid Amount (To be confirmed): </span><span>${sAmountToPay.value}</span></div>
+                                            <div><span>Payable Amount: </span><span>${sTotalPay.innerText}</span></div>
+                                            <div><span>Reservation Status: </span><span>Pending</span></div>
+                                            <div><span>Full Name: </span><span>${sFullName.value}</span></div>
+                                            <div><span>Complete Address: </span><span>${sCompleteAddress.value}</span></div>
+                                            <div><span>Contact Info (Email / Phone Number): </span><span>${sContactInfo.value}</span></div>
+                                        </div>
+                                     </div>
+                                     <br>
+                                     <div class='reciept-title-container'>
+                                        <div>
+                                            <div><span>✉️ ${endMsg}</span></div>
+                                        </div>
+                                    </div>
+                                    <div class="confirm-singlePayment-receipt-container">
+                                        <button onclick='window.location.reload()' class="costa-btn-a  confirm-singlePayment-receipt">Confirm</button>
+                                    </div>
+                                    `
+                                    
+            })
+            document.querySelector('.singlePaymentDueDetails').classList.remove('modal-hide');
             
-            
-            Swal.fire({
-                title: 'Payment Due Details',
-                html: `
-                    <p><strong>Room Name:</strong> ${selectedSingleRoomName.innerText}</p>
-                    <p>${msg}</p>
-                    <p><strong>Payment Method:</strong> ${singleBookingPaymentMethod}</p>
-                    <p><strong>Check-in Date:</strong> ${checkInDateParam}</p>
-                    <p><strong>Check-out Date:</strong> ${checkOutDateParam}</p>
-                    <p><strong>Paid Amount (To be confirmed):</strong> ${sAmountToPay.value}</p>
-                    <p><strong>Payable Amount:</strong> ${sTotalPay.innerText}</p>
-                    <p><strong>Reservation Status:</strong> Pending</p>
-                    <br>
-                    <p><strong>Customer Details:</strong></p>
-                    <p><strong>Full Name:</strong> ${sFullName.value}</p>
-                    <p><strong>Complete Address:</strong> ${sCompleteAddress.value}</p>
-                    <p><strong>Contact Info (Email / Phone Number):</strong> ${sContactInfo.value}</p>
-                    <br>
-                    <p><strong>Message:</strong> ${endMsg}</p>
-                `,
-                icon: 'info',
-                position: 'center', // Can be 'top', 'top-start', 'top-end', 'center', 'center-start', 'center-end', 'bottom', 'bottom-start', 'bottom-end'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    // Reload the page when the user presses "OK"
-                    window.location.reload();
+        }
+        else {
+            alertMessage('Something went wrong, Error: ' + jsonResponse.error, 'error', 5000);
+            console.log(response)
+        }
+    })
+    .catch((error) => {
+        alertMessage('Something went wrong, Error: ' + error, 'error', 3000);
+        console.log("Error:", error);
+    });
+}
+
+// send booking request for multi room booking
+function sendReservationRequestMultiBooking() {
+
+    // console.log('hello')
+    // alertMessage('Booking sent successfully. Please wait for approval.', 'success', 3000);
+    const twoHoursFromNow = getTwoHoursFromNow();
+    let ForMultiBookingTotalPay =  document.getElementById('ForMultiBookingTotalPay');
+
+    const url = "controller/roomsController.php";
+    const data = {
+        sendReservationRequestMultiBooking: true,
+        multiBookingimageLink: multiBookingimageLink,
+        paidAmount: convertCurrencyStringToNumber(ForMultiBookingAmountToPay.value),
+        totalAmount: convertCurrencyStringToNumber(ForMultiBookingTotalPay.innerText),
+        userId: userOrAdminDetails.userId,
+        queueDateTime: twoHoursFromNow,
+        roomList: checkedRoomItems,
+        paymentMethod: multibookingPaymentMethod,
+        checkInDate: checkInDateParam,
+        checkOutDate: checkOutDateParam,
+        customerfullName: ForMultiBookingFullName.value,
+        customerCompleteAddress: ForMultiBookingCompleteAddress.value,
+        customerContactInfo: ForMultiBookingContactInfo.value
+    };
+
+    handlePostRequest(url,data )
+    .then((response) => {
+
+        let msg;
+        let endMsg;
+        let showIfManual = '';
+
+        endMsg = `We will notify you through the provided contact info if your reservation is successful or rejected.`
+        if(multibookingPaymentMethod === 'Manual') {
+            msg = `\nExpected time to pay manually ${twoHoursFromNow}`
+            endMsg = `We will wait for you until ${twoHoursFromNow} to come and pay your reservation.`
+            showIfManual = `<div style="margin-bottom:5px;"><span>${msg}</span></div>`;
+        }
+       
+        var jsonResponse = JSON.parse(response);
+        if(jsonResponse.reserve === 'success') {
+            console.log('response: ', response);
+            let receiptList = '';
+
+            checkedRoomItems.forEach((roomItem, index) => {
+
+                if(index > 0){
+                    showIfManual = '';
                 }
-            });
-            
+                receiptList += `
+                                <div class="calculation-info-peer-room">
+                                ${showIfManual}
+                                <div><span>Selected Room: </span><span>${roomItem.roomName}</span></div>
+                                <div><span>Payment Method: </span><span>${multibookingPaymentMethod}</span></div>
+                                <div><span>Check-in Date: </span><span>${checkInDateParam}</span></div>
+                                <div><span>Check-out Date: </span><span>${checkOutDateParam}</span></div>
+                                <div><span>Paid Amount (To be confirmed): </span><span>${dynamicCurrencyforTxtValue(roomItem.totalPayable)}</span></div>
+                                <div><span>Payable Amount: </span><span>${dynamicCurrencyforTxtValue(roomItem.totalPayable)}</span></div>
+                                <div><span>Reservation Status: </span><span>Pending</span></div>
+                                <div><span>Full Name: </span><span>${ForMultiBookingFullName.value}</span></div>
+                                <div><span>Complete Address: </span><span>${ForMultiBookingCompleteAddress.value}</span></div>
+                                <div><span>Contact Info (Email / Phone Number): </span><span>${ForMultiBookingContactInfo.value}</span></div>
+                                </div>
+                                
+                                `
+            })
+
+            console.log(receiptList)
+
+            if(!multiBookingPaymentModal.classList.contains('display-none')){
+                multiBookingPaymentModal.classList.add('display-none');
+            }
+
+            dynamicConfirmationMessage({
+                mainClass: 'multiPaymentDueDetails',
+                isForReciept: true,
+                frameWidth: '500px',
+                customHTMLElements: `<style>
+                                        .reciept-title-container{
+                                            display: flex;
+                                            flex-direction: column;
+                                            width: 420px;
+                                            margin-bottom: 10px;
+                                        }
+
+                                        .confirm-multiPayment-receipt-container {
+                                            display: flex;
+                                            flex-direction: column;
+                                            width: 420px;
+                                            margin-bottom: 10px;
+                                            align-items: flex-end
+                                        }
+
+                                    </style>
+                                    <div class='reciept-title-container'>
+                                        <div>
+                                            <div><span>📃 Payment Due Details</span></div>
+                                        </div>
+                                    </div>
+                                    <div class="reciept-container-calculation">
+                                        ${receiptList}
+                                     </div>
+                                     <br>
+                                     <div class='reciept-title-container'>
+                                        <div>
+                                            <div><span>Multi Booked Total: </span><span>${ForMultiBookingTotalPay.innerText}</span></div>
+                                        </div>
+                                        <br>
+                                        <div>
+                                            <div><span>✉️ ${endMsg}</span></div>
+                                        </div>
+                                    </div>
+                                    <div class="confirm-multiPayment-receipt-container">
+                                        <button onclick='window.location.reload()' class="costa-btn-a  confirm-multiPayment-receipt">Confirm</button>
+                                    </div>
+                                    `
+                                    
+            })
+            document.querySelector('.multiPaymentDueDetails').classList.remove('modal-hide');
         }
         else {
             alertMessage('Something went wrong, Error: ' + jsonResponse.error, 'error', 5000);
@@ -778,7 +1175,7 @@ function singleBookingPaymentFormValidation() {
         displayError(sContactInfo, '');
     }
 
-    if(!sAmountToPay.value) {
+    if(!sAmountToPay.value ||  convertCurrencyStringToNumber(sAmountToPay.value) < 1) {
         displayError(sAmountToPay, "Amount to Pay cannot be empty");
         isValid = false;
     }
@@ -796,14 +1193,80 @@ function singleBookingPaymentFormValidation() {
         displayError(imagePreviewContainerSingleEvidence, "");
     }
 
-    if( convertCurrencyStringToNumber(sAmountToPay.value) > convertCurrencyStringToNumber(sTotalPay.innerText)) {
+    if( (convertCurrencyStringToNumber(sAmountToPay.value) > 1) && convertCurrencyStringToNumber(sAmountToPay.value) != convertCurrencyStringToNumber(sTotalPay.innerText)) {
 
-        displayError(sAmountToPay, "Amount to Pay is greater than actual Total payable.");
+        displayError(sAmountToPay, "Amount to Pay mus be equal to the Total payable.");
+        isValid = false;
+    }
+
+
+    return isValid;
+}
+
+// multi room booking validation
+function multiBookingPaymentFormValidation() {
+    let isValid = true;
+    let ForMultiBookingTotalPay =  document.getElementById('ForMultiBookingTotalPay')
+
+    if (!multibookingPaymentMethod ) {
+        displayError(multiRoomPaymentPicklist, "Payment Method cannot be empty");
+        isValid = false;
+
+        dynamicPicklistErrorSign ('multiRoomPaymentPicklist', isValid)
+    }
+    else {
+        displayError(multiRoomPaymentPicklist, '');
+        dynamicPicklistErrorSign ('multiRoomPaymentPicklist', isValid)
+    }
+
+    if(!ForMultiBookingFullName.value) {
+        displayError(ForMultiBookingFullName, "Full Name cannot be empty");
         isValid = false;
     }
     else {
-        displayError(sAmountToPay, '');
+        displayError(ForMultiBookingFullName, '');
     }
+
+    if(!ForMultiBookingCompleteAddress.value) {
+        displayError(ForMultiBookingCompleteAddress, "Complete Address cannot be empty");
+        isValid = false;
+    }
+    else {
+        displayError(ForMultiBookingCompleteAddress, '');
+    }
+
+    if(!ForMultiBookingContactInfo.value) {
+        displayError(ForMultiBookingContactInfo, "Contact Info cannot be empty");
+        isValid = false;
+    }
+    else {
+        displayError(ForMultiBookingContactInfo, '');
+    }
+
+    if(!ForMultiBookingAmountToPay.value || convertCurrencyStringToNumber(ForMultiBookingAmountToPay.value) < 1) {
+        displayError(ForMultiBookingAmountToPay, "Amount to Pay cannot be empty");
+        isValid = false;
+    }
+    else {
+        displayError(ForMultiBookingAmountToPay, '');
+    }
+
+    if(selectedFilesMultiBook.length <= 0 && multibookingPaymentMethod != 'Manual') {
+        imagePreviewContainermultiEvidenceError.classList.remove('display-none')
+        displayError(imagePreviewContainermultiEvidence, "Payment Evidence connot be empty.");
+        isValid = false;
+    }
+    else {
+        imagePreviewContainermultiEvidenceError.classList.add('display-none')
+        displayError(imagePreviewContainermultiEvidence, "");
+    }
+
+    if( (convertCurrencyStringToNumber(ForMultiBookingAmountToPay.value) > 0) && convertCurrencyStringToNumber(ForMultiBookingAmountToPay.value) != convertCurrencyStringToNumber(ForMultiBookingTotalPay.innerText)) {
+
+        displayError(ForMultiBookingAmountToPay, "Amount to Pay mus be equal to the Total payable.");
+        isValid = false;
+    }
+        
 
     return isValid;
 }
@@ -899,7 +1362,22 @@ imagePreviewContainerSingleEvidence.addEventListener('click', function(event) {
 
         imageContainer.remove();
     }
-})  
+}) 
+
+// Event delegation for delete buttons imagePreviewContainermultiEvidence
+imagePreviewContainermultiEvidence.addEventListener('click', function(event) {
+    if (event.target.classList.contains('deleteButton')) {
+        const imageContainer = event.target.parentElement;
+        let imageContainerId = imageContainer.id;
+
+        let indexToDelete = selectedFilesMultiBook.findIndex(function(rateObject) {
+        return rateObject.id === imageContainerId;
+        });
+        selectedFilesMultiBook.splice(indexToDelete, 1);
+        // console.log('Remained files: ', selectedFilesMultiBook);
+        imageContainer.remove();
+    }
+}) 
   
 // Event for adding rooms and it's additional details
 addRoomBtnDone.addEventListener('click', async function() {
@@ -1002,6 +1480,7 @@ function querySingleRoomDetails(roomId) {
 
     handlePostRequest(url,data )
     .then((response) => {
+        // console.log(response)
         var jsonResponse = JSON.parse(response);
         if(jsonResponse.rooms.length > 0) {
             let roomName = jsonResponse.rooms[0].roomName;
@@ -1009,9 +1488,9 @@ function querySingleRoomDetails(roomId) {
             let roomMaxCap = jsonResponse.rooms[0].roomMaxCap;
             let roomDescription = jsonResponse.rooms[0].roomDescription;
             let roomPublishedRate = jsonResponse.rooms[0].roomPublishedRate;
-            let quantity = jsonResponse.rooms[0].totalCheckInQuantity;
-            if(quantity == 0){
-                quantity = jsonResponse.rooms[0].roomQuantity
+            let quantity = jsonResponse.rooms[0].roomQuantity;
+            if(jsonResponse.rooms[0].totalCheckInQuantity != 0){
+                quantity = parseInt(jsonResponse.rooms[0].roomQuantity) - parseInt(jsonResponse.rooms[0].totalCheckInQuantity); 
             }
             let imageLink = JSON.parse(jsonResponse.rooms[0].imageLink);
             let otherRate = JSON.parse(jsonResponse.rooms[0].otherRate);
@@ -1347,6 +1826,21 @@ newRate.addEventListener('blur', function() {
 // Attach blur event listener to the input field
 sAmountToPay.addEventListener('blur', function() {
     dynamicInputFieldCurrencyFormatter(sAmountToPay)
+});
+
+// Event for auto changing the format of published rate
+sAmountToPay.addEventListener('input', function() {
+    dynamicCurrencyOnlyInput(sAmountToPay);
+});
+
+// Attach blur event listener to the input field
+ForMultiBookingAmountToPay.addEventListener('blur', function() {
+    dynamicInputFieldCurrencyFormatter(ForMultiBookingAmountToPay)
+});
+
+// Event for auto changing the format of published rate
+ForMultiBookingAmountToPay.addEventListener('input', function() {
+    dynamicCurrencyOnlyInput(ForMultiBookingAmountToPay);
 });
 
 // Attach blur event listener to the input field

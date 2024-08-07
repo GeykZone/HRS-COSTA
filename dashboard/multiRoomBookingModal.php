@@ -19,13 +19,13 @@
             <div id="multi-room-payment-picklist-error" class="room-error-message-label form-e-label error"></div>
         </div>
 
-        <div class="paymentMethodContainerDetailsForMultiBooking display-none">
+        <div class="paymentMethodContainerDetailsForMultiBooking pm-container display-none">
             <h4 id="paymenthMethodHeaderNameForMultiBooking"></h4>
-            <div id="qrImg-container-for-multibooking"> <img  id='qrImageId-for-multibooking'  alt=""></div>
+            <div id="qrImg-container-for-multibooking" class="pm-qr"> <img  id='qrImageId-for-multibooking'  alt=""></div>
             <h4 id="paymentNumber-for-multibooking"></h4>
         </div>
 
-        <div class="paymentMethodMsgForMultiBooking-container display-none">
+        <div class="paymentMethodMsgForMultiBooking-container display-none pm-msg-container">
             <h4 id="paymentMethodMsgForMultiBooking"></h4>
         </div>
         
@@ -51,7 +51,14 @@
 
         <div class="input-container">
             <span>Calculation Info</span>
-            <div class="calculation-info-container"></div>
+            <div class="calculation-info-container">
+                <!-- <div class="calculation-info-peer-room">
+                    <div><span>Room Name: </span><span>Room A</span></div>
+                    <div><span>Booked Quantity: </span><span>15</span></div>
+                    <div><span>Room Price: </span><span>2,000.00</span></div>
+                    <div><span>Total Payable: </span><span>10,000.00</span></div>
+                </div> -->
+            </div>
         </div>
 
         <div class="input-container">

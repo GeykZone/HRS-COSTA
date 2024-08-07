@@ -55,8 +55,10 @@ function updateRecord($table, $data, $conditions, $conn) {
 
         // Execute the statement
         if ($stmt->execute()) {
+            // Check the number of affected rows
+            $affectedRows = $stmt->affected_rows;
             $stmt->close();
-            return true;
+            return $affectedRows > 0;
         } else {
             $stmt->close();
             return false;
@@ -65,5 +67,6 @@ function updateRecord($table, $data, $conditions, $conn) {
         return false;
     }
 }
+
 
 ?>

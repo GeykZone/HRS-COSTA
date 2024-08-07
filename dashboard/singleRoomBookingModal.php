@@ -24,13 +24,13 @@
             <div id="single-room-payment-picklist-error" class="room-error-message-label form-d-label error"></div>
           </div>
 
-          <div class="paymentMethodContainerDetails-container display-none">
+          <div class="paymentMethodContainerDetails-container pm-container display-none">
             <h4 id="paymenthMethodHeaderName"></h4>
-            <div id="qrImg-container"> <img  id='qrImageId'  alt=""></div>
+            <div id="qrImg-container" class="pm-qr"> <img  id='qrImageId'  alt=""></div>
             <h4 id="paymentNumber"></h4>
           </div>
 
-          <div class="paymentMethodMsg-container display-none">
+          <div class="paymentMethodMsg-container display-none pm-msg-container">
             <h4 id="paymentMethodMsg"></h4>
           </div>
 

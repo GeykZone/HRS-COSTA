@@ -27,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['listening'])) {
                   ON ci.roomId = r.Id
                   LEFT JOIN user AS u
                   ON ci.userId = u.Id
-                  WHERE notificationStatus = 'unread'";
+                  WHERE notificationStatus = 'unread' AND multiBookId = '0' ";
 
         if ($userId) {
             $query .= " AND userId = '$userId'  AND (status = 'approved' OR status = 'rejected')";
@@ -41,6 +41,56 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['listening'])) {
         $result = $conn->query($query);
     
         $newRows = [];
+        if ($result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                $newRows[] = $row;
+            }
+        }
+
+
+        //for multi booking
+        // Query to get new rows from the check_ins table where notificationStatus is 'unread' and status is 'pending'
+        $query = "SELECT ci.Id AS checkInId, 
+                  ci.roomId AS checkInRoomId, 
+                  ci.checkInDate AS checkInCheckInDate, 
+                  ci.checkOutDate AS checkInCheckOutDate, 
+                  ci.paidAmount AS checkInPaidAmount,
+                  ci.userId AS checkInUserId, 
+                  ci.queueDateTime AS checkInQueueDateTime, 
+                  ci.status AS checkInStatus, 
+                  ci.checkInQuantity AS checkInQuantity, 
+                  ci.paymentMethodId AS checkInPaymentMethodId, 
+                  ci.totalAmount AS checkInTotalAmount, 
+                  ci.customerfullName AS checkInCustomerFullName, 
+                  ci.customerCompleteAddress AS checkInCustomerCompleteAddress, 
+                  ci.customerContactInfo AS checkInCustomerContactInfo,
+                  ci.multiBookId AS multiBookId,
+                  mb.paidAmount AS multiBookPaidAmount,
+                  mb.totalAmount As multibookTotalAmount,
+                  GROUP_CONCAT(DISTINCT r.name ORDER BY r.name SEPARATOR ', ') AS roomName,
+                  GROUP_CONCAT(DISTINCT CONCAT(r.name, ' ', ci.checkInQuantity, ' Total Quantit') ORDER BY r.name SEPARATOR ', ') AS roomNameQuantity,
+                  SUM(ci.checkInQuantity) AS totalQuantity,
+                  u.userName As username
+                  FROM check_ins AS ci
+                  LEFT JOIN rooms AS r
+                  ON ci.roomId = r.Id
+                  LEFT JOIN multibook AS mb
+                  ON ci.multiBookId = mb.Id
+                  LEFT JOIN user AS u
+                  ON ci.userId = u.Id
+                  WHERE notificationStatus = 'unread' AND multiBookId != '0' ";
+
+        if ($userId) {
+            $query .= " AND userId = '$userId'  AND (status = 'approved' OR status = 'rejected')";
+        }
+        else {
+            $query .= "AND ( status = 'pending')";
+        }
+    
+        $query .= "GROUP BY ci.multiBookId ORDER BY queueDateTime DESC LIMIT 10"; // Adjust the limit as needed
+    
+        $result = $conn->query($query);
+    
         if ($result->num_rows > 0) {
             while ($row = $result->fetch_assoc()) {
                 $newRows[] = $row;
@@ -78,7 +128,18 @@ if (isset($inputData['approve'])) {
     if (updateRecord($table, $data, $conditions, $conn)) {
        $response['approved'] = true;
     } else {
-       $response['approved'] = false;
+
+        $conditions = [
+            'multiBookId' => $ReservationCheckInId
+        ];
+
+        if (updateRecord($table, $data, $conditions, $conn)){
+            $response['approved'] = true;
+        }
+        else {
+            $response['approved'] = false;
+        }
+        
     }
 
 
@@ -104,7 +165,16 @@ if (isset($inputData['reject'])) {
     if (updateRecord($table, $data, $conditions, $conn)) {
        $response['rejected'] = true;
     } else {
-       $response['rejected'] = false;
+        $conditions = [
+            'multiBookId' => $ReservationCheckInId
+        ];
+
+        if (updateRecord($table, $data, $conditions, $conn)){
+            $response['rejected'] = true;
+        }
+        else {
+            $response['approved'] = false;
+        }
     }
 
 

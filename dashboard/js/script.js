@@ -122,6 +122,7 @@ function convertCurrencyStringToNumber(currencyString) {
 
 // dynamuc currency convert for text value
 function dynamicCurrencyforTxtValue(value){
+
   if (!isNaN(parseFloat(value))) {
       let numericAmount = parseFloat(value);
       let formattedCurrency = new Intl.NumberFormat('en-PH', { style: 'currency', currency: 'PHP' }).format(numericAmount);
@@ -134,18 +135,34 @@ function dynamicCurrencyforTxtValue(value){
 }
 
 // dynamic Currency Only Input
-function dynamicCurrencyOnlyInput(inputNUmber) {
+function dynamicCurrencyOnlyInput(inputNumber) {
+  let enteredValue = inputNumber.value;
 
-  let enteredValue = inputNUmber.value;
+  // Remove all non-numeric characters except for '.', ',' and '₱'
   let cleanedValue = enteredValue.replace(/[^\d.,₱]/g, '');
-  inputNUmber.value = cleanedValue;
+
+  // Ensure there's only one '.' in the input
+  const parts = cleanedValue.split('.');
+  if (parts.length > 2) {
+      // If there are multiple '.', join the parts back together and ignore the extra '.'
+      cleanedValue = parts[0] + '.' + parts.slice(1).join('');
+  }
+
+  // Ensure there's only one '₱' at the start of the string
+  if (cleanedValue.includes('₱')) {
+      cleanedValue = '₱' + cleanedValue.replace(/₱/g, '');
+  }
+
+  // Remove all non-numeric characters except for one '.' and ','
+  inputNumber.value = cleanedValue;
 
   if (cleanedValue === '₱') {
-    inputNUmber.value = '';
+      inputNumber.value = '';
   } else {
-    inputNUmber.value = cleanedValue;
+      inputNumber.value = cleanedValue;
   }
 }
+
 
 // dynamic picklist sign error () 
 function dynamicPicklistErrorSign (picklistClassName, isValid)
@@ -189,6 +206,9 @@ function dynamicPicklistErrorSign (picklistClassName, isValid)
 // dynamic currency formatter
 function dynamicInputFieldCurrencyFormatter(inputField) {
   let enteredValue = inputField.value;
+
+  // Remove all commas from the input value
+  enteredValue = enteredValue.replace(/[₱,]/g, '');
   
   if (enteredValue.trim() !== '' && !isNaN(enteredValue)) {
       let parsedValue = parseCurrency(enteredValue);
@@ -319,7 +339,11 @@ function dynamicConfirmationMessage(modalValue) {
    let mainClass = 'custom-confirmation';
    let messageBoxCustomClass = 'message-box';
    let displayBox = 'modal-hide';
-   let messageBoxPlaceHolder = 'Message Box'
+   let messageBoxPlaceHolder = 'Message Box';
+   let hideIfForReciept = '';
+   let showIfForReciept = 'display-none';
+   let customHTMLElements = '';
+   let frameWidth = '380px';
    
     if (modalValue?.logo !== undefined && !modalValue.logo.length < 1) {
         custoMIcon = modalValue.logo;
@@ -362,6 +386,18 @@ function dynamicConfirmationMessage(modalValue) {
     }
     if (modalValue?.messageBoxPlaceHolder !== undefined && !modalValue.messageBoxPlaceHolder.length < 1) {
       messageBoxPlaceHolder = modalValue.messageBoxPlaceHolder;
+    }
+    if (modalValue?.isForReciept !== undefined && modalValue.isForReciept) {
+        hideIfForReciept = 'display-none';
+        showIfForReciept = '';
+
+        if(modalValue?.customHTMLElements !== undefined){
+          customHTMLElements = modalValue.customHTMLElements
+        }
+
+    }
+    if(modalValue?.frameWidth !== undefined && !modalValue.frameWidth.length < 1) {
+      frameWidth = modalValue.frameWidth;
     }
 
    // Create style element and append CSS to it
@@ -415,7 +451,7 @@ function dynamicConfirmationMessage(modalValue) {
        display: flex;
        flex-direction: column;
        align-items: center;
-       max-width: 380px;
+       max-width: ${frameWidth};
        width: 100%;
        padding: 30px 20px;
        border-radius: 24px;
@@ -488,7 +524,7 @@ function dynamicConfirmationMessage(modalValue) {
    const section = document.createElement('section');
    section.classList.add(`${mainClass}`, 'active', 'modal-hide');
    section.innerHTML = `
-     <div class="modal-box">
+     <div class="modal-box ${hideIfForReciept}">
       <!-- fa-circle-check -->
        <i class="${custoMIcon}"></i>
        <h2>${title}</h2>
@@ -503,6 +539,10 @@ function dynamicConfirmationMessage(modalValue) {
          <button class="custom-modal-confirm-button ${leftClass}">${leftButtonText}</button>
          <button class="custom-modal-cancel-button ${rightClass}">${RightButtonText}</button>
        </div>
+     </div>
+
+     <div class="modal-box ${showIfForReciept}">
+        ${customHTMLElements}
      </div>
    `;
    document.body.insertBefore(section, document.body.firstChild);
