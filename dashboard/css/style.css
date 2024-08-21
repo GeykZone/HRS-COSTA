@@ -3000,3 +3000,21 @@ main .projects-box .projects-box-section2 table tr td a.rejected {
 .swal2-container {
   z-index: 99999999;
 }
+
+div.dt-container{
+  width: 100% !important;
+}
+
+.dt-search{
+  margin-bottom: 15px !important;
+}
+
+.dt-info{
+  margin-top: 15px !important;
+}
+
+.dt-paging{
+  margin-top: 15px !important;
+  margin-bottom: 15px !important;
+}
+

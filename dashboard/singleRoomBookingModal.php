@@ -54,8 +54,13 @@
             <div id="sContactInfo-error" class="room-error-message-label form-d-label error"></div>
           </div>
 
-          <div class="input-container">
-            <input type="text" class="room-input  form-d" placeholder="Amount to Pay *" id="sAmountToPay" maxlength="55" />
+          <div class="input-container is-partial-checkbox-container-single display-none">
+            <span>Check if this payment is partial</span>
+            <input type="checkbox" class="room-input checkbox-booking  form-e" id="singleBookPartialPayment" onchange="handleSingleBookPartialPayment(event)"/>
+          </div>
+
+          <div class="input-container showIfPartialSingle display-none">
+            <input type="text" class="room-input  form-d" placeholder="Partial Payment *" id="sAmountToPay" maxlength="55" />
             <div id="sAmountToPay-error" class="room-error-message-label form-d-label error"></div>
           </div>
 

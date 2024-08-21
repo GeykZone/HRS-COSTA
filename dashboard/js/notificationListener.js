@@ -86,14 +86,16 @@ $(document).ready(function() {
                                 checkInDate: notification.checkInCheckInDate,
                                 chekOutDate: notification.checkInCheckOutDate,
                                 checkInCustomerCompleteAddress: notification.checkInCustomerCompleteAddress,
+                                isPartial: notification.isPartial,
+                                partialPayment: notification.partialPayment,
                                 checkInCustomerContactInfo: notification.checkInCustomerContactInfo
                             };
 
                             // Check if `notification` has the `multiBookId` property
                             if ('multiBookId' in notification) {
                                 notificationData.multiBookId = notification.multiBookId;
-                                notificationData.multiBookPaidAmount = notification.multiBookPaidAmount;
                                 notificationData.multibookTotalAmount = notification.multibookTotalAmount;
+                                notificationData.multiBookPartialPayment = notification.multiBookPartialPayment;
                                 notificationData.totalQuantity = notification.totalQuantity;
                             }
                             addNotification(notificationData);
@@ -123,6 +125,7 @@ $(document).ready(function() {
     function addNotification(notificationData) {
 
         let isMultibookIndicator = '';
+      
 
         const notificationContainer = document.querySelector('.notification-container');        
         const newNotification = document.createElement('li');
@@ -145,7 +148,6 @@ $(document).ready(function() {
             newNotification.classList.add('background-green');
         }
         notificationContainer.appendChild(newNotification);
-        const notificationId = notificationData.Id;
 
 
         newNotification.addEventListener('click', function(){
@@ -155,13 +157,14 @@ $(document).ready(function() {
                 openMultiReservationNotification(notificationData);
             }
             else {
-                openSingleReservationNotification(notificationId);
+                openSingleReservationNotification(notificationData);
             }
             
         })
     }
 
-    function openSingleReservationNotification(notificationId) {
+    function openSingleReservationNotification(notificationData) {
+        const notificationId = notificationData.Id;
         if(openReservationNotificationModal.classList.contains('display-none')){
             openReservationNotificationModal.classList.remove('display-none');
 
@@ -197,6 +200,39 @@ $(document).ready(function() {
             let roomDetails = jsonResponse.rooms[0];
             let nonManualFields = document.querySelectorAll('.noneManual');
             let onlyForManualFields = document.querySelectorAll('.only-for-manual');
+            const ifPartial = document.querySelectorAll('.ifPartial');
+            let isPartialVal = 'False';
+            if(notificationData.isPartial == 1){
+                isPartialVal = 'True';
+
+                ifPartial.forEach((item) => {
+                    if(item.classList.contains('display-none')){
+                        item.classList.remove('display-none');
+                    }
+                });
+            }
+            else{
+                ifPartial.forEach((item) => {
+                    if(!item.classList.contains('display-none')){
+                        item.classList.add('display-none');
+                    }
+                });
+            }
+            let showIfRejected = document.querySelectorAll('.showIfRejected');
+            if(roomDetails.reservationStatus != 'rejected'){
+                showIfRejected.forEach(val => {
+                    if(!val.classList.contains('display-none')){
+                        val.classList.add('display-none')
+                    }
+                })
+            }
+            else{
+                showIfRejected.forEach(val => {
+                    if(val.classList.contains('display-none')){
+                        val.classList.remove('display-none')
+                    }
+                })
+            }
             ReservationCheckInId = roomDetails.checkInId
             document.getElementById('reservationStatus').innerText = `Reservation ${roomDetails.reservationStatus}`;
             document.getElementById('reservedRoomName').innerText = roomDetails.roomName;
@@ -206,12 +242,14 @@ $(document).ready(function() {
             document.getElementById('customerCotact').innerText = roomDetails.customerContactInfo;
             document.getElementById('selectedPaymentMethod').innerText = roomDetails.paymentMethodName;
             document.getElementById('selectedReservationQuantity').innerText = roomDetails.reservationQuantity;
-            document.getElementById('expectedPaidAmount').innerText = dynamicCurrencyforTxtValue(roomDetails.paidAmount);
             document.getElementById('totaLPayable').innerText = dynamicCurrencyforTxtValue(roomDetails.reservationTotalPayable);
             document.getElementById('expectedCheckInDate').innerText = roomDetails.checkInDate;
             document.getElementById('expectedCheckOutDate').innerText = roomDetails.checkOutDate;
             document.getElementById('expectedReservationPayDateTime').innerText = roomDetails.queueDateTime;
             document.getElementById('rejectionMessage').innerText = roomDetails.reservationMessage;
+            document.getElementById('isPartial').innerText = isPartialVal;
+            document.getElementById('allocatedPartial').innerText = dynamicCurrencyforTxtValue(notificationData.partialPayment);
+            
 
             if(roomDetails.paymentMethodName != 'Manual') {
                 
@@ -269,6 +307,7 @@ $(document).ready(function() {
     }
 
     function openMultiReservationNotification(multiBook){
+
         if(openReservationNotificationModal.classList.contains('display-none')){
             openReservationNotificationModal.classList.remove('display-none');
 
@@ -300,6 +339,25 @@ $(document).ready(function() {
                 multiBookOpenRecieptContainer.removeChild(value);
             })
         }
+
+        const ifPartial = document.querySelectorAll('.ifPartial');
+        let isPartialVal = 'False';
+        if(multiBook.isPartial == 1){
+            isPartialVal = 'True';
+
+            ifPartial.forEach((item) => {
+                if(item.classList.contains('display-none')){
+                    item.classList.remove('display-none');
+                }
+            });
+        }
+        else{
+            ifPartial.forEach((item) => {
+                if(!item.classList.contains('display-none')){
+                    item.classList.add('display-none');
+                }
+            });
+        }
         
         let nonManualFields = document.querySelectorAll('.noneManual');
         let onlyForManualFields = document.querySelectorAll('.only-for-manual');
@@ -311,10 +369,11 @@ $(document).ready(function() {
         document.getElementById('customerCotact').innerText = multiBook.checkInCustomerContactInfo;
       
         document.getElementById('selectedReservationQuantity').innerText = multiBook.totalQuantity;
-        document.getElementById('expectedPaidAmount').innerText = dynamicCurrencyforTxtValue(multiBook.multiBookPaidAmount);
         document.getElementById('totaLPayable').innerText = dynamicCurrencyforTxtValue(multiBook.multibookTotalAmount);
         document.getElementById('expectedCheckInDate').innerText = multiBook.checkInDate;
         document.getElementById('expectedCheckOutDate').innerText = multiBook.chekOutDate;
+        document.getElementById('isPartial').innerText = isPartialVal;
+        document.getElementById('allocatedPartial').innerText = dynamicCurrencyforTxtValue(multiBook.multiBookPartialPayment);
         
         const url = "controller/roomsController.php";
         const data = {
@@ -326,16 +385,24 @@ $(document).ready(function() {
         .then((response) => {
             let jsonResponse = JSON.parse(response);
             let rowsList = jsonResponse.newRows;
-            console.log('response: ', rowsList);
+            // console.log('response: ', rowsList);
 
             rowsList.forEach(row => {
                 const newDiv = document.createElement('div');
                 newDiv.className = 'multiBookOpenReciept-child';
+                let partialColomn = '';
+                if(multiBook.isPartial == 1){
+                    partialColomn = `<div><span>Partial Payment: </span><span>${dynamicCurrencyforTxtValue(`${row.partialPayment}`)}</span></div>`
+                }
+                else{
+                    partialColomn = '';
+                }
 
                 const content = `
                 <div><span>Selected Room: </span><span>${row.roomName}</span></div>
                 <div><span>Reserved Quantity: </span><span>${row.reservationQuantity}</span></div>
-                <div><span>Total Payable: </span><span>${row.reservationTotalPayable}</span></div>
+                ${partialColomn}
+                <div><span>Total Payable: </span><span>${dynamicCurrencyforTxtValue(`${row.reservationTotalPayable}`)}</span></div>
                 `;
 
                 newDiv.innerHTML = content;

@@ -76,6 +76,7 @@ if (isset($inputData['sendReservationRequest'])) {
     $customerfullName = $inputData['customerfullName'];
     $customerCompleteAddress = $inputData['customerCompleteAddress'];
     $customerContactInfo = $inputData['customerContactInfo'];
+    $isPartialValue = $inputData['isPartialValue'];
     
     $selectRoomsSql = " SELECT r.Id AS Id, r.quantity AS quantity,
         IFNULL(totalCheckIn.totalCheckInQuantity, 0) AS totalCheckInQuantity
@@ -109,8 +110,8 @@ if (isset($inputData['sendReservationRequest'])) {
             if(@getPaymentMethod($paymentMethod)) {
 
                 $pmId = @getPaymentMethod($paymentMethod);
-                $reservationInsertSQL = "INSERT INTO `check_ins`(`roomId`, `checkInDate`, `checkOutDate`, `paidAmount`, `userId`, `queueDateTime`, `status`, `checkInQuantity`, `paymentMethodId`, `totalAmount`, `customerfullName`, `customerCompleteAddress`, `customerContactInfo`) 
-                VALUES ('$roomId','$checkInDate','$checkOutDate','$paidAmount','$userId','$queueDateTime','Pending','$quantity','$pmId','$totalAmount','$customerfullName','$customerCompleteAddress','$customerContactInfo')";
+                $reservationInsertSQL = "INSERT INTO `check_ins`(`roomId`, `checkInDate`, `checkOutDate`, `userId`, `queueDateTime`, `status`, `checkInQuantity`, `paymentMethodId`, `totalAmount`, `customerfullName`, `customerCompleteAddress`, `customerContactInfo`,`isPartial`,`partialPayment`) 
+                VALUES ('$roomId','$checkInDate','$checkOutDate','$userId','$queueDateTime','Pending','$quantity','$pmId','$totalAmount','$customerfullName','$customerCompleteAddress','$customerContactInfo','$isPartialValue','$paidAmount')";
                 $reservationSent = dynamicInsert($reservationInsertSQL, 1);
 
                 if($reservationSent) {
@@ -136,7 +137,6 @@ if (isset($inputData['sendReservationRequest'])) {
 if (isset($inputData['sendReservationRequestMultiBooking'])) {
 
     $roomList = $inputData['roomList'];
-    $multiBookPaidAmount = $inputData['paidAmount'];
     $multiBookTotalAmount = $inputData['totalAmount'];
     $userId = $inputData['userId'];
     $queueDateTime =  $inputData['queueDateTime'];
@@ -147,6 +147,9 @@ if (isset($inputData['sendReservationRequestMultiBooking'])) {
     $customerCompleteAddress = $inputData['customerCompleteAddress'];
     $customerContactInfo = $inputData['customerContactInfo'];
     $multiBookingimageLink = $inputData['multiBookingimageLink'];
+    $isPartial = $inputData['isPartialValue'];
+    $MultiBookpartialPayment = $inputData['partialPayment'];
+    $allocatedPartials = $inputData['allocatedPartials'];
     $isBookingValid = true;
 
     foreach ($roomList as $room) {
@@ -191,7 +194,7 @@ if (isset($inputData['sendReservationRequestMultiBooking'])) {
     }
 
     if($isBookingValid){
-        $multiBookInsertQuery = "INSERT INTO `multibook`(`paidAmount`, `totalAmount`) VALUES ('$multiBookPaidAmount','$multiBookTotalAmount')";
+        $multiBookInsertQuery = "INSERT INTO `multibook`(`totalAmount`, `partialPayment`) VALUES ('$multiBookTotalAmount','$MultiBookpartialPayment')";
         $multiBookInsertion = dynamicInsert($multiBookInsertQuery, 1);
         
         if($multiBookInsertion) {
@@ -200,13 +203,13 @@ if (isset($inputData['sendReservationRequestMultiBooking'])) {
                 $roomId =  $room['id'] ;
                 $quantity = $room['quantity'];
                 $totalAmount = $room['totalPayable'];
-                $paidAmount =  $room['totalPayable'];
-
+                $eachPartial = $allocatedPartials * $quantity;
+                
                 if(@getPaymentMethod($paymentMethod)) {
 
                     $pmId = @getPaymentMethod($paymentMethod);
-                    $MultiReservationInsertSQL = "INSERT INTO `check_ins`(`roomId`, `checkInDate`, `checkOutDate`, `paidAmount`, `userId`, `queueDateTime`, `status`, `checkInQuantity`, `paymentMethodId`, `totalAmount`, `customerfullName`, `customerCompleteAddress`, `customerContactInfo`, `multiBookId` ) 
-                    VALUES ('$roomId','$checkInDate','$checkOutDate','$paidAmount','$userId','$queueDateTime','Pending','$quantity','$pmId','$totalAmount','$customerfullName','$customerCompleteAddress','$customerContactInfo', '$multiBookId')";
+                    $MultiReservationInsertSQL = "INSERT INTO `check_ins`(`roomId`, `checkInDate`, `checkOutDate`, `userId`, `queueDateTime`, `status`, `checkInQuantity`, `paymentMethodId`, `totalAmount`, `customerfullName`, `customerCompleteAddress`, `customerContactInfo`, `multiBookId`, `isPartial`, `partialPayment` ) 
+                    VALUES ('$roomId','$checkInDate','$checkOutDate','$userId','$queueDateTime','Pending','$quantity','$pmId','$totalAmount','$customerfullName','$customerCompleteAddress','$customerContactInfo', '$multiBookId', '$isPartial', '$eachPartial')";
                     $multiReservation = dynamicInsert($MultiReservationInsertSQL, 1);
         
                     if($multiReservation) {
@@ -434,7 +437,6 @@ if (isset($inputData['openReservationNotification'])) {
     ck.Id AS checkInId,
     ck.checkInDate AS checkInDate,
     ck.checkOutDate AS checkOutDate,
-    ck.paidAmount AS paidAmount,
     ck.queueDateTime AS queueDateTime,
     ck.status AS reservationStatus,
     ck.checkInQuantity AS reservationQuantity,
@@ -443,6 +445,8 @@ if (isset($inputData['openReservationNotification'])) {
     ck.customerCompleteAddress AS customerCompleteAddress,
     ck.customerContactInfo AS customerContactInfo,
     ck.message AS reservationMessage,
+    ck.isPartial AS isPartial,
+    ck.partialPayment AS partialPayment,
     CONCAT(
         '[',
         GROUP_CONCAT(
@@ -487,7 +491,6 @@ if (isset($inputData['openMultiReservationNotification'])) {
         ck.Id AS checkInId,
         ck.checkInDate AS checkInDate,
         ck.checkOutDate AS checkOutDate,
-        ck.paidAmount AS paidAmount,
         ck.queueDateTime AS queueDateTime,
         ck.status AS reservationStatus,
         ck.checkInQuantity AS reservationQuantity,
@@ -496,6 +499,8 @@ if (isset($inputData['openMultiReservationNotification'])) {
         ck.customerCompleteAddress AS customerCompleteAddress,
         ck.customerContactInfo AS customerContactInfo,
         ck.message AS reservationMessage,
+        ck.isPartial AS isPartial,
+        ck.partialPayment AS partialPayment,
         r.name AS roomName,
         r.maximum AS roomMaxCap,
         pm.paymentMethodName AS paymentMethodName

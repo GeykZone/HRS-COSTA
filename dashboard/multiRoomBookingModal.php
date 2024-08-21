@@ -44,8 +44,13 @@
             <div id="ForMultiBookingContactInfo-error" class="room-error-message-label form-e-label error"></div>
         </div>
 
-        <div class="input-container">
-            <input type="text" class="room-input  form-e" placeholder="Amount to Pay *" id="ForMultiBookingAmountToPay" maxlength="55" />
+        <div class="input-container is-partial-checkbox-container display-none">
+            <span>Check if this payment is partial</span>
+            <input type="checkbox" class="room-input checkbox-booking  form-e" id="multiBookPartialPayment" onchange="handleMultiBookPartialPayment(event)"/>
+        </div>
+
+        <div class="input-container showIfPartial display-none">
+            <input type="text" class="room-input  form-e" placeholder="Partial Payment *" id="ForMultiBookingAmountToPay" maxlength="55" />
             <div id="ForMultiBookingAmountToPay-error" class="room-error-message-label form-e-label error"></div>
         </div>
 

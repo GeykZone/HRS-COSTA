@@ -102,9 +102,23 @@
 }
 
 .discription-header {
-  background-color: #B8B8B838;
-  padding: 15px 10px;
+  background: #f0efef;
+  padding: 15px 15px;
   border-radius: 10px;
+  color: #5A5A5A;
+  box-shadow: #000000;
+}
+
+.discription-header span i {
+  margin-right: 15px !important;
+  background: #ffffff !important;
+  padding: 10px;
+  border-radius: 100%;
+}
+
+.notif-detail-label{
+  margin-bottom: -15px !important;
+  color:  #000000;;
 }
 
 .description-container {
@@ -165,6 +179,21 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
+}
+
+.is-partial-checkbox-container {
+  gap: 5px !important;
+  align-items: flex-start;
+}
+
+.is-partial-checkbox-container-single {
+  gap: 5px !important;
+  align-items: flex-start;
+}
+
+.checkbox-booking{
+  height: 20px;
+  width: 20px;
 }
 
 .addOtherRate-container  {

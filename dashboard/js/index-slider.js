@@ -3,11 +3,12 @@ let swiper;
 let sliderMessage = document.querySelector(".slider-message");
 
 function initializeSwiperWithParam(className, swiperWrapperClass) {
-  if (swiper) {
-    swiper.destroy(true, true);
+  let swiperWithParam;
+  if (swiperWithParam) {
+    swiperWithParam.destroy(true, true);
   }
 
-  swiper = new Swiper(`.${className}`, {
+  swiperWithParam = new Swiper(`.${className}`, {
     slidesPerView: 4,
     spaceBetween: 20,
     sliderPerGroup: 4,
@@ -41,11 +42,13 @@ function initializeSwiperWithParam(className, swiperWrapperClass) {
     },
   });
 
-  let SwiperButtonLock = document.querySelectorAll('.swiper-button-lock');
+  const notificationSwiper = document.querySelector('.notificationSwiper')
+  let SwiperButtonLock = notificationSwiper.querySelectorAll('.swiper-button-lock');
 
   if(shouldLoop(swiperWrapperClass)) {
     SwiperButtonLock.forEach(btn => {
         btn.classList.remove('swiper-button-lock');
+        btn.classList.remove('swiper-button-disabled');
     });
   }
 }
@@ -59,7 +62,7 @@ function initializeSwiper() {
     slidesPerView: 4,
     spaceBetween: 20,
     sliderPerGroup: 4,
-    loop: shouldLoop(),
+    loop: shouldLoop('swiper-wrapper-a'),
     centerSlide: "true",
     fade: "true",
     grabCursor: "true",
@@ -90,11 +93,11 @@ function initializeSwiper() {
   });
 }
 
-function shouldLoop() {
+function shouldLoop(swiperWrapperClass) {
   // Get the number of slides within the swiper wrapper
-  var swiperWrapper = document.querySelector('.swiper-wrapper');
+  var swiperWrapper = document.querySelector(`.${swiperWrapperClass}`);
   var numSlides = swiperWrapper.querySelectorAll('.card').length;
-  // Return true if there are more than 4 slides, otherwise return false
+
   return numSlides >= 4;
 }
 

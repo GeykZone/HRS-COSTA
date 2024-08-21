@@ -10,4 +10,4 @@
 -Rejected
 
 # todo next
--bulk booking
+-finalize the dashboard

@@ -27,5 +27,7 @@
 <link rel="stylesheet" href="css/slider.css" />
 <link rel="stylesheet" href="css/customSwitch.css" />
 <link rel="stylesheet" href="css/modal.css" />
+<link rel="stylesheet" href="https://cdn.datatables.net/2.1.3/css/dataTables.dataTables.css" />
+<script src="https://cdn.datatables.net/2.1.3/js/dataTables.js"></script>
 
 

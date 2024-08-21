@@ -127,7 +127,7 @@ if( $response['role'] === 'customer') {
           <div class="projects-box-section2">
           <div class="container swiper">
               <div class="slide-container">
-              <div class="card-wrapper swiper-wrapper">
+              <div class="card-wrapper swiper-wrapper swiper-wrapper-a">
 
                   <!-- <div class="card swiper-slide">
                   <div class="image-box">
@@ -154,60 +154,37 @@ if( $response['role'] === 'customer') {
         <div class="projects-box">
           <div class="box-section1">
             <div class="box-title">
-              <h2>Booking Details</h2>
+              <h2>Booking Details</h2> 
             </div>
           </div>
 
-          <div class="projects-box-section2">
-            <table>
+          <br>
+          <span id="booking-details-table-title" style="color: gray;"></span>
+
+          <script>
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed
+            const day = String(now.getDate()).padStart(2, '0');
+            const formattedDate = `${year}-${month}-${day}`;
+            document.getElementById('booking-details-table-title').textContent = `Latest approved reservation as of (${formattedDate})`
+          </script>
+
+          <div class="projects-box-section2" >
+            <table id="dashboardBookingDetailsTable" class="nowrap">
               <thead>
                 <tr>
-                  <td>Wala Pa</td>
-                  <td>Wala Pa</td>
-                  <td>Wala Pa</td>
-                  <td>Wala Pa</td>
-                  <td>Wala Pa</td>
-                  <td>Wala Pa</td>
+                  <td>Room Name</td>
+                  <td>Total Price</td>
+                  <td>Process Date</td>
+                  <td>Chek-in Date</td>
+                  <td>Check-out Date</td>
+                  <td>Booked Quantity</td>
+                  <td>Customer</td>
+                  <td>Status</td>
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td>Wala Pa</td>
-                  <td>10 May 2022</td>
-                  <td>Wala Pa</td>
-                  <td>$5300</td>
-                  <td>
-                    <img src="./images/team-01.png" alt="" />
-                    <img src="./images/team-02.png" alt="" />
-                    <img src="./images/team-03.png" alt="" />
-                    <img src="./images/team-04.png" alt="" />
-                  </td>
-                  <td><a href="/#" class="pending">Wala Pa</a></td>
-                </tr>
-                <tr>
-                  <td>Wala Pa</td>
-                  <td>12 Oct 2021</td>
-                  <td>Wala Pa</td>
-                  <td>$1500</td>
-                  <td>
-                    <img src="./images/team-01.png" alt="" />
-                    <img src="./images/team-02.png" alt="" />
-                    <img src="./images/team-03.png" alt="" />
-                  </td>
-                  <td><a href="/#" class="in-progress">Wala Pa</a></td>
-                </tr>
-                <tr>
-                  <td>Wala Pa</td>
-                  <td>05 Sep 2021</td>
-                  <td>Bouba</td>
-                  <td>$800</td>
-                  <td>
-                    <img src="./images/team-01.png" alt="" />
-                    <img src="./images/team-02.png" alt="" />
-                  </td>
-                  <td><a href="/#" class="completed">Wala Pa</a></td>
-                </tr>
-                
               </tbody>
             </table>
           </div>
@@ -222,5 +199,6 @@ if( $response['role'] === 'customer') {
     <script src="js/swiper-bundle.min.js"></script>
     <script src="js/index-slider.js"></script>
     <script src="js/notificationListener.js"></script>
+    <script src="js/dataTables.js"></script>
   </body>
 </html>

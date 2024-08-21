@@ -1,5 +1,9 @@
 <?php 
 include ('dynamicFunctions.php');
+
+$date = new DateTime();
+$currentDate = $date->format('Y-m-d');
+
 // listen for notification
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['listening'])) {
 
@@ -10,7 +14,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['listening'])) {
                   ci.roomId AS checkInRoomId, 
                   ci.checkInDate AS checkInCheckInDate, 
                   ci.checkOutDate AS checkInCheckOutDate, 
-                  ci.paidAmount AS checkInPaidAmount,
                   ci.userId AS checkInUserId, 
                   ci.queueDateTime AS checkInQueueDateTime, 
                   ci.status AS checkInStatus, 
@@ -20,6 +23,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['listening'])) {
                   ci.customerfullName AS checkInCustomerFullName, 
                   ci.customerCompleteAddress AS checkInCustomerCompleteAddress, 
                   ci.customerContactInfo AS checkInCustomerContactInfo,
+                  ci.isPartial AS isPartial,
+                  ci.partialPayment AS partialPayment,
                   r.name AS roomName,
                   u.userName As username
                   FROM check_ins AS ci
@@ -54,7 +59,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['listening'])) {
                   ci.roomId AS checkInRoomId, 
                   ci.checkInDate AS checkInCheckInDate, 
                   ci.checkOutDate AS checkInCheckOutDate, 
-                  ci.paidAmount AS checkInPaidAmount,
                   ci.userId AS checkInUserId, 
                   ci.queueDateTime AS checkInQueueDateTime, 
                   ci.status AS checkInStatus, 
@@ -65,8 +69,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['listening'])) {
                   ci.customerCompleteAddress AS checkInCustomerCompleteAddress, 
                   ci.customerContactInfo AS checkInCustomerContactInfo,
                   ci.multiBookId AS multiBookId,
-                  mb.paidAmount AS multiBookPaidAmount,
+                  ci.isPartial AS isPartial,
+                  ci.partialPayment AS partialPayment,
                   mb.totalAmount As multibookTotalAmount,
+                  mb.partialPayment As multiBookPartialPayment,
                   GROUP_CONCAT(DISTINCT r.name ORDER BY r.name SEPARATOR ', ') AS roomName,
                   GROUP_CONCAT(DISTINCT CONCAT(r.name, ' ', ci.checkInQuantity, ' Total Quantit') ORDER BY r.name SEPARATOR ', ') AS roomNameQuantity,
                   SUM(ci.checkInQuantity) AS totalQuantity,
@@ -119,6 +125,7 @@ if (isset($inputData['approve'])) {
 
     $data = [
         'status' => 'approved',
+        'latestModifiedDate' => $currentDate
     ];
 
     $conditions = [
@@ -155,7 +162,8 @@ if (isset($inputData['reject'])) {
 
     $data = [
         'status' => 'rejected',
-        'message' => $rejectionReason
+        'message' => $rejectionReason,
+        'latestModifiedDate' => $currentDate
     ];
 
     $conditions = [
@@ -189,6 +197,7 @@ if (isset($inputData['markAsRead'])) {
 
     $data = [
         'notificationStatus' => 'read',
+        'latestModifiedDate' => $currentDate
     ];
 
     $conditions = [
@@ -198,7 +207,18 @@ if (isset($inputData['markAsRead'])) {
     if (updateRecord($table, $data, $conditions, $conn)) {
        $response['read'] = true;
     } else {
-       $response['read'] = false;
+
+        $conditions = [
+            'multiBookId' => $ReservationCheckInId
+        ];
+
+        if (updateRecord($table, $data, $conditions, $conn)){
+            $response['read'] = true;
+        }
+        else {
+            $response['read'] = false;
+        }
+       
     }
 
 

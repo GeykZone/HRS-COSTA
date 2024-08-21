@@ -15,7 +15,7 @@
 
 
         <div class="multiBookOpenReciept" style="margin-bottom: -10px;">
-            <h3> <i class="fa-solid fa-receipt"></i> Multi Booked Room List: </h3>
+            <span> <i style="margin-right: 10px;"  class="fa-solid fa-receipt"></i> Multi Booked Room List: </span>
         </div>
 
         <div class="multiBookOpenReciept-container multiBookOpenReciept display-none">
@@ -50,40 +50,10 @@
             </div> -->
         </div>
 
-        <div class="discription-header singleBooking">
-                <h3> <i class="fa-solid fa-hotel"></i> Room Name : <span id="reservedRoomName">Loading...</span> </h3>
-        </div>
-
-        <div class="discription-header singleBooking">
-            <h3> <i class="fa-solid fa-users"></i> Room Capacity : <span id="reservedRoomCapacity">Loading...</span> </h3>
-        </div>
-        
-        <div class="discription-header customer">
-            <h3> <i class="fa-regular fa-comment"></i> Rejection Reason : <span id="rejectionMessage">Loading...</span> </h3>
-        </div>
-
-        <div class="discription-header">
-            <h3> <i class="fa-solid fa-user-group"></i> Customer's Full Name : <span id="customerFullName">Loading...</span> </h3>
-        </div>
-        <div class="discription-header">
-            <h3> <i class="fa-solid fa-location-dot"></i> Customer's Complete Address : <span id="customerAddress">Loading...</span> </h3>
-        </div>
-        <div class="discription-header">
-            <h3> <i class="fa-solid fa-address-book"></i> Customer's Contact Info. : <span id="customerCotact">Loading...</span> </h3>
-        </div>
-
-        <div class="discription-header">
-            <h3> <i class="fa-solid fa-money-check-dollar"></i> Selected Payment Method : <span id="selectedPaymentMethod">Loading...</span> </h3>
-        </div>
-
-        <div class="discription-header">
-            <h3> <i class="fa-solid fa-pen-to-square"></i> Reservation Quantity : <span id="selectedReservationQuantity">Loading...</span> </h3>
-        </div>
-        
-         <h3 class="display-none noneManual"> <i class="fa-solid fa-file-invoice-dollar "></i> Payment Image Evidence </h3>
+        <span class="display-none noneManual"> <i style="margin-right: 10px;" class="fa-solid fa-file-invoice-dollar "></i> Payment Image Evidence </span>
         <div class="viewRoomMainImage-paymentEvidence display-none noneManual"><img src="" alt="main-image" class="clickable" id="viewPaymentEvidence"></div>
         <div class="slider-container display-none noneManual" id="singleRoomSliderContainerID">
-        <div class="container swiper">
+        <div class="container swiper notificationSwiper">
         <div class="slide-container-evidence">
         <div class="card-wrapper-evidence swiper-wrapper wrapper-evidence">
 
@@ -94,7 +64,7 @@
             <div class="profile-details">
                 <img src="https://h-img1.cloudbeds.com/199021/1669205371354_featured~~638ec42d17964.jpg" alt="" />
                 <div class="name-job">
-                <h3 class="name">Room A</h3>
+                <span class="name">Room A</span>
                 <h4 class="job">Sample Description</h4>
                 </div>
             </div>
@@ -108,24 +78,74 @@
       </div>
         </div>
 
-        <div class="discription-header">
-            <h3> <i class="fa-solid fa-money-bill"></i> Expected Paid Amount : <span id="expectedPaidAmount">Loading...</span> </h3>
+        <span class="notif-detail-label singleBooking">Room Name</span>
+        <div class="discription-header singleBooking">
+            <span> <i class="fa-solid fa-hotel"></i><span id="reservedRoomName">Loading...</span> </span>
         </div>
 
-        <div class="discription-header">
-            <h3> <i class="fa-solid fa-money-bill"></i> Total Payable Amount : <span id="totaLPayable">Loading...</span> </h3>
+        <span class="notif-detail-label singleBooking">Room Capacity</span>
+        <div class="discription-header singleBooking">
+            <span> <i class="fa-solid fa-users"></i><span id="reservedRoomCapacity">Loading...</span> </span>
+        </div>
+        
+        <span class="notif-detail-label showIfRejected customer">Rejection Reason</span>
+        <div class="discription-header showIfRejected customer">
+            <span> <i class="fa-regular fa-comment"></i><span id="rejectionMessage">Loading...</span> </span>
         </div>
 
+        <span class="notif-detail-label">Customer's Full Name</span>
+        <div class="discription-header">
+            <span> <i class="fa-solid fa-user-group"></i><span id="customerFullName">Loading...</span> </span>
+        </div>
+
+        <span class="notif-detail-label">Customer's Complete Address</span>
+        <div class="discription-header">
+            <span> <i class="fa-solid fa-location-dot"></i><span id="customerAddress">Loading...</span> </span>
+        </div>
+
+        <span class="notif-detail-label">Customer's Contact Info.</span>
+        <div class="discription-header">
+            <span> <i class="fa-solid fa-address-book"></i><span id="customerCotact">Loading...</span> </span>
+        </div>
+
+        <span class="notif-detail-label">Selected Payment Method</span>
+        <div class="discription-header">
+            <span> <i class="fa-solid fa-money-check-dollar"></i><span id="selectedPaymentMethod">Loading...</span> </span>
+        </div>
+
+        <span class="notif-detail-label">Reservation Quantity</span>
+        <div class="discription-header">
+            <span> <i class="fa-solid fa-pen-to-square"></i><span id="selectedReservationQuantity">Loading...</span> </span>
+        </div>
+
+        <span class="notif-detail-label">Total Payable Amount</span>
+        <div class="discription-header">
+            <span> <i class="fa-solid fa-money-bill"></i><span id="totaLPayable">Loading...</span> </span>
+        </div>
+
+        <span class="notif-detail-label ifPartial">Partial</span>
+        <div class="discription-header ifPartial">
+            <span> <i class="fa-solid fa-tag"></i><span id="isPartial">Loading...</span> </span>
+        </div>
+
+        <span class="notif-detail-label ifPartial">Partial Payment</span> 
+        <div class="discription-header ifPartial">
+            <span> <i class="fa-solid fa-comments-dollar"></i><span id="allocatedPartial">Loading...</span> </span> 
+        </div>
+
+        <span class="notif-detail-label only-for-manual">Expected Date/Time To Pay Reservation</span>
         <div class="discription-header only-for-manual">
-            <h3> <i class="fa-solid fa-calendar-check"></i> Expected Date/Time To Pay Reservation : <span id="expectedReservationPayDateTime">Loading...</span> </h3>
+            <span> <i class="fa-solid fa-calendar-check"></i><span id="expectedReservationPayDateTime">Loading...</span> </span>
         </div>
 
+        <span class="notif-detail-label">Expected Check-in Date</span>
         <div class="discription-header">
-            <h3>  <i class="fa-solid fa-check-to-slot"></i> Expected Check-in Date : <span id="expectedCheckInDate">Loading...</span> </h3>
+            <span>  <i class="fa-solid fa-check-to-slot"></i><span id="expectedCheckInDate">Loading...</span> </span>
         </div>
 
+        <span class="notif-detail-label">Expected Check-out Date</span>
         <div class="discription-header">
-            <h3> <i class="fa-solid fa-arrow-right-from-bracket"></i> Expected Check-out Date : <span id="expectedCheckOutDate">Loading...</span> </h3>
+            <span> <i class="fa-solid fa-arrow-right-from-bracket"></i><span id="expectedCheckOutDate">Loading...</span> </span>
         </div>
       </div>
       <div class="room-form-container" id="rejectionMessageContainer">

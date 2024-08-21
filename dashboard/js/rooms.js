@@ -50,6 +50,8 @@ let sContactInfo = document.getElementById('sContactInfo');
 let ForMultiBookingContactInfo = document.getElementById('ForMultiBookingContactInfo');
 let submitChanges = document.getElementById('submitChanges');
 let multiBookingPaymentModal = document.getElementById('multiBookingPaymentModal');
+let isPartialPicklistContainerMultiBook = document.querySelector('.is-partial-checkbox-container');
+let isPartialPicklistContainerSingleBook = document.querySelector('.is-partial-checkbox-container-single');
 let checkInDateParam = null;
 let checkOutDateParam = null;
 let imgCount = 0;
@@ -71,8 +73,12 @@ let multibookingPaymentMethod = null;
 let singleBookingRoomId;
 let multibookingELement;
 let checkedRoomItems = [];
+let isPartialValue = false;
+let isPartialValueSingle = false;
+let multiBookOverallQuantity;
 const multiBookingLabel =  document.querySelector('.multi-booking-toggle-label');
 const coursesBoxContainer = document.querySelector('.courses-boxes');
+
 
 function initializeSwiperWithParam(className, swiperWrapperClass) {
   if (swiper) {
@@ -704,7 +710,7 @@ function proceedToBookMultiBooking(){
 
     // console.log(checkedRoomItems)
     const total = checkedRoomItems.reduce((acc, item) => acc + item.totalPayable, 0);
-    // console.log(total);
+    multiBookOverallQuantity = checkedRoomItems.reduce((acc, item) => acc + item.quantity, 0);
     
     document.getElementById('ForMultiBookingTotalPay').textContent = dynamicCurrencyforTxtValue(total);
     paymentMethodsOptions().then(val => {
@@ -764,6 +770,11 @@ function proceedToBookMultiBooking(){
         multibookingPaymentMethod =null;
 
         selectizeInstance.on('change', function(value) {
+
+            if(isPartialPicklistContainerMultiBook.classList.contains('display-none')){
+                isPartialPicklistContainerMultiBook.classList.remove('display-none');
+            }
+
             multibookingPaymentMethod = value;
             
             let paymenthMethodHeaderName = document.getElementById('paymenthMethodHeaderNameForMultiBooking');
@@ -790,6 +801,10 @@ function proceedToBookMultiBooking(){
                 paymentMethodMsg.innerText = `You have selected ${multibookingPaymentMethod} as your payment method. Please be aware that we will review the image evidence you provide before confirming your reservation.`;
                 
                 if(multibookingPaymentMethod === 'Manual'){
+                    
+                    if(!isPartialPicklistContainerMultiBook.classList.contains('display-none')){
+                        isPartialPicklistContainerMultiBook.classList.add('display-none');
+                    }
                     imagePreviewContainermultiEvidenceError.classList.add('display-none')
                     displayError(imagePreviewContainermultiEvidence, "");
                     paymentMethodContainerDetailsContainer.classList.add('display-none')
@@ -904,7 +919,8 @@ function sendReservationRequestSingleBooking() {
         checkOutDate: checkOutDateParam,
         customerfullName: sFullName.value,
         customerCompleteAddress: sCompleteAddress.value,
-        customerContactInfo: sContactInfo.value
+        customerContactInfo: sContactInfo.value,
+        isPartialValue: isPartialValueSingle
     };
 
     handlePostRequest(url,data )
@@ -926,6 +942,12 @@ function sendReservationRequestSingleBooking() {
 
             if( !singleRoomBookingModalId.classList.contains('display-none')){
                 singleRoomBookingModalId.classList.add('display-none');
+            }
+
+            let showIfPartial = '';
+
+            if(isPartialValueSingle){
+                showIfPartial = `<div><span>Partial Amount: </span><span>${sAmountToPay.value}</span></div>`;;
             }
 
             dynamicConfirmationMessage({
@@ -961,7 +983,8 @@ function sendReservationRequestSingleBooking() {
                                             <div><span>Payment Method: </span><span>${singleBookingPaymentMethod}</span></div>
                                             <div><span>Check-in Date: </span><span>${checkInDateParam}</span></div>
                                             <div><span>Check-out Date: </span><span>${checkOutDateParam}</span></div>
-                                            <div><span>Paid Amount (To be confirmed): </span><span>${sAmountToPay.value}</span></div>
+                                            <div><span>Room Quantity: </span><span>${sRoomQuantity.value}</span></div>
+                                            ${showIfPartial}
                                             <div><span>Payable Amount: </span><span>${sTotalPay.innerText}</span></div>
                                             <div><span>Reservation Status: </span><span>Pending</span></div>
                                             <div><span>Full Name: </span><span>${sFullName.value}</span></div>
@@ -1002,12 +1025,12 @@ function sendReservationRequestMultiBooking() {
     // alertMessage('Booking sent successfully. Please wait for approval.', 'success', 3000);
     const twoHoursFromNow = getTwoHoursFromNow();
     let ForMultiBookingTotalPay =  document.getElementById('ForMultiBookingTotalPay');
+    let allocatedPartials = convertCurrencyStringToNumber(ForMultiBookingAmountToPay.value) / parseInt(multiBookOverallQuantity) 
 
     const url = "controller/roomsController.php";
     const data = {
         sendReservationRequestMultiBooking: true,
         multiBookingimageLink: multiBookingimageLink,
-        paidAmount: convertCurrencyStringToNumber(ForMultiBookingAmountToPay.value),
         totalAmount: convertCurrencyStringToNumber(ForMultiBookingTotalPay.innerText),
         userId: userOrAdminDetails.userId,
         queueDateTime: twoHoursFromNow,
@@ -1017,7 +1040,10 @@ function sendReservationRequestMultiBooking() {
         checkOutDate: checkOutDateParam,
         customerfullName: ForMultiBookingFullName.value,
         customerCompleteAddress: ForMultiBookingCompleteAddress.value,
-        customerContactInfo: ForMultiBookingContactInfo.value
+        customerContactInfo: ForMultiBookingContactInfo.value,
+        partialPayment: convertCurrencyStringToNumber(ForMultiBookingAmountToPay.value),
+        allocatedPartials: allocatedPartials,
+        isPartialValue: isPartialValue
     };
 
     handlePostRequest(url,data )
@@ -1026,6 +1052,7 @@ function sendReservationRequestMultiBooking() {
         let msg;
         let endMsg;
         let showIfManual = '';
+        let showIfPartial = '';
 
         endMsg = `We will notify you through the provided contact info if your reservation is successful or rejected.`
         if(multibookingPaymentMethod === 'Manual') {
@@ -1039,7 +1066,14 @@ function sendReservationRequestMultiBooking() {
             console.log('response: ', response);
             let receiptList = '';
 
+            console.log('checked room items '+checkedRoomItems);
+
             checkedRoomItems.forEach((roomItem, index) => {
+                const eachPartial = allocatedPartials * parseInt(roomItem.quantity);
+
+                if(isPartialValue){
+                    showIfPartial = `<div><span>Partial Amount: </span><span>${dynamicCurrencyforTxtValue(`${eachPartial}`)}</span></div>`;
+                }
 
                 if(index > 0){
                     showIfManual = '';
@@ -1051,7 +1085,8 @@ function sendReservationRequestMultiBooking() {
                                 <div><span>Payment Method: </span><span>${multibookingPaymentMethod}</span></div>
                                 <div><span>Check-in Date: </span><span>${checkInDateParam}</span></div>
                                 <div><span>Check-out Date: </span><span>${checkOutDateParam}</span></div>
-                                <div><span>Paid Amount (To be confirmed): </span><span>${dynamicCurrencyforTxtValue(roomItem.totalPayable)}</span></div>
+                                <div><span>Room Quantity: </span><span>${roomItem.quantity}</span></div>
+                                ${showIfPartial}
                                 <div><span>Payable Amount: </span><span>${dynamicCurrencyforTxtValue(roomItem.totalPayable)}</span></div>
                                 <div><span>Reservation Status: </span><span>Pending</span></div>
                                 <div><span>Full Name: </span><span>${ForMultiBookingFullName.value}</span></div>
@@ -1062,7 +1097,7 @@ function sendReservationRequestMultiBooking() {
                                 `
             })
 
-            console.log(receiptList)
+            // console.log(receiptList)
 
             if(!multiBookingPaymentModal.classList.contains('display-none')){
                 multiBookingPaymentModal.classList.add('display-none');
@@ -1175,8 +1210,8 @@ function singleBookingPaymentFormValidation() {
         displayError(sContactInfo, '');
     }
 
-    if(!sAmountToPay.value ||  convertCurrencyStringToNumber(sAmountToPay.value) < 1) {
-        displayError(sAmountToPay, "Amount to Pay cannot be empty");
+    if( isPartialValueSingle && (!sAmountToPay.value ||  convertCurrencyStringToNumber(sAmountToPay.value) < 1)) {
+        displayError(sAmountToPay, "Partial Payment cannot be empty.");
         isValid = false;
     }
     else {
@@ -1185,7 +1220,7 @@ function singleBookingPaymentFormValidation() {
 
     if(selectedFilesSingleBook.length <= 0 && singleBookingPaymentMethod != 'Manual') {
         imagePreviewContainerSingleEvidenceError.classList.remove('display-none')
-        displayError(imagePreviewContainerSingleEvidence, "Payment Evidence connot be empty.");
+        displayError(imagePreviewContainerSingleEvidence, "Payment Evidence cannot be empty.");
         isValid = false;
     }
     else {
@@ -1193,9 +1228,21 @@ function singleBookingPaymentFormValidation() {
         displayError(imagePreviewContainerSingleEvidence, "");
     }
 
-    if( (convertCurrencyStringToNumber(sAmountToPay.value) > 1) && convertCurrencyStringToNumber(sAmountToPay.value) != convertCurrencyStringToNumber(sTotalPay.innerText)) {
+    // if( (convertCurrencyStringToNumber(sAmountToPay.value) > 1) && convertCurrencyStringToNumber(sAmountToPay.value) != convertCurrencyStringToNumber(sTotalPay.innerText)) {
 
-        displayError(sAmountToPay, "Amount to Pay mus be equal to the Total payable.");
+    //     displayError(sAmountToPay, "Amount to Pay mus be equal to the Total payable.");
+    //     isValid = false;
+    // }
+
+    
+    if( isPartialValueSingle && (convertCurrencyStringToNumber(sAmountToPay.value) > 0) && convertCurrencyStringToNumber(sAmountToPay.value) > convertCurrencyStringToNumber(sTotalPay.innerText)) {
+
+        displayError(sAmountToPay, "Partial Payment must be less than Total payable.");
+        isValid = false;
+    }
+    else if ( isPartialValueSingle && convertCurrencyStringToNumber(sAmountToPay.value) < (0.3 * convertCurrencyStringToNumber(sTotalPay.innerText))) {
+
+        displayError(sAmountToPay, "Partial Payment must be equal or more than the 30% of the Total Payable.");
         isValid = false;
     }
 
@@ -1243,8 +1290,8 @@ function multiBookingPaymentFormValidation() {
         displayError(ForMultiBookingContactInfo, '');
     }
 
-    if(!ForMultiBookingAmountToPay.value || convertCurrencyStringToNumber(ForMultiBookingAmountToPay.value) < 1) {
-        displayError(ForMultiBookingAmountToPay, "Amount to Pay cannot be empty");
+    if( isPartialValue && (!ForMultiBookingAmountToPay.value || convertCurrencyStringToNumber(ForMultiBookingAmountToPay.value) < 1)) {
+        displayError(ForMultiBookingAmountToPay, "Partial Payment cannot be empty.");
         isValid = false;
     }
     else {
@@ -1253,7 +1300,7 @@ function multiBookingPaymentFormValidation() {
 
     if(selectedFilesMultiBook.length <= 0 && multibookingPaymentMethod != 'Manual') {
         imagePreviewContainermultiEvidenceError.classList.remove('display-none')
-        displayError(imagePreviewContainermultiEvidence, "Payment Evidence connot be empty.");
+        displayError(imagePreviewContainermultiEvidence, "Payment Evidence cannot be empty.");
         isValid = false;
     }
     else {
@@ -1261,14 +1308,45 @@ function multiBookingPaymentFormValidation() {
         displayError(imagePreviewContainermultiEvidence, "");
     }
 
-    if( (convertCurrencyStringToNumber(ForMultiBookingAmountToPay.value) > 0) && convertCurrencyStringToNumber(ForMultiBookingAmountToPay.value) != convertCurrencyStringToNumber(ForMultiBookingTotalPay.innerText)) {
+    if( isPartialValue && (convertCurrencyStringToNumber(ForMultiBookingAmountToPay.value) > 0) && convertCurrencyStringToNumber(ForMultiBookingAmountToPay.value) > convertCurrencyStringToNumber(ForMultiBookingTotalPay.innerText)) {
 
-        displayError(ForMultiBookingAmountToPay, "Amount to Pay mus be equal to the Total payable.");
+        displayError(ForMultiBookingAmountToPay, "Partial Payment must be less than Total payable.");
         isValid = false;
+    }else if ( isPartialValue && convertCurrencyStringToNumber(ForMultiBookingAmountToPay.value) < (0.3 * convertCurrencyStringToNumber(ForMultiBookingTotalPay.innerText))) {
+
+    displayError(ForMultiBookingAmountToPay, "Partial Payment must be equal or more than the 30% of the Total Payable.");
+    isValid = false;
     }
         
 
     return isValid;
+}
+
+//handle partial payment
+function handleMultiBookPartialPayment(e) {
+    const isChecked = e.target.checked;
+    const partialPaymentContainer = document.querySelector('.showIfPartial');
+
+    if (isChecked) {
+        isPartialValue = true;
+        partialPaymentContainer.classList.remove('display-none');
+    } else {
+        partialPaymentContainer.classList.add('display-none');
+        isPartialValue = false;
+    }
+}
+
+function handleSingleBookPartialPayment(e) {
+    const isChecked = e.target.checked;
+    const partialPaymentContainer = document.querySelector('.showIfPartialSingle');
+
+    if (isChecked) {
+        isPartialValueSingle = true;
+        partialPaymentContainer.classList.remove('display-none');
+    } else {
+        partialPaymentContainer.classList.add('display-none');
+        isPartialValueSingle = false;
+    }
 }
 
 //validate the search bar for searching available rooms
@@ -1683,6 +1761,10 @@ function singleRoomBookingPayment(paymentDetails) {
 
         selectizeInstance.on('change', function(value) {
             singleBookingPaymentMethod = value;
+
+            if(isPartialPicklistContainerSingleBook.classList.contains('display-none')){
+                isPartialPicklistContainerSingleBook.classList.remove('display-none');
+            }
             
             let paymenthMethodHeaderName = document.getElementById('paymenthMethodHeaderName');
             paymenthMethodHeaderName.innerText = singleBookingPaymentMethod;
@@ -1708,6 +1790,11 @@ function singleRoomBookingPayment(paymentDetails) {
                 paymentMethodMsg.innerText = `You have selected ${singleBookingPaymentMethod} as your payment method. Please be aware that we will review the image evidence you provide before confirming your reservation.`;
                 
                 if(singleBookingPaymentMethod === 'Manual'){
+
+                    if(!isPartialPicklistContainerSingleBook.classList.contains('display-none')){
+                        isPartialPicklistContainerSingleBook.classList.add('display-none');
+                    }
+
                     imagePreviewContainerSingleEvidenceError.classList.add('display-none')
                     displayError(imagePreviewContainerSingleEvidence, "");
                     paymentMethodContainerDetailsContainer.classList.add('display-none')
