@@ -271,6 +271,11 @@ class SSP {
         $recordsTotal = $resTotalLength[0][0];
 
 
+        // Display all errors, warnings, and notices
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
+
         /*
          * Output
          */

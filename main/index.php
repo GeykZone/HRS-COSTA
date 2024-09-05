@@ -45,8 +45,8 @@ if( $response['role'] === 'customer') {
                       <h3>Total Rooms</h3>
                   </div>
                   <div class="flash-card-body">
-                     <h2>0</h2>
-                     <span class="clickable">View Details</span>
+                     <h2 id="total-rooms-value">0</h2>
+                     <!-- <span class="clickable" id="total-rooms-info-btn">View Details</span> -->
                   </div>
               </div>
 
@@ -56,8 +56,8 @@ if( $response['role'] === 'customer') {
                       <h3>Today's Checkout</h3>
                   </div>
                   <div class="flash-card-body">
-                     <h2>0</h2>
-                     <span class="clickable">View Details</span>
+                     <h2 id="checkout-total-today">0</h2>
+                     <!-- <span class="clickable" id="checkout-total-today-info-btn">View Details</span> -->
                   </div>
               </div>
 
@@ -67,19 +67,19 @@ if( $response['role'] === 'customer') {
                       <h3>Today's In</h3>
                   </div>
                   <div class="flash-card-body">
-                     <h2>0</h2>
-                     <span class="clickable">View Details</span>
+                     <h2 id="checkIn-total-today">0</h2>
+                     <!-- <span class="clickable" id="checkout-total-today-info-btn">View Details</span> -->
                   </div>
               </div>
 
               <div class="flash-card">
                   <div class="flash-card-title">
                       <h3><i class="fa-regular fa-circle-xmark"></i></h3>
-                      <h3>Cancelations</h3>
+                      <h3>Cancelled / Rejected</h3>
                   </div>
                   <div class="flash-card-body">
-                     <h2>0</h2>
-                     <span class="clickable">View Details</span>
+                     <h2 id="cancelled-or-rejected-today">0</h2>
+                     <!-- <span class="clickable">View Details</span> -->
                   </div>
               </div>
 
@@ -89,8 +89,8 @@ if( $response['role'] === 'customer') {
                       <h3>Partial Payments</h3>
                   </div>
                   <div class="flash-card-body">
-                     <h2>0</h2>
-                     <span class="clickable">View Details</span>
+                     <h2 id="paid-partial-today">0</h2>
+                     <!-- <span class="clickable">View Details</span> -->
                   </div>
               </div>
         </div>
@@ -111,15 +111,24 @@ if( $response['role'] === 'customer') {
                 </div>
               </div>
               <div class="fourth-box-section2">
-
+                <canvas id="myChart"></canvas>
               </div>
+
+              <!-- <div style="text-align: center; margin-top: 20px;">
+                  <button id="addDatasetBtn">Add Dataset</button>
+                  <button id="randomizeBtn">Randomize Data</button>
+                  <button id="addDataBtn">Add Data Point</button>
+                  <button id="removeDatasetBtn">Remove Dataset</button>
+                  <button id="removeDataBtn">Remove Data Point</button>
+              </div> -->
+
             </div>
           </div>
         </div>
         
         <div class="projects-box">
           <div class="box-section1">
-            <div class="box-title">
+            <div class="box-title" style="font-size: 0.78rem;">
               <h2>Available Rooms</h2>
             </div>
           </div>
@@ -153,7 +162,7 @@ if( $response['role'] === 'customer') {
 
         <div class="projects-box">
           <div class="box-section1">
-            <div class="box-title">
+            <div class="box-title" style="font-size: 0.78rem;">
               <h2>Booking Details</h2> 
             </div>
           </div>
@@ -170,13 +179,13 @@ if( $response['role'] === 'customer') {
             document.getElementById('booking-details-table-title').textContent = `Latest approved reservation as of (${formattedDate})`
           </script>
 
-          <div class="projects-box-section2" >
-            <table id="dashboardBookingDetailsTable" class="nowrap">
+          <div class="bookingDetailsContainer" id="dashboard-table" >
+            <table id="dashboardBookingDetailsTable" class="nowrap content-table" width="100%">
               <thead>
                 <tr>
                   <td>Room Name</td>
                   <td>Total Price</td>
-                  <td>Process Date</td>
+                  <td>Latest Process Date</td>
                   <td>Chek-in Date</td>
                   <td>Check-out Date</td>
                   <td>Booked Quantity</td>

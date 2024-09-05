@@ -37,7 +37,7 @@ if (isset($_COOKIE['hrsCostaToken'])) {
     ?> <script>
 		var response = <?php echo json_encode($response); ?>;
 		console.log('Cookie Exists: ', response);
-		window.location.href = "../dashboard/index.php";
+		window.location.href = "../main/index.php";
 	   </script> 
 	<?php
 } else {

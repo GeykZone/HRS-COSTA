@@ -11,6 +11,12 @@ let customer = document.querySelectorAll(".customer");
 let admin = document.querySelectorAll(".admin");
 let toLandingPage = document.querySelectorAll(".toLandingPage");
 let cardWrapperEvidence = document.querySelector('.card-wrapper-evidence');
+let getTotalRoomsValueUi = document.getElementById('total-rooms-value');
+let getTotdaysCheckoutValueUi = document.getElementById('checkout-total-today');
+let getTotdaysChecInValueUi = document.getElementById('checkIn-total-today');
+let getTotdaysPaidPartialValueUi = document.getElementById('paid-partial-today');
+let cancelledOrRejectedValueUi = document.getElementById('cancelled-or-rejected-today');
+let myChart = document.getElementById('myChart');
 let activePage = window.location.pathname;
 let getSideBarStatus = false;
 let storage;
@@ -32,6 +38,343 @@ dynamicConfirmationMessage({
   messageBoxCustomClass: 'logout-message-box',
   messageBoxPlaceHolder: 'Rejection Reason'
 })
+
+// display the value of total rooms
+if (getTotalRoomsValueUi) {
+  handleTotalRoomsValue();
+}
+function handleTotalRoomsValue() {
+
+  const url = "controller/roomsController.php";
+    const data = {
+        getTotalRoomCounts: true,
+    };
+
+    handlePostRequest(url,data )
+    .then((response) => {
+        var jsonResponse = JSON.parse(response);
+        if(jsonResponse.rooms.length > 0) {
+            jsonResponse.rooms.forEach(room => {
+              getTotalRoomsValueUi.textContent = room.roomQuantity;
+            });
+        }
+        else {
+            console.error(response)
+        }
+    })
+    .catch((error) => {
+        console.error("Error:", error);
+    });
+
+}
+
+// display the value of today's check out 
+if (getTotdaysCheckoutValueUi) {
+  handleGetTotdaysCheckoutValue();
+}
+function handleGetTotdaysCheckoutValue() {
+
+  const url = "controller/roomsController.php";
+    const data = {
+        getCheckoutValueToday: true,
+    };
+
+    handlePostRequest(url,data )
+    .then((response) => {
+        var jsonResponse = JSON.parse(response);
+        if(jsonResponse.totalCheckoutToday) {
+            getTotdaysCheckoutValueUi.textContent = jsonResponse?.totalCheckoutToday;
+        }
+        else {
+            console.error(response)
+        }
+    })
+    .catch((error) => {
+        console.error("Error:", error);
+    });
+
+}
+
+// display the value of today's check in 
+if (getTotdaysChecInValueUi) {
+  handlegetTotdaysChecInValue()
+}
+function handlegetTotdaysChecInValue() {
+  const url = "controller/roomsController.php";
+  const data = {
+      getCheckInValueToday: true,
+  };
+
+  handlePostRequest(url,data )
+  .then((response) => {
+      var jsonResponse = JSON.parse(response);
+      if(jsonResponse.totalCheckInToday) {
+        getTotdaysChecInValueUi.textContent = jsonResponse?.totalCheckInToday;
+      }
+      else {
+          console.error(response)
+      }
+  })
+  .catch((error) => {
+      console.error("Error:", error);
+  });
+}
+
+//display the value of today's partial payments
+if (getTotdaysPaidPartialValueUi) {
+  handlegetTotdaysPaidPartialValue();
+}
+function handlegetTotdaysPaidPartialValue(){
+  const url = "controller/roomsController.php";
+  const data = {
+    getTotdaysPaidPartial: true,
+  };
+
+  handlePostRequest(url,data )
+  .then((response) => {
+      var jsonResponse = JSON.parse(response);
+      if(jsonResponse.totdaysPaidPartial) {
+        getTotdaysPaidPartialValueUi.textContent = jsonResponse?.totdaysPaidPartial;
+      }
+      else {
+          console.error(response)
+      }
+  })
+  .catch((error) => {
+      console.error("Error:", error);
+  });
+}
+
+//display the value of today's cancelled or rejected
+if (cancelledOrRejectedValueUi) {
+  handleCancelledOrRejectedValue();
+}
+function handleCancelledOrRejectedValue(){
+  const url = "controller/roomsController.php";
+  const data = {
+    getCancelledOrRejected: true,
+  };
+
+  handlePostRequest(url,data )
+  .then((response) => {
+      var jsonResponse = JSON.parse(response);
+      if(jsonResponse.totdaysCancelledOrRejected) {
+        cancelledOrRejectedValueUi.textContent = jsonResponse?.totdaysCancelledOrRejected;
+      }
+      else {
+          console.error(response)
+      }
+  })
+  .catch((error) => {
+      console.error("Error:", error);
+  });
+}
+
+
+// Function to generate past 7 days' dates including today
+function getLast7Days() {
+  const labels = [];
+  const today = new Date();
+
+  for (let i = 6; i >= 0; i--) {
+      const pastDate = new Date(today);
+      pastDate.setDate(today.getDate() - i);
+      const yyyy = pastDate.getFullYear();
+      const mm = String(pastDate.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+      const dd = String(pastDate.getDate()).padStart(2, '0');
+      labels.push(`${yyyy}-${mm}-${dd}`);
+  }
+
+  return labels;
+}
+
+function getTotalBaseOndateSync(status) {
+  const past7Days = getLast7Days(); // Reverse to start from the past date
+  const url = "controller/roomsController.php";
+  const data = {
+    getTotalBaseOndate: true,
+    status: status,
+    past7Days: past7Days
+  };
+
+  // Create a synchronous XMLHttpRequest
+  const xhr = new XMLHttpRequest();
+  xhr.open("POST", url, false); // false makes the request synchronous
+
+  xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+  xhr.send(JSON.stringify(data));
+
+  if (xhr.status === 200) {
+    try {
+      const jsonResponse = JSON.parse(xhr.responseText);
+
+      if (jsonResponse.length > 0) {
+        return jsonResponse; // Return the response data
+      } else {
+        console.error("No data found");
+        return []; // Ensure array is empty if no data found
+      }
+    } catch (e) {
+      console.error("Error parsing JSON:", e);
+      return []; // Return empty array on error
+    }
+  } else {
+    console.error("Error:", xhr.statusText);
+    return []; // Return empty array on HTTP error
+  }
+}
+
+if(myChart) {
+
+  const labels =  getLast7Days();
+  const data = {
+      labels: labels,
+      datasets: [
+          {
+              label: 'Rejected',
+              data: getTotalBaseOndateSync('rejected'),
+              borderColor: 'rgba(255, 99, 132, 1)',
+              backgroundColor: 'rgba(255, 99, 132, 0.5)',
+              tension: 0.4  // This value controls the curve of the line
+          },
+          {
+              label: 'Approved',
+              data: getTotalBaseOndateSync('approved'),
+              borderColor: 'rgba(2, 219, 172, 1)',
+              backgroundColor: 'rgba(2, 219, 172, 0.452)',
+              tension: 0.4  // This value controls the curve of the line
+          },
+          {
+            label: 'Cancelled',
+            data: getTotalBaseOndateSync('cancelled'),
+            borderColor: 'rgba(255, 102, 0, 1)',
+            backgroundColor: 'rgba(250, 142, 18, 0.5)',
+            tension: 0.4  // This value controls the curve of the line
+        }
+      ]
+  };
+
+  const config = {
+      type: 'line',
+      data: data,
+      options: {
+          responsive: true,
+          plugins: {
+              legend: {
+                  position: 'top',
+              },
+              title: {
+                  display: false,
+                  text: 'Chart.js Line Chart'
+              },
+              tooltip: {
+                enabled: true,
+                displayColors: false,
+                usePointStyle: true,
+                padding: {
+                 left: 10,
+                 right: 10,
+                 top: 10,
+                 bottom: 10
+                },
+                titleFont:{
+                  size:12
+                },
+                bodyFont:{
+                  size:12
+                },
+                caretSize: 10,
+                cornerRadius: 10,
+                caretPadding: 0,
+                callbacks: {
+                  label: function(context, val) { 
+  
+                    var modified_label = parseInt(context.parsed.y).toLocaleString('en-US')+ ` ${context.dataset.label} in total`
+                    // if(context.parsed.y == 1)
+                    // {
+                    //   var modified_label = parseInt(context.parsed.y).toLocaleString('en-US')+" health case in total"
+                    // }
+                    
+                    return modified_label           
+                  
+                  },
+                  afterLabel: function(context) {            
+                    return ""
+                  },
+                  labelPointStyle: function(context) {
+                    return {
+                        pointStyle: 'rectRounded',
+                        rotation: 0,
+                    };
+                  }
+      
+                },
+                backgroundColor: '#ffffff',
+                bodyColor: "#626464",
+                titleColor:  "#626464",
+                borderColor: "#dee0e0",
+                borderWidth: 1,
+                bodySpacing: 1,
+                titleMarginBottom: 5
+              }
+          }
+      }
+  };
+
+  // Render the chart
+  const myChart = new Chart(
+      document.getElementById('myChart'),
+      config
+  );
+
+  // Actions
+  // const actions = {
+  //     randomizeData(chart) {
+  //         chart.data.datasets.forEach(dataset => {
+  //             dataset.data = dataset.data.map(() => Math.floor(Math.random() * 100));
+  //         });
+  //         chart.update();
+  //     },
+  //     addDataset(chart) {
+  //         const color = `rgba(${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, 1)`;
+  //         const newDataset = {
+  //             label: 'Dataset ' + (chart.data.datasets.length + 1),
+  //             borderColor: color,
+  //             backgroundColor: color.replace('1)', '0.5)'),
+  //             data: Array(chart.data.labels.length).fill().map(() => Math.floor(Math.random() * 100)),
+  //         };
+  //         chart.data.datasets.push(newDataset);
+  //         chart.update();
+  //     },
+  //     addDataPoint(chart) {
+  //         const newMonth = 'New Month ' + (chart.data.labels.length + 1);
+  //         chart.data.labels.push(newMonth);
+  //         chart.data.datasets.forEach(dataset => {
+  //             dataset.data.push(Math.floor(Math.random() * 100));
+  //         });
+  //         chart.update();
+  //     },
+  //     removeDataset(chart) {
+  //         chart.data.datasets.pop();
+  //         chart.update();
+  //     },
+  //     removeDataPoint(chart) {
+  //         chart.data.labels.pop();
+  //         chart.data.datasets.forEach(dataset => {
+  //             dataset.data.pop();
+  //         });
+  //         chart.update();
+  //     }
+  // };
+
+  // Event listeners for buttons
+  // document.getElementById('addDatasetBtn').addEventListener('click', () => actions.addDataset(myChart));
+  // document.getElementById('randomizeBtn').addEventListener('click', () => actions.randomizeData(myChart));
+  // document.getElementById('addDataBtn').addEventListener('click', () => actions.addDataPoint(myChart));
+  // document.getElementById('removeDatasetBtn').addEventListener('click', () => actions.removeDataset(myChart));
+  // document.getElementById('removeDataBtn').addEventListener('click', () => actions.removeDataPoint(myChart));
+
+}
 
 // intialize sweet alert
 var toastMixin = Swal.mixin({
@@ -251,6 +594,17 @@ function displayError(inputElement, errorMessage) {
   if (errorMessage) {
       errorElement.innerText = errorMessage;
       inputElement.classList.add("error");
+  }
+}
+
+//add or display error on select type input if does not meet the validation
+function displayErrorSelectElement(inputElement, errorMessage) {
+  const errorElement = document.getElementById(`${inputElement.id}-error`);
+  errorElement.innerText = errorMessage;
+  inputElement.classList.remove("error-select");
+  if (errorMessage) {
+      errorElement.innerText = errorMessage;
+      inputElement.classList.add("error-select");
   }
 }
 

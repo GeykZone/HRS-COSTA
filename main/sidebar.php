@@ -18,26 +18,13 @@
         </li>
 
         <li class="">
-        <a class="sidebar-link">
-             <i class="fa-solid fa-arrow-right-from-bracket"></i><span>Checkouts</span>
-        </a>
-        </li>
-
-        <li class="">
-        <a class="sidebar-link">
-        <i class="fa-solid fa-check-to-slot"></i></i
-            ><span>Check In</span>
+        <a href="bookings.php" class="sidebar-link">
+             <i class="fa-solid fa-book-bookmark"></i><span>Bookings</span>
         </a>
         </li>
 
         <li class="admin">
-        <a class="sidebar-link">
-        <i class="fa-solid fa-calendar-days"></i><span>Calendar</span>
-        </a>
-        </li>
-
-        <li class="admin">
-        <a class="sidebar-link">
+        <a href="payments.php" class="sidebar-link">
         <i class="fa-solid fa-credit-card"></i><span>Payments</span>
         </a>
         </li>

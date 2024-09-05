@@ -554,3 +554,67 @@ details summary::-webkit-details-marker {
   font-size: 18px;
   font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
 }
+
+.filter-modal-input-container {
+  display: flex;
+  gap: 15px;
+  justify-content: flex-start;
+  background-color: rgb(255, 255, 255);
+  border-radius: 15px;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+.filter-modal-input-date-container {
+  width: 100% !important;
+  display: flex;
+  flex-direction: column !important;
+}
+
+.filter-modal-value-input{
+  padding: 10px;
+  border-radius: 10px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  border: 1px solid gray;
+}
+
+.filter-modal-inner-label {
+  font-size: 0.8rem;
+  color: gray;
+}
+
+.filter-modal-inputvalue-container{
+  width: 100% !important;
+  display: flex;
+  flex-direction: column !important;
+}
+
+.filter-operator-select{
+  padding: 10px;
+  border-radius: 10px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+
+  appearance: none; /* Remove default arrow in modern browsers */
+  -webkit-appearance: none; /* Remove default arrow in WebKit browsers */
+  -moz-appearance: none; /* Remove default arrow in Firefox */
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 10 10"><path d="M0 0 L5 5 L10 0 Z" fill="black"/></svg>'); /* Custom arrow */
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 10px;
+  padding-right: 30px; /* Add space for the arrow */
+}
+
+
+.color-gray{
+  color: #d3d3d3 !important;
+}
+
+.option-value {
+  color: #000000 !important;
+}
+
+.filter-modal-content {
+  background-color: #f7f7f7;
+}

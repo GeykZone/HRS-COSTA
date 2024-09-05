@@ -40,17 +40,19 @@ a {
   --secondary-radius: 6px;
 }
 ::-webkit-scrollbar {
-  width: 5px;
-  height: 5px; 
+  width: 0.7vw;
+  height: 1.5vh; 
 }
 ::-webkit-scrollbar-track {
   background-color: var(--white-color);
 }
 ::-webkit-scrollbar-thumb {
   background: var(--main-color-concept);
+  border-radius: 100px;
 }
 ::-webkit-scrollbar-thumb:hover {
   background: var(--main-color-concept);
+  cursor: pointer;
 }
 
 .background-green{
@@ -433,6 +435,15 @@ div.loader h1 span {
   color: red;
 }
 
+.error-select {
+  border: solid 2px red;
+  color: red !important;
+}
+
+.error-select:focus {
+  outline: solid 1px red;
+}
+
 textarea.error{
 	border: 2px solid;
 	border-color: #ff0037;
@@ -638,6 +649,7 @@ main .main-content .title::after {
 }
 .main-content-boxes .box .box-section1 .box-title {
   line-height: 1.6;
+  font-size: 0.78rem;
 }
 @media (max-width: 767px) {
   .main-content-boxes .box .box-section1 .box-title h2 {
@@ -1042,13 +1054,16 @@ main .main-content .title::after {
   justify-content: center;
   gap: 10px;
   align-items: center;
+  font-size: 0.90rem;
 }
 .flash-card .flash-card-body {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 5px;
+   margin-top: 20px;
+   font-size: 24px;
+   color: #8b8a8a;
 }
 
 .flash-card .flash-card-body span {
@@ -3005,8 +3020,25 @@ div.dt-container{
   width: 100% !important;
 }
 
-.dt-search{
+.dataTables_filter{
   margin-bottom: 15px !important;
+  display: flex !important;
+  flex-direction: row !important;
+}
+
+.dt-buttons{
+  gap: 3px;
+  margin-bottom: 15px !important;
+  display: flex !important;
+  flex-direction: row !important;
+}
+
+.dataTables_paginate {
+  margin-Top: 15px !important;
+}
+
+.dataTables_info {
+  margin-Top: 15px !important;
 }
 
 .dt-info{
@@ -3017,4 +3049,91 @@ div.dt-container{
   margin-top: 15px !important;
   margin-bottom: 15px !important;
 }
+
+.filter-container {
+  margin-top: 15px;
+}
+
+.content-table {
+  border-collapse: collapse;
+  margin: 25px 0;
+  font-size: 0.9em;
+  min-width: 400px;
+  border-radius: 5px 5px 0 0;
+  overflow: hidden;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.082);
+}
+
+.content-table thead tr {
+  background-color: #0bb5bb;
+  color: #ffffff;
+  text-align: left;
+  font-weight: bold;
+}
+
+.content-table th,
+.content-table td {
+  padding: 12px 15px !important;
+}
+
+.content-table tbody tr {
+  border-bottom: 1px solid #dddddd;
+}
+
+.content-table tbody tr:nth-of-type(even) {
+  background-color: #f3f3f3;
+}
+
+.content-table tbody tr:last-of-type {
+  border-bottom: 2px solid #0bb5bb;
+}
+
+.content-table tbody tr.active-row {
+  font-weight: bold;
+  color: #0bb5bb;
+}
+
+.export-excel-btn {
+  color: white !important;
+  background-color: #0bb5bb !important;
+  border-radius: 5px !important;
+  border: none !important;
+}
+
+.buttons-excel {
+  color: #FFFFFF !important;
+  padding: var(--fifth-padding) !important;
+  width: 120px !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  border-radius: var(--secondary-radius) !important;
+  height: 35px !important;
+}
+
+.buttons-excel:hover {
+  width: 120px !important; 
+  font-size: 0.85rem !important;
+}
+
+#dashboard-table {
+  margin-top: 15px !important;
+}
+
+.dtr-details  {
+   width: 100% !important;
+}
+
+.dtr-details li {
+  display: flex !important;
+  flex-direction: row !important;
+  gap: 10px;
+}
+
+.dtr-title {
+  min-width: 50px !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
 

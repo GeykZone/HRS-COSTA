@@ -595,6 +595,132 @@ if(isset($inputData['queryPaymentMethods'])) {
     echo json_encode($response);
 }
 
+// query total number of rooms
+if(isset($inputData['getTotalRoomCounts'])) {
+    $sql = "SELECT SUM(quantity) AS roomQuantity FROM rooms";
+
+    if ($stmt = $conn->prepare($sql)) {
+        roomQuery($stmt);
+    } else {
+        $response['error'] = 'Failed to prepare the SQL statement.';
+    }
+    echo json_encode($response);
+}
+
+// Query total number of checkouts today
+if (isset($inputData['getCheckoutValueToday'])) {
+
+    $currentDate = date('Y-m-d');
+    $sql = "SELECT COUNT(*) AS totalCheckoutToday FROM check_ins WHERE `checkOutDate` = ? AND `status` = 'approved'";
+
+    if ($stmt = $conn->prepare($sql)) {
+        $stmt->bind_param('s', $currentDate);
+        $stmt->execute();
+        $stmt->bind_result($totalCheckoutToday);
+        $stmt->fetch();
+        $response['totalCheckoutToday'] = $totalCheckoutToday;
+        $stmt->close();
+    } else {
+        $response['error'] = 'Failed to prepare the SQL statement.';
+    }
+    
+    echo json_encode($response);
+}
+
+// Query total number of check-ins today
+if (isset($inputData['getCheckInValueToday'])) {
+
+    $currentDate = date('Y-m-d');
+    $sql = "SELECT COUNT(*) AS totalCheckInToday FROM check_ins WHERE `checkInDate` = ? AND `status` = 'approved'";
+
+    if ($stmt = $conn->prepare($sql)) {
+        $stmt->bind_param('s', $currentDate);
+        $stmt->execute();
+        $stmt->bind_result($totalCheckInToday);
+        $stmt->fetch();
+        $response['totalCheckInToday'] = $totalCheckInToday;
+        $stmt->close();
+    } else {
+        $response['error'] = 'Failed to prepare the SQL statement.';
+    }
+    
+    echo json_encode($response);
+}
+
+// Query total number of partially-paid today
+if (isset($inputData['getTotdaysPaidPartial'])) {
+
+    $currentDate = date('Y-m-d');
+    $sql = "SELECT COUNT(*) AS totdaysPaidPartial FROM check_ins WHERE (`createdDate` = ? OR `latestModifiedDate` = ?) AND `status` = 'approved' AND `isPartial` = '1'";
+
+    if ($stmt = $conn->prepare($sql)) {
+        $stmt->bind_param('ss', $currentDate, $currentDate);
+        $stmt->execute();
+        $stmt->bind_result($totdaysPaidPartial);
+        $stmt->fetch();
+        $response['totdaysPaidPartial'] = $totdaysPaidPartial;
+        $stmt->close();
+    } else {
+        $response['error'] = 'Failed to prepare the SQL statement.';
+    }
+    
+    echo json_encode($response);
+}
+
+
+// Query total number of todays rejected or cancelled
+if (isset($inputData['getCancelledOrRejected'])) {
+
+    $currentDate = date('Y-m-d');
+    $sql = "SELECT COUNT(*) AS totdaysCancelledOrRejected FROM check_ins WHERE (`createdDate` = ? OR `latestModifiedDate` = ?) AND (`status` = 'rejected' OR `status` = 'cancelled' )";
+
+    if ($stmt = $conn->prepare($sql)) {
+        $stmt->bind_param('ss', $currentDate, $currentDate);
+        $stmt->execute();
+        $stmt->bind_result($totdaysCancelledOrRejected);
+        $stmt->fetch();
+        $response['totdaysCancelledOrRejected'] = $totdaysCancelledOrRejected;
+        $stmt->close();
+    } else {
+        $response['error'] = 'Failed to prepare the SQL statement.';
+    }
+    
+    echo json_encode($response);
+}
+
+
+// Query total base on date
+if (isset($inputData['getTotalBaseOndate'])) {
+
+    $listCount = [];
+    $past7Days = $inputData['past7Days'];
+    $status = $inputData['status'];
+
+    foreach ($past7Days as $day) {
+        // Prepare the SQL query
+        $sql = "SELECT COUNT(*) AS total FROM `check_ins` 
+                WHERE (`latestModifiedDate` = ?) 
+                AND `status` = ?";
+        
+        if ($stmt = $conn->prepare($sql)) {
+            $likeDay = $day; // To match any time on that day
+            $stmt->bind_param('ss', $likeDay, $status);
+            $stmt->execute();
+            $stmt->bind_result($total);
+            $stmt->fetch();
+            $stmt->close();
+    
+            // Add the result to listCount
+            $listCount[] = $total > 0 ? $total : 0;
+        } else {
+            // In case of query preparation failure
+            $listCount[] = 0;
+        }
+    }
+    
+    echo json_encode($listCount);
+}
+
 // query function 
 function roomQuery($stmt) {
     global $response;
