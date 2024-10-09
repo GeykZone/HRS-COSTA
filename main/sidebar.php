@@ -23,7 +23,7 @@
         </a>
         </li>
 
-        <li class="admin">
+        <li class="">
         <a href="payments.php" class="sidebar-link">
         <i class="fa-solid fa-credit-card"></i><span>Payments</span>
         </a>

@@ -41,7 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['listening'])) {
             $query .= "AND ( status = 'pending')";
         }
     
-        $query .= " ORDER BY queueDateTime DESC LIMIT 10"; // Adjust the limit as needed
+        $query .= " ORDER BY queueDateTime DESC"; // Adjust the limit as needed
     
         $result = $conn->query($query);
     
@@ -93,7 +93,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['listening'])) {
             $query .= "AND ( status = 'pending')";
         }
     
-        $query .= "GROUP BY ci.multiBookId ORDER BY queueDateTime DESC LIMIT 10"; // Adjust the limit as needed
+        $query .= "GROUP BY ci.multiBookId ORDER BY queueDateTime DESC"; // Adjust the limit as needed
     
         $result = $conn->query($query);
     
@@ -197,7 +197,6 @@ if (isset($inputData['markAsRead'])) {
 
     $data = [
         'notificationStatus' => 'read',
-        'latestModifiedDate' => $currentDate
     ];
 
     $conditions = [

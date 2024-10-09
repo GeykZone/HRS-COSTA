@@ -23,6 +23,7 @@ let filterProcessEndDate =  document.getElementById('filter-process-end-date');
 let filterLastProcessStartDate = document.getElementById('filter-last-process-start-date');
 let filterLastProcessEndDate =  document.getElementById('filter-last-process-end-date');
 let filterableValues = [];
+let openFromTable;
 changeFilterOperatorValueColor();
 checkUrlParamValues();
 
@@ -117,6 +118,10 @@ function displayRoomsInSliderWithWrapper(room, wrapper) {
 bookingsOpenFilterModalBtn.addEventListener('click', function(){
  if(openFilterBookingsModal.classList.contains('display-none')){
     openFilterBookingsModal.classList.remove('display-none');
+    
+    if(filterTotalPrice){
+      dynamicInputFieldCurrencyFormatter(filterTotalPrice)
+  }
  }
 })
 
@@ -388,7 +393,23 @@ function checkUrlParamValues() {
 
 //show more details if spicific booking record is selected
 function moreDetails(e){
-  alert('working => '+ e)
+  
+  const url = "controller/bookings.php";
+  const data = {
+      openBooking: true,
+      checkinId: e,
+  };
+
+  handlePostRequest(url,data )
+  .then((response) => {
+      openFromTable = 'hide';
+      openSingleReservationNotification(JSON.parse(response));
+  })
+  .catch((error) => {
+      alertMessage('Something went wrong, Error: ' + error, 'error', 3000);
+      console.log("Error:", error);
+  });
+
 }
 
 

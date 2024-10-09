@@ -490,6 +490,22 @@ textarea.error:focus {
   font-size: 0.85rem;
 }
 
+.costa-btn-disabled {
+  background-color: rgb(178, 207, 212);
+  color: #FFFFFF;
+  padding: var(--fifth-padding);
+  width: 120px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: var(--secondary-radius);
+  height: 35px;
+}
+
+.costa-btn-disabled:hover {
+  width: 120px; 
+}
+
 .costa-btn-b {
   background-color: #19C4B8 !important;
   color: #FFFFFF;
@@ -3134,6 +3150,10 @@ div.dt-container{
   min-width: 50px !important;
   display: flex !important;
   align-items: center !important;
+}
+
+.hide-notif-btn{
+  display: none !important;
 }
 
 

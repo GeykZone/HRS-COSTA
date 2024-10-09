@@ -76,7 +76,7 @@ include('controller/generalController.php');
                     <td ><span class="title-head-span">Check-in Date</span></td>
                     <td ><span class="title-head-span">Check-out Date</span></td>
                     <td ><span class="title-head-span">Booked Quantity</span></td>
-                    <td ><span class="title-head-span">Payment is Partial</span></td>
+                    <td ><span class="title-head-span">Is Partial</span></td>
                     <td ><span class="title-head-span">Booking Status</span></td>
                     <td ><span class="title-head-span">Process Date</span></td>
                     <td ><span class="title-head-span">Last Process Date</span></td>

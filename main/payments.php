@@ -2,9 +2,9 @@
 include('../login/controller/loginSignUpController.php');
 include('controller/generalController.php');
 
-if( $response['role'] === 'customer') {
-  header("Location: rooms.php");
-}
+// if( $response['role'] === 'customer') {
+//   header("Location: rooms.php");
+// }
 ?>
 
 <!DOCTYPE html>
@@ -22,6 +22,10 @@ if( $response['role'] === 'customer') {
 
     <!-- resources-->
     <?php include('openReservationNotificationModal.php') ?>
+    <!-- resources-->
+
+    <!-- resources-->
+    <?php include('filterPaymentsModal.php') ?>
     <!-- resources-->
     <div class="page-content">
 
@@ -42,21 +46,45 @@ if( $response['role'] === 'customer') {
                 <h3 class="room-page-title" >Payments</h3>
             </div>
 
-            <div class="projects-box-section2" >
-            <table id="dashboardBookingDetailsTable" class="nowrap">
-              <thead>
-                <tr>
-                  <td>Room Name</td>
-                  <td>Customer</td>
-                  <td>Total Price</td>
-                  <td>Check-out Date</td>
-                  <td>Booked Quantity</td>
-                  <td>Action</td>
-                </tr>
-              </thead>
-              <tbody>
-              </tbody>
-            </table>
+            <div class="filter-container">
+              <span class="clickable costa-btn-a" id="paymentsOpenFilterModalBtn">Filter</span>
+            </div>
+
+            <style>
+              li[data-dtr-index="9"] .dtr-title {
+                display: none !important;
+              }
+
+              .table-head-title{
+                text-align: center !important;
+              }
+
+              tbody tr td:nth-child(10) span {
+                margin: 0 auto !important; /* Centers horizontally */
+                text-align: center !important;
+                vertical-align: middle !important;
+              }
+            </style>
+
+            <div class="paymentDetailsContainer" >
+              <table id="paymentDetailsTable"  class="nowrap content-table" width="100%">
+                <thead>
+                  <tr>
+                    <td ><span class="title-head-span">Customer</span></td>
+                    <td ><span class="title-head-span">Payment Method</span></td>
+                    <td ><span class="title-head-span">Total Price</span></td>
+                    <td ><span class="title-head-span">Booked Quantity</span></td>
+                    <td ><span class="title-head-span">Is Multibooked</span></td>
+                    <td ><span class="title-head-span">Is Partial</span></td>
+                    <td ><span class="title-head-span">Partial Amount</span></td>
+                    <td ><span class="title-head-span">Payment Status</span></td>
+                    <td ><span class="title-head-span">Last Process Date</span></td>
+                    <td class="table-head-title"><span class="title-head-span">Action</span></td>
+                  </tr>
+                </thead>
+                <tbody>
+                </tbody>
+              </table>
             </div>
 
 
@@ -69,8 +97,10 @@ if( $response['role'] === 'customer') {
     </div>
     <script>var userOrAdminDetails = <?php echo json_encode($response); ?>;</script>
     <script src="js/script.js"></script>
-
+    <script src="js/swiper-bundle.min.js"></script>
     <script src="js/notificationListener.js"></script>
+    <script src="js/payments.js"></script>
+    <script src="js/dataTables.js"></script>
 
   </body>
 </html>
