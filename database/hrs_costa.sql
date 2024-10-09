@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 09, 2024 at 01:44 PM
+-- Generation Time: Oct 09, 2024 at 01:58 PM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -33,6 +33,13 @@ CREATE TABLE `access_token` (
   `userId` bigint(10) NOT NULL,
   `expirationDate` date DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `access_token`
+--
+
+INSERT INTO `access_token` (`Id`, `token`, `userId`, `expirationDate`) VALUES
+(166, 'yH5Hz0aaXHU9LTvNbmCLfpdxmRDqadqEtRj5TcGIHfErc8BFf0', 93, '2024-11-08');
 
 -- --------------------------------------------------------
 
@@ -268,7 +275,7 @@ CREATE TABLE `user` (
 --
 
 INSERT INTO `user` (`id`, `username`, `email`, `password`, `role`, `createdDate`, `lastModifiedDate`) VALUES
-(92, 'Test Admin', 'testadmin@test.com', 'V0lMeVZ5U2FzajlwcDJmZVcxV2JNdz09', 'customer', '2024-10-09', '2024-10-09');
+(93, 'Test Admin', 'testadmin@test.com', 'dXVVVVcrZ08wNmNhTWlyWTJkL0o5QT09', 'admin', '2024-10-09', '2024-10-09');
 
 --
 -- Indexes for dumped tables
@@ -369,7 +376,7 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT for table `access_token`
 --
 ALTER TABLE `access_token`
-  MODIFY `Id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=165;
+  MODIFY `Id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=167;
 
 --
 -- AUTO_INCREMENT for table `amenity`
@@ -435,7 +442,7 @@ ALTER TABLE `room_image`
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=93;
+  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=94;
 
 --
 -- Constraints for dumped tables
