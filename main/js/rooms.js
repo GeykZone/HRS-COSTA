@@ -1787,7 +1787,7 @@ function singleRoomBookingPayment(paymentDetails) {
                     }
                 })
 
-                paymentMethodMsg.innerText = `You have selected ${singleBookingPaymentMethod} as your payment method. Please be aware that we will review the image evidence you provide before confirming your reservation.`;
+                paymentMethodMsg.innerText = `You have selected ${singleBookingPaymentMethod} as your payment method. To confirm your booking, a 50% payment is required. After payment, the admin will review and approve it. The remaining balance is due as per the booking terms.`;
                 
                 if(singleBookingPaymentMethod === 'Manual'){
 
