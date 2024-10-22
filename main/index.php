@@ -39,7 +39,7 @@ if( $response['role'] === 'customer') {
           <div class="main-content">
         
         <div class="head-card-box">   
-        <div class="flash-card">
+              <div class="flash-card">
                   <div class="flash-card-title">
                       <h3><i class="fa-solid fa-hotel"></i></h3>
                       <h3>Total Rooms</h3>

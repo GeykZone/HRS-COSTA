@@ -1,7 +1,8 @@
 <?php 
 include ('dynamicFunctions.php');
 
-$date = new DateTime();
+$timezone = new DateTimeZone('Asia/Manila');
+$date = new DateTime('now', $timezone);
 $currentDate = $date->format('Y-m-d');
 
 // listen for notification

@@ -26,7 +26,7 @@
         </div>
       </div>
         <div class="room-form-container">
-          <div class="viewRoomMainImage-container"><img src="" alt="main-image" id="viewRoomMainImage"></div>
+          <div class="viewRoomMainImage-container "><img src="" class=" clickable" alt="main-image" id="viewRoomMainImage"></div>
           <div class="slider-container" id="singleRoomSliderContainerID">
           <div class="container swiper">
               <div class="slide-container">

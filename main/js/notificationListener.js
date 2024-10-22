@@ -305,7 +305,7 @@ function openSingleReservationNotification(notificationData) {
     });
 
     let moreDetails = document.querySelectorAll('.more-details');
-    if(openFromTable && openFromTable.length > 0){
+    if(typeof openFromTable !== 'undefined' && openFromTable && openFromTable.length > 0){
         moreDetails.forEach(button => {
             if(!button.classList.contains('hide-notif-btn')){
                 button.classList.add('hide-notif-btn')

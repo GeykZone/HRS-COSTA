@@ -993,76 +993,65 @@ main .main-content .title::after {
   border-color: var(--green-color) transparent transparent transparent;
 }
 
-@media (min-width: 1501px) {
-  .head-card-box {
-    display: flex;
-    justify-content: space-around; /* Aligns content to the start */
-    align-items: center;
-    flex-wrap: wrap; /* Allows wrapping */
-    gap: var(--third-padding); /* Consistent gap between tiles */
-    margin-bottom: 15px;
-  }
+.head-card-box {
+  display: flex;
+  justify-content: flex-start; /* Align cards to the start of the row */
+  flex-wrap: wrap; /* Wrap the cards to the next line if needed */
+  gap: var(--third-padding); /* Consistent gap between tiles */
+  margin-bottom: 15px;
+}
+
+.flash-card {
+  background-color: var(--white-color);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 200px;
+  border-radius: var(--first-radius);
+  overflow: hidden;
+  padding: var(--third-padding);
+  text-align: center;
+  /* Initial size for larger screens */
+  flex: 1 1 calc(20% - var(--third-padding));
+}
+
+/* Add pseudo-element to balance gaps */
+.head-card-box::after {
+  content: "";
+  flex: auto; /* Fills the remaining space in the row */
+}
+
+/* Responsive layout adjustments using media queries */
+
+/* For large screens (desktops), show 5 cards per row */
+@media (min-width: 1200px) {
   .flash-card {
-    flex: 0 1 calc(20% - var(--third-padding));
-    background-color: var(--white-color);
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
-    height: 200px;
-    width: 250px;
-    border-radius: var(--first-radius);
-    overflow: hidden;
-    padding: var(--third-padding);
+    flex: 1 1 calc(20% - var(--third-padding)); /* 5 cards per row */
   }
 }
 
-@media (max-width: 1500px) {
-  .head-card-box {
-    display: flex;
-    justify-content: center; /* Aligns content to the start */
-    align-items: center;
-    flex-wrap: wrap; /* Allows wrapping */
-    gap: var(--third-padding); /* Consistent gap between tiles */
-    margin-bottom: 15px;
-  }
-  
+/* For medium screens (tablets), show 3 cards per row */
+@media (max-width: 1199px) and (min-width: 768px) {
   .flash-card {
-    flex: 0 1 calc(33%.33 - var(--third-padding));
-    background-color: var(--white-color);
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
-    height: 200px;
-    width: 230px;
-    border-radius: var(--first-radius);
-    overflow: hidden;
-    padding: var(--third-padding);
+    flex: 1 1 calc(33.33% - var(--third-padding)); /* 3 cards per row */
   }
 }
 
-@media (max-width: 507px) {
-  .head-card-box {
-    display: flex;
-    justify-content: center; /* Aligns content to the start */
-    align-items: center;
-    flex-wrap: wrap; /* Allows wrapping */
-    gap: var(--third-padding); /* Consistent gap between tiles */
-    margin-bottom: 15px;
-  }
-  
+/* For smaller screens (mobile), show 2 cards per row */
+@media (max-width: 767px) {
   .flash-card {
-    flex: 0 1 calc(33%.33 - var(--third-padding));
-    background-color: var(--white-color);
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
-    height: 200px;
-    width: 100%;
-    border-radius: var(--first-radius);
-    overflow: hidden;
-    padding: var(--third-padding);
+    flex: 1 1 calc(50% - var(--third-padding)); /* 2 cards per row */
   }
 }
+
+/* For extra small screens (very small mobile), show 1 card per row */
+@media (max-width: 576px) {
+  .flash-card {
+    flex: 1 1 100%; /* 1 card per row */
+  }
+}
+
+
 
 .flash-card .flash-card-title {
   display: flex;

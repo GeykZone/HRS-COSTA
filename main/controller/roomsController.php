@@ -610,7 +610,9 @@ if(isset($inputData['getTotalRoomCounts'])) {
 // Query total number of checkouts today
 if (isset($inputData['getCheckoutValueToday'])) {
 
-    $currentDate = date('Y-m-d');
+    $timezone = new DateTimeZone('Asia/Manila');
+    $date = new DateTime('now', $timezone);
+    $currentDate = $date->format('Y-m-d');
     $sql = "SELECT COUNT(*) AS totalCheckoutToday FROM check_ins WHERE `checkOutDate` = ? AND `status` = 'approved'";
 
     if ($stmt = $conn->prepare($sql)) {
@@ -630,7 +632,9 @@ if (isset($inputData['getCheckoutValueToday'])) {
 // Query total number of check-ins today
 if (isset($inputData['getCheckInValueToday'])) {
 
-    $currentDate = date('Y-m-d');
+    $timezone = new DateTimeZone('Asia/Manila');
+    $date = new DateTime('now', $timezone);
+    $currentDate = $date->format('Y-m-d');
     $sql = "SELECT COUNT(*) AS totalCheckInToday FROM check_ins WHERE `checkInDate` = ? AND `status` = 'approved'";
 
     if ($stmt = $conn->prepare($sql)) {
@@ -650,7 +654,9 @@ if (isset($inputData['getCheckInValueToday'])) {
 // Query total number of partially-paid today
 if (isset($inputData['getTotdaysPaidPartial'])) {
 
-    $currentDate = date('Y-m-d');
+    $timezone = new DateTimeZone('Asia/Manila');
+    $date = new DateTime('now', $timezone);
+    $currentDate = $date->format('Y-m-d');
     $sql = "SELECT COUNT(*) AS totdaysPaidPartial FROM check_ins WHERE (`createdDate` = ? OR `latestModifiedDate` = ?) AND `status` = 'approved' AND `isPartial` = '1'";
 
     if ($stmt = $conn->prepare($sql)) {
@@ -667,11 +673,12 @@ if (isset($inputData['getTotdaysPaidPartial'])) {
     echo json_encode($response);
 }
 
-
 // Query total number of todays rejected or cancelled
 if (isset($inputData['getCancelledOrRejected'])) {
 
-    $currentDate = date('Y-m-d');
+    $timezone = new DateTimeZone('Asia/Manila');
+    $date = new DateTime('now', $timezone);
+    $currentDate = $date->format('Y-m-d');
     $sql = "SELECT COUNT(*) AS totdaysCancelledOrRejected FROM check_ins WHERE (`createdDate` = ? OR `latestModifiedDate` = ?) AND (`status` = 'rejected' OR `status` = 'cancelled' )";
 
     if ($stmt = $conn->prepare($sql)) {

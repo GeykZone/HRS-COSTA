@@ -421,6 +421,11 @@ function displayRooms(room) {
 
     multibookingELement = document.querySelectorAll('.multi-booking-element');
 }
+
+document.getElementById('viewRoomMainImage').addEventListener('click', function() {
+    const imageSrc = this.src; // Get the image source URL
+    window.open(imageSrc, '_blank'); // Open the image in a new tab
+});
   
 // event for previewig selected image
 fileInput.addEventListener('change', function() {
