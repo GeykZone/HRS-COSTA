@@ -50,7 +50,7 @@ include('controller/generalController.php');
               <span class="clickable costa-btn-a" id="paymentsOpenFilterModalBtn">Filter</span>
             </div>
 
-            <style>
+            <!-- <style>
               li[data-dtr-index="9"] .dtr-title {
                 display: none !important;
               }
@@ -64,7 +64,7 @@ include('controller/generalController.php');
                 text-align: center !important;
                 vertical-align: middle !important;
               }
-            </style>
+            </style> -->
 
             <div class="paymentDetailsContainer" >
               <table id="paymentDetailsTable"  class="nowrap content-table" width="100%">
@@ -73,13 +73,11 @@ include('controller/generalController.php');
                     <td ><span class="title-head-span">Customer</span></td>
                     <td ><span class="title-head-span">Payment Method</span></td>
                     <td ><span class="title-head-span">Total Price</span></td>
+                    <td ><span class="title-head-span">Partial Amount</span></td>
                     <td ><span class="title-head-span">Booked Quantity</span></td>
                     <td ><span class="title-head-span">Is Multibooked</span></td>
-                    <td ><span class="title-head-span">Is Partial</span></td>
-                    <td ><span class="title-head-span">Partial Amount</span></td>
                     <td ><span class="title-head-span">Payment Status</span></td>
                     <td ><span class="title-head-span">Last Process Date</span></td>
-                    <td class="table-head-title"><span class="title-head-span">Action</span></td>
                   </tr>
                 </thead>
                 <tbody>

@@ -107,11 +107,10 @@ if(isset($_GET['bookingDetailsTable'])){
         array('db' => 'checkInDate', 'dt' => 3, 'field' => 'checkInDate'),
         array('db' => 'checkOutDate', 'dt' => 4, 'field' => 'checkOutDate'),
         array('db' => 'checkInQuantity', 'dt' => 5, 'field' => 'checkInQuantity'),
-        array('db' => 'isPartial', 'dt' => 6, 'field' => 'isPartial', 'formatter' => function($d, $row) {return isPartialOrNOt($d);}),
-        array('db' => 'status', 'dt' => 7, 'field' => 'status', 'formatter' => function($d, $row) {return ucwords($d);}),
-        array('db' => 'createdDate', 'dt' => 8, 'field' => 'createdDate'),
-        array('db' => 'latestModifiedDate', 'dt' => 9, 'field' => 'latestModifiedDate'),
-        array('db' => 'ci.Id', 'dt' => 10, 'field' => 'Id'),
+        array('db' => 'status', 'dt' => 6, 'field' => 'status', 'formatter' => function($d, $row) {return ucwords($d);}),
+        array('db' => 'createdDate', 'dt' => 7, 'field' => 'createdDate'),
+        array('db' => 'latestModifiedDate', 'dt' => 8, 'field' => 'latestModifiedDate'),
+        array('db' => 'ci.Id', 'dt' => 9, 'field' => 'Id'),
     );
 
      // Include SQL query processing class 
@@ -473,13 +472,11 @@ if(isset($_GET['paymentDetailsTable'])){
         array('db' => 'customerfullName', 'dt' => 0, 'field' => 'customerfullName'),
         array('db' => 'pm.paymentMethodName', 'dt' => 1, 'field' => 'paymentMethodName'),
         array('db' => 'ci.Id', 'dt' => 2, 'field' => 'Id', 'formatter' => function($d, $row) {return formatCurrency(getTotalAmount($d));}),
-        array('db' => 'ci.Id', 'dt' => 3, 'field' => 'Id', 'formatter' => function($d, $row) {return getTotalBooked($d);}),
-        array('db' => 'multiBookId', 'dt' => 4, 'field' => 'multiBookId', 'formatter' => function($d, $row) { if($d != 0){return 'True';}return 'False';}),
-        array('db' => 'isPartial', 'dt' => 5, 'field' => 'isPartial', 'formatter' => function($d, $row) {return isPartialOrNOt($d);}),
-        array('db' => 'ci.Id', 'dt' => 6, 'field' => 'Id', 'formatter' => function($d, $row) {return formatCurrency(getPartialAmount($d));}),
-        array('db' => 'status', 'dt' => 7, 'field' => 'status'),
-        array('db' => 'latestModifiedDate', 'dt' => 8, 'field' => 'latestModifiedDate'),
-        array('db' => 'ci.Id', 'dt' => 9, 'field' => 'Id'),
+        array('db' => 'ci.Id', 'dt' => 3, 'field' => 'Id', 'formatter' => function($d, $row) {return formatCurrency(getPartialAmount($d));}),
+        array('db' => 'ci.Id', 'dt' => 4, 'field' => 'Id', 'formatter' => function($d, $row) {return getTotalBooked($d);}),
+        array('db' => 'multiBookId', 'dt' => 5, 'field' => 'multiBookId', 'formatter' => function($d, $row) { if($d != 0){return 'True';}return 'False';}),
+        array('db' => 'status', 'dt' => 6, 'field' => 'status'),
+        array('db' => 'latestModifiedDate', 'dt' => 7, 'field' => 'latestModifiedDate'),
     );
 
      // Include SQL query processing class 

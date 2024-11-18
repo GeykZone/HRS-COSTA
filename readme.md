@@ -8,10 +8,11 @@
 -Pending
 -Approved
 -Rejected
--Pending Cancellation
--Cancelled
 
 # todo next
-- inig tuslok sa cancel kay if multibooking kay lahi ang pop-up message
-- sa pop-up kay mag message about mo contact ra ang support team sa contact info nga gi provide if accepted ba
-- ang gi cancel nga checkin id kay ma change ang status u pending cancellation 
+-Inig checkout dili sa ma bookingan after one day pa
+-Walaon ang isPartial
+-ratings (inig checkout ra maka rating)
+-Landing Page butngan og map
+-contact us through gmail
+

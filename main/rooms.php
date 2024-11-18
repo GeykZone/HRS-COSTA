@@ -50,19 +50,19 @@ include('controller/generalController.php')
         <div class="nav-tab">
           <div class="nav-list">
 
-            <div class="customer display-none room-booking-nav-list-container">
+            <div class=" room-booking-nav-list-container">
               <label for="check-in-date">Check-in</label>
               <input type="date" id="check-in-date" class="costa-datePicker">
               <div id="check-in-date-error" class="room-error-message-label error"></div>
             </div>
 
-            <div class="customer display-none room-booking-nav-list-container">
+            <div class=" room-booking-nav-list-container">
               <label for="check-out-date">Check-out</label>
               <input type="date" id="check-out-date" class="costa-datePicker">
               <div id="check-out-date-error" class="room-error-message-label error"></div>
             </div>
             
-           <div class="customer display-none room-booking-nav-list-container">
+           <div class=" room-booking-nav-list-container">
               <label for="check-out-date" >Availability</label>
               <span class="clickable costa-btn-a" id="searchAvailableRooms">Search </span>
               <div  class="room-error-message-label error"></div>

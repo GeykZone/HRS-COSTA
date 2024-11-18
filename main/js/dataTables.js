@@ -98,7 +98,7 @@ if(document.getElementById('bookingDetailsTable')){
         }      
         
       },
-      order: [[0,'asc']],
+      order: [[8,'desc']],
       
       responsive: true,
       fixedHeader: true,
@@ -113,7 +113,7 @@ if(document.getElementById('bookingDetailsTable')){
                 // Specify columns to be included (0 to 9 in this case)
                 columns: function (idx, data, node) {
                     // Include columns 0 to 9
-                    return idx >= 0 && idx <= 9;
+                    return idx >= 0 && idx <= 8;
                 }
               }
           }
@@ -122,7 +122,7 @@ if(document.getElementById('bookingDetailsTable')){
   
       //disable the sorting of colomn
         "columnDefs": [ {
-        "targets": 10,
+        "targets": 9,
         "orderable": false
         } ],
   
@@ -132,7 +132,6 @@ if(document.getElementById('bookingDetailsTable')){
         },
   
       "columns": [
-        null,
         null,
         null,
         null,
@@ -192,15 +191,11 @@ if(document.getElementById('paymentDetailsTable')){
       console.log('table =>', bookingTableData)
      
     }
-
-  
   
     if ( ! $.fn.DataTable.isDataTable( '#paymentDetailsTable' ) ) { // check if data table is already exist
       let tableDataVar;
   
     table = $('#paymentDetailsTable').DataTable({
-
-      
   
       // "processing": true,
       "deferRender": true,
@@ -215,7 +210,7 @@ if(document.getElementById('paymentDetailsTable')){
         }      
         
       },
-      order: [[0,'asc']],
+      order: [[7,'desc']],
       
       responsive: true,
       fixedHeader: true,
@@ -231,7 +226,7 @@ if(document.getElementById('paymentDetailsTable')){
                 // Specify columns to be included (0 to 8 in this case)
                 columns: function (idx, data, node) {
                     // Include columns 0 to 8
-                    return idx >= 0 && idx <= 8;
+                    return idx >= 0 && idx <= 7;
                 }
               }
           }
@@ -239,10 +234,10 @@ if(document.getElementById('paymentDetailsTable')){
       "lengthMenu": [[5, 10, 20, 50, 100], [5, 10, 20, 50, 100]],
   
       //disable the sorting of colomn
-        "columnDefs": [ {
-        "targets": 9,
-        "orderable": false
-        } ],
+        // "columnDefs": [ {
+        // "targets": 9,
+        // "orderable": false
+        // } ],
   
         "language": {
           "info": "Showing _START_ to _END_ of _TOTAL_ entries",
@@ -257,40 +252,7 @@ if(document.getElementById('paymentDetailsTable')){
         null,
         null,
         null,
-        null,
-        null,
-        {
-          "targets": 9,
-          "render": function ( data, type, row, meta ) {
-
-            customer = document.querySelectorAll(".customer");
-            admin = document.querySelectorAll(".admin");
-
-            let actionButton;
-
-            if( typeof userOrAdminDetails !== 'undefined' && Object.keys(userOrAdminDetails).length > 0){
-              let status = row[7];
-              let isPartial = row[5];
-          
-              if(userOrAdminDetails.role === 'customer' || userOrAdminDetails.role === 'Pending Cancellation' || userOrAdminDetails.role === 'Cancelled'){
-                actionButton = `<span class="clickable costa-btn-a customer" id="${data}" onClick="moreDetails(this.id)" >Cancel Payment</span>`
-                if(status == 'rejected'){
-                  actionButton = `<span class="clickable costa-btn-disabled customer" id="${data}" >Cancel Payment</span>`
-                }
-              }
-              else {
-                actionButton = `<span class="clickable costa-btn-a admin" id="${data}" onClick="moreDetails(this.id)" >Fully Paid</span>`
-                if(isPartial != 'True'){
-                  actionButton = `<span class="clickable costa-btn-disabled admin" id="${data}" >Fully Paid</span>`
-                }
-              }
-            }
-
-            return actionButton;
-                   
-          },
-          
-        },
+        null
       ],
     });    
     }

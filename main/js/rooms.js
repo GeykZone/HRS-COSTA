@@ -2218,7 +2218,7 @@ function displayRoomsInSliderWithWrapper(room, wrapper) {
     if (wrapper) {
         wrapper.appendChild(cardSwiperContainer);
     }
-  }
+}
 
 // to show the add room addRoomModal
 if (addRoomBtn) {

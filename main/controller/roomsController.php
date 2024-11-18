@@ -333,8 +333,6 @@ if (isset($inputData['queryAllRooms'])) {
     ORDER BY r.Id ASC
 ";
 
-
-
     if ($stmt = $conn->prepare($selectRoomsSql)) {
         // Bind the parameters to the SQL query
         $stmt->bind_param('ssssss', $checkOutDate, $checkInDate, $checkOutDate, $checkInDate, $checkInDate, $checkOutDate);
