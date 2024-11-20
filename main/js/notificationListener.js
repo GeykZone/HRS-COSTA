@@ -7,6 +7,8 @@ let ReservationCheckInId;
 let bookingType;
 let openReservationNotificationModal = document.getElementById('openReservationNotificationModal');
 let closeReservationNotification = document.getElementById('closeReservationNotification');
+let roomDetailsData;
+let rateRoom = document.querySelector('#rateRoom');  
 
 
 dynamicConfirmationMessage({
@@ -68,7 +70,7 @@ function checkForNewRows() {
                     
                     let notifications = response.newRows
 
-                    console.log(notifications);
+                    // console.log(notifications);
 
                     clearNotifications();
 
@@ -191,7 +193,7 @@ function openSingleReservationNotification(notificationData) {
         openReservationNotification: true,
         notificationId: notificationId,
     };
-
+    let specificDate;
     handlePostRequest(url,data )
     .then((response) => {
         // console.log('response: ', response)
@@ -248,6 +250,8 @@ function openSingleReservationNotification(notificationData) {
         document.getElementById('rejectionMessage').innerText = roomDetails.reservationMessage;
         document.getElementById('isPartial').innerText = isPartialVal;
         document.getElementById('allocatedPartial').innerText = dynamicCurrencyforTxtValue(notificationData.partialPayment);
+        specificDate = roomDetails.checkOutDate; 
+        roomDetailsData = roomDetails;
         
 
         if(roomDetails.paymentMethodName != 'Manual') {
@@ -269,7 +273,7 @@ function openSingleReservationNotification(notificationData) {
                 cardWrapperEvidence.innerHTML = '';
             }
 
-            console.log(imageJSON)
+            // console.log(imageJSON)
 
             imageJSON.forEach(img => {
                 displayRoomsInSliderWithWrapper(img, cardWrapperEvidence);
@@ -303,14 +307,45 @@ function openSingleReservationNotification(notificationData) {
         alertMessage('Something went wrong, Error: ' + error, 'error', 3000);
         console.log("Error:", error);
     });
+    
 
-    let moreDetails = document.querySelectorAll('.more-details');
+    let moreDetails = document.querySelectorAll('.more-details');  
+    let bookingDetails = document.querySelectorAll('.booking-details');  
+    const currentDate = new Date().toISOString().split('T')[0]; // Get current date in YYYY-MM-DD format
+    // console.log(currentDate)
     if(typeof openFromTable !== 'undefined' && openFromTable && openFromTable.length > 0){
         moreDetails.forEach(button => {
             if(!button.classList.contains('hide-notif-btn')){
                 button.classList.add('hide-notif-btn')
             }
         })
+
+        
+        let setIntervalNew = setInterval(function(){
+            if(specificDate){
+                console.log(document.getElementById('reservationStatus').innerText)
+                clearInterval(setIntervalNew);
+                if (specificDate <= currentDate && document.getElementById('reservationStatus').innerText == 'Reservation approved' ) {
+                    if(rateRoom.classList.contains('hide-notif-btn')){
+                        rateRoom.classList.remove('hide-notif-btn')
+                    }
+
+                    
+                    bookingDetails.forEach(button => {
+                    if(button.classList.contains('hide-notif-btn')){
+                        button.classList.remove('hide-notif-btn')
+                        }
+                    })
+                }
+                else{
+                    if(!rateRoom.classList.contains('hide-notif-btn')){
+                        rateRoom.classList.add('hide-notif-btn')
+                    }
+                }
+            
+            }
+
+        },100)
 
        openFromTable = null;
     }
@@ -320,6 +355,35 @@ function openSingleReservationNotification(notificationData) {
                 button.classList.remove('hide-notif-btn')
             }
         })
+
+
+
+        let setIntervalNew1 = setInterval(function(){
+            if(specificDate){
+                clearInterval(setIntervalNew1);
+                if (specificDate > currentDate ) {
+                    if(!rateRoom.classList.contains('hide-notif-btn')){
+                        rateRoom.classList.add('hide-notif-btn')
+                    }
+                }
+                else{
+                    if(rateRoom.classList.contains('hide-notif-btn')){
+                        rateRoom.classList.remove('hide-notif-btn')
+                    }
+                }
+
+
+                bookingDetails.forEach(button => {
+                    if(!button.classList.contains('hide-notif-btn')){
+                        button.classList.add('hide-notif-btn')
+                    }
+                })
+            
+            }
+
+        },100)
+
+        
     }
 }
 
@@ -527,13 +591,13 @@ function approveCheckInRequest() {
     handlePostRequest(url,data )
     .then((response) => {
         var jsonResponse = JSON.parse(response);
-        console.log(jsonResponse)
+        // console.log(jsonResponse)
         if(jsonResponse.approved === true) {    
             alertMessage('You have successfully approved a check-in reservation request.', 'success', 3000);
         }
         else {
             alertMessage('Approve failed. Something went wrong.', 'warning', 3000);
-            console.log(response)
+            // console.log(response)
         }
     })
     .catch((error) => {
@@ -575,7 +639,7 @@ function rejectCheckInRequest() {
             }
             else {
                 alertMessage('Rejection failed. Something went wrong.', 'warning', 3000);
-                console.log(response)
+                // console.log(response)
             }
         })
         .catch((error) => {
@@ -601,7 +665,7 @@ function markAsRead() {
         }
         else {
             alertMessage('Something went wrong confirming.', 'warning', 3000);
-            console.log(response)
+            // console.log(response)
         }
     })
     .catch((error) => {
@@ -635,6 +699,42 @@ document.querySelector('.cancelReject').addEventListener('click', function(){
 document.getElementById('markAsRead').addEventListener('click', function(){
     markAsRead();
 })
+
+if(rateRoom){
+    const openRateRoomModal = document.getElementById('openRateRoomModal');
+    rateRoom.addEventListener('click', function(){
+
+        const roomDetailsDataInterval = setInterval(function(){
+
+            if(roomDetailsData){
+                clearInterval(roomDetailsDataInterval)
+                // console.log(roomDetailsData)
+
+                if(openRateRoomModal.classList.contains('display-none')){
+                    openRateRoomModal.classList.remove('display-none')
+
+                    let starRatingElement = document.getElementById("room-rating-point-stars");
+                    starRatingElement.style.setProperty('--rating', 5.0);
+                    const ratingsInput = document.getElementById('ratingsInput');
+                    ratingsInput.value = '';
+                }
+            }
+
+        },100)
+
+    })
+
+    let closeRateModal = document.getElementById('closeRateModal');
+
+    if(closeRateModal){
+        closeRateModal.addEventListener('click', function(){
+            if(!openRateRoomModal.classList.contains('display-none')){
+                openRateRoomModal.classList.add('display-none')
+            }
+        })
+    }
+
+}
 
 function clearNotifications() {
     const notificationContainer = document.querySelector('.notification-container');

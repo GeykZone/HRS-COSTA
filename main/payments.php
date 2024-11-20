@@ -74,9 +74,9 @@ include('controller/generalController.php');
                     <td ><span class="title-head-span">Payment Method</span></td>
                     <td ><span class="title-head-span">Total Price</span></td>
                     <td ><span class="title-head-span">Partial Amount</span></td>
-                    <td ><span class="title-head-span">Booked Quantity</span></td>
-                    <td ><span class="title-head-span">Is Multibooked</span></td>
-                    <td ><span class="title-head-span">Payment Status</span></td>
+                    <td ><span class="title-head-span">Quantity</span></td>
+                    <td ><span class="title-head-span">Multibooked</span></td>
+                    <td ><span class="title-head-span">Status</span></td>
                     <td ><span class="title-head-span">Last Process Date</span></td>
                   </tr>
                 </thead>

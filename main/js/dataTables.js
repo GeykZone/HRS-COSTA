@@ -98,7 +98,7 @@ if(document.getElementById('bookingDetailsTable')){
         }      
         
       },
-      order: [[8,'desc']],
+      order: [[9,'desc']],
       
       responsive: true,
       fixedHeader: true,
@@ -122,7 +122,7 @@ if(document.getElementById('bookingDetailsTable')){
   
       //disable the sorting of colomn
         "columnDefs": [ {
-        "targets": 9,
+        "targets": 0,
         "orderable": false
         } ],
   
@@ -132,22 +132,22 @@ if(document.getElementById('bookingDetailsTable')){
         },
   
       "columns": [
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
         {
-          "targets": 10,
+          "targets": 0,
           "render": function ( data, type, row, meta ) {
             return `<span class="clickable costa-btn-a" id="${data}" onClick="moreDetails(this.id)" >More Details</span>`
           },
           
         },
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
       ],
     });
     

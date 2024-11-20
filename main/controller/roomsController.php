@@ -274,12 +274,13 @@ function getPaymentMethod($paymentMethodName) {
 // Check if inputData contains 'queryAllRooms'
 if (isset($inputData['queryAllRooms'])) {
 
-    $checkInDate = (isset($inputData['checkInDate']) ? $inputData['checkInDate'] : null); // Replace with your desired check-in date
-    $checkOutDate =  (isset($inputData['checkOutDate']) ? $inputData['checkOutDate'] : null); // Replace with your desired check-out date
+    $checkInDate = isset($inputData['checkInDate']) ? $inputData['checkInDate'] : null; 
+    $checkOutDate = isset($inputData['checkOutDate']) ? $inputData['checkOutDate'] : null;
 
     $selectRoomsSql = "
     SELECT 
         r.Id AS roomId,
+        r.overall_rating AS overall_rating,
         r.name AS roomName,
         r.maximum AS roomMaxCap,
         r.description AS roomDescription,
@@ -321,16 +322,16 @@ if (isset($inputData['queryAllRooms'])) {
         WHERE 
             status IN ('Pending', 'Approved')
             AND (
-                DATE(checkInDate) <= ? AND DATE(checkOutDate) >= ? -- Overlapping with start date
-                OR DATE(checkInDate) <= ? AND DATE(checkOutDate) >= ? -- Overlapping with end date
-                OR DATE(checkInDate) >= ? AND DATE(checkOutDate) <= ? -- Completely within the date range
+                DATE(checkInDate) <= DATE_ADD(?, INTERVAL 1 DAY) AND DATE(checkOutDate) >= DATE_SUB(?, INTERVAL 1 DAY) 
+                OR DATE(checkInDate) <= DATE_ADD(?, INTERVAL 1 DAY) AND DATE(checkOutDate) >= DATE_SUB(?, INTERVAL 1 DAY)
+                OR DATE(checkInDate) >= DATE_SUB(?, INTERVAL 1 DAY) AND DATE(checkOutDate) <= DATE_ADD(?, INTERVAL 1 DAY)
             )
         GROUP BY roomId
     ) AS totalCheckIn 
     ON r.Id = totalCheckIn.roomId
     WHERE (r.quantity - IFNULL(totalCheckIn.totalCheckInQuantity, 0)) > 0
     GROUP BY r.Id, r.name, r.maximum, r.description, r.originalRate, r.quantity
-    ORDER BY r.Id ASC
+    ORDER BY r.overall_rating DESC
 ";
 
     if ($stmt = $conn->prepare($selectRoomsSql)) {
@@ -343,6 +344,7 @@ if (isset($inputData['queryAllRooms'])) {
 
     echo json_encode($response);
 }
+
 
 // query single room detail
 if (isset($inputData['querySingleRoom'])) {
@@ -445,6 +447,7 @@ if (isset($inputData['openReservationNotification'])) {
     ck.message AS reservationMessage,
     ck.isPartial AS isPartial,
     ck.partialPayment AS partialPayment,
+    ck.roomId AS roomId,
     CONCAT(
         '[',
         GROUP_CONCAT(
@@ -677,7 +680,7 @@ if (isset($inputData['getCancelledOrRejected'])) {
     $timezone = new DateTimeZone('Asia/Manila');
     $date = new DateTime('now', $timezone);
     $currentDate = $date->format('Y-m-d');
-    $sql = "SELECT COUNT(*) AS totdaysCancelledOrRejected FROM check_ins WHERE (`createdDate` = ? OR `latestModifiedDate` = ?) AND (`status` = 'rejected' OR `status` = 'cancelled' )";
+    $sql = "SELECT COUNT(*) AS totdaysCancelledOrRejected FROM check_ins WHERE (`createdDate` = ? OR `latestModifiedDate` = ?) AND (`status` = 'rejected')";
 
     if ($stmt = $conn->prepare($sql)) {
         $stmt->bind_param('ss', $currentDate, $currentDate);
@@ -763,7 +766,8 @@ function roomQuery($stmt) {
                 'customerCompleteAddress' => isset($row['customerCompleteAddress']) ? $row['customerCompleteAddress'] : null,
                 'customerContactInfo' => isset($row['customerContactInfo']) ? $row['customerContactInfo'] : null,
                 'reservationMessage' => isset($row['reservationMessage']) ? $row['reservationMessage'] : null,
-                'totalCheckInQuantity' => isset($row['totalCheckInQuantity'])? $row['totalCheckInQuantity'] : null
+                'totalCheckInQuantity' => isset($row['totalCheckInQuantity'])? $row['totalCheckInQuantity'] : null,
+                'overall_rating' => isset($row['overall_rating'])? $row['overall_rating'] : null
 
             ];
             $response['rooms'][] = $room;

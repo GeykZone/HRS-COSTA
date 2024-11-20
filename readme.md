@@ -10,9 +10,10 @@
 -Rejected
 
 # todo next
--Inig checkout dili sa ma bookingan after one day pa
--Walaon ang isPartial
--ratings (inig checkout ra maka rating)
+-ma apdate ang info sa room ni admin
+-maka add og payment method option
+-ma edit user details
+-generate estimated revenue
 -Landing Page butngan og map
 -contact us through gmail
 

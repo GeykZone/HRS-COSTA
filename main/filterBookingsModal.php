@@ -145,7 +145,6 @@
                 <option class="option-value" value="approved">Approved</option>
                 <option class="option-value" value="pending">Pending</option>
                 <option class="option-value" value="rejected">Rejected</option>
-                <option class="option-value" value="cancelled">Cancelled</option>
             </select>
             <div id="filter-booking-status-error" class="room-error-message-label error"></div>
         </div>

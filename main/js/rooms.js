@@ -286,7 +286,6 @@ function displayRooms(room) {
     let publishedAmount = room.roomPublishedRate;
     publishedAmount = dynamicCurrencyforTxtValue(publishedAmount);
     let totalAvailableRooms = parseInt(room.roomQuantity) - parseInt(room.totalCheckInQuantity);
-   
     const courseBoxHTML = `
         <div class="courses-box" id="courses-box-${room.roomId}">
             <div class="card-image">
@@ -301,7 +300,10 @@ function displayRooms(room) {
                 <p>${room.roomDescription}</p>
                 <select id="select-${room.roomId}" class="pick-list selectAvailableRate"  placeholder="Select Available Rates...">  
                 </select>
-
+                <div>
+                    <h1 class="Stars" id="room-rating-point-stars" style="--rating: ${room.overall_rating};" aria-label=""></h1>
+                    <p style="margin-left: 5px">${room.overall_rating}</p>
+                </div>
                 <div class="multi-booking-element other-booking-options-container display-none">
                     <div class="bookin-checkBox-container">
                         <div class="input-container">

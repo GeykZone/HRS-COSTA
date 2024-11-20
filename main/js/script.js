@@ -243,14 +243,7 @@ if(myChart) {
               borderColor: 'rgba(2, 219, 172, 1)',
               backgroundColor: 'rgba(2, 219, 172, 0.452)',
               tension: 0.4  // This value controls the curve of the line
-          },
-          {
-            label: 'Cancelled',
-            data: getTotalBaseOndateSync('cancelled'),
-            borderColor: 'rgba(255, 102, 0, 1)',
-            backgroundColor: 'rgba(250, 142, 18, 0.5)',
-            tension: 0.4  // This value controls the curve of the line
-        }
+          }
       ]
   };
 
@@ -1115,3 +1108,38 @@ function displayRoomsInSliderWithWrapper(room, wrapper) {
       wrapper.appendChild(cardSwiperContainer);
   }
 }
+
+// dynamic synchronous post request
+function dynamicSynchronousPostRequest(url, data) {
+  const xhr = new XMLHttpRequest();
+
+  // Set async to false to make the request synchronous
+  xhr.open("POST", url, false);
+  xhr.setRequestHeader("Content-Type", "application/json");
+
+  try {
+      // Send the request and block execution until the response is received
+      xhr.send(JSON.stringify(data));
+
+      if (xhr.status === 200) {
+          return xhr.responseText;
+      } else {
+          throw new Error("HTTP Error: " + xhr.status);
+      }
+  } catch (error) {
+      console.error("Request failed:", error);
+      return null;
+  }
+}
+
+// response checker (this checks if the response is json or not)
+function isValidJSON(response) {
+  try {
+      JSON.parse(response);
+      return true;  // It's a valid JSON
+  } catch (e) {
+      return false;  // It's not a valid JSON
+  }
+}
+
+

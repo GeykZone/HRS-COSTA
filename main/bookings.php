@@ -25,6 +25,10 @@ include('controller/generalController.php');
     <!-- resources-->
 
     <!-- resources-->
+    <?php include('rateRoomModal.php') ?>
+    <!-- resources-->
+
+    <!-- resources-->
     <?php include('filterBookingsModal.php') ?>
     <!-- resources-->
     <div class="page-content">
@@ -70,16 +74,16 @@ include('controller/generalController.php');
               <table id="bookingDetailsTable"  class="nowrap content-table" width="100%">
                 <thead>
                   <tr>
+                    <td ><span class="title-head-span">Action</span></td>
                     <td ><span class="title-head-span">Room Name</span></td>
                     <td ><span class="title-head-span">Customer</span></td>
                     <td ><span class="title-head-span">Total Price</span></td>
                     <td ><span class="title-head-span">Check-in Date</span></td>
                     <td ><span class="title-head-span">Check-out Date</span></td>
-                    <td ><span class="title-head-span">Booked Quantity</span></td>
-                    <td ><span class="title-head-span">Booking Status</span></td>
+                    <td ><span class="title-head-span">Quantity</span></td>
+                    <td ><span class="title-head-span">Status</span></td>
                     <td ><span class="title-head-span">Process Date</span></td>
                     <td ><span class="title-head-span">Last Process Date</span></td>
-                    <td class="table-head-title"><span class="title-head-span">Action</span></td>
                   </tr>
                 </thead>
                 <tbody>

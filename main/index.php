@@ -75,7 +75,7 @@ if( $response['role'] === 'customer') {
               <div class="flash-card">
                   <div class="flash-card-title">
                       <h3><i class="fa-regular fa-circle-xmark"></i></h3>
-                      <h3>Cancelled / Rejected</h3>
+                      <h3>Rejected</h3>
                   </div>
                   <div class="flash-card-body">
                      <h2 id="cancelled-or-rejected-today">0</h2>

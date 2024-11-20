@@ -24,6 +24,10 @@ let filterLastProcessStartDate = document.getElementById('filter-last-process-st
 let filterLastProcessEndDate =  document.getElementById('filter-last-process-end-date');
 let filterableValues = [];
 let openFromTable;
+const ratingsInput = document.getElementById('ratingsInput');
+const ratingsInputError = document.getElementById('ratingsInput-error');
+const submitRating = document.getElementById('submitRating')
+
 changeFilterOperatorValueColor();
 checkUrlParamValues();
 
@@ -211,6 +215,88 @@ proceedFilterBtn.addEventListener('click', function(){
 filterTotalPrice.addEventListener('blur', function() {
   dynamicInputFieldCurrencyFormatter(filterTotalPrice)
 });
+
+//ratings input limiter
+ratingsInput.addEventListener('input', () => {
+  const value = parseInt(ratingsInput.value, 10);
+
+  if (value < 1 || value > 5) {
+      displayError(ratingsInput, "Rating must be between 1 and 5.");
+      ratingsInput.value = ''; 
+  } else {
+      displayError(ratingsInput, "");
+  }
+});
+
+//ratings input limiter
+ratingsInput.addEventListener('blur', () => {
+  const value = parseFloat(ratingsInput.value, 10);
+
+  if (value < 1 || value > 5) {
+      ratingsInput.value = '';
+      displayError(ratingsInput, "Rating must be between 1 and 5.");
+      ratingsInput.value = ''; 
+  } else {
+      displayError(ratingsInput, "");
+      // Set the value for the star rating
+      let starRatingElement = document.getElementById("room-rating-point-stars");
+      starRatingElement.style.setProperty('--rating', parseFloat(ratingsInput.value));  // Dynamically update the --rating CSS variable
+  }
+});
+
+// submit rating click event
+if(submitRating){
+  submitRating.addEventListener('click', function(){
+      let isValid = true;
+
+      if(!ratingsInput.value) {
+          displayError(ratingsInput, "Please input a rating.");
+          isValid = false;
+      }
+      else {
+          displayError(ratingsInput, '');
+      }
+
+      // console.log(parseFloat(ratingsInput.value))
+
+      if(isValid){
+
+        const url = "controller/bookings.php";
+        const data = {
+            submitRating: true,
+            rating: parseFloat(ratingsInput.value),
+            roomId: roomDetailsData.roomId,
+            userId: customerId
+        };
+        const detailsList = dynamicSynchronousPostRequest(url, data);
+
+        if(isValidJSON(detailsList)){
+            const details = JSON.parse(detailsList);
+            // console.log('transaction => ', details)
+            let status = details.status;
+            let message = details.message
+            if(status == 'success'){
+                const openRateRoomModal = document.getElementById('openRateRoomModal');
+                if(!openRateRoomModal.classList.contains('display-none')){
+                    openRateRoomModal.classList.add('display-none')
+                }
+                alertMessage(message, 'success', 3000);
+                setTimeout(function(){
+                  window.location.reload();
+                },2500)
+            }
+            else{
+                alertMessage(message, 'error', 3000);
+            }
+        }
+        else{
+            console.error(detailsList);
+            alertMessage('Something went wrong. Please see the error logs for additional information.', 'error', 3000);
+        }
+
+      }
+  })
+}
 
 //check url parameter value
 function checkUrlParamValues() {
