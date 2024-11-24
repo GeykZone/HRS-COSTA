@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 09, 2024 at 01:58 PM
+-- Generation Time: Nov 24, 2024 at 02:08 PM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -39,7 +39,8 @@ CREATE TABLE `access_token` (
 --
 
 INSERT INTO `access_token` (`Id`, `token`, `userId`, `expirationDate`) VALUES
-(166, 'yH5Hz0aaXHU9LTvNbmCLfpdxmRDqadqEtRj5TcGIHfErc8BFf0', 93, '2024-11-08');
+(173, 'oLGdU00KbonPIGGCuZsxB5LeI9XOKIx2mkpLhXUam8RTpHfW0m', 93, '2024-12-12'),
+(174, '8uzrDuvTci9cQYWhEy9oMKK4YNnYX5H4HYeKHoeIae7mAgyTa3', 94, '2024-12-13');
 
 -- --------------------------------------------------------
 
@@ -99,6 +100,16 @@ CREATE TABLE `check_ins` (
   `partialPayment` float NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `check_ins`
+--
+
+INSERT INTO `check_ins` (`Id`, `roomId`, `checkInDate`, `checkOutDate`, `userId`, `queueDateTime`, `status`, `checkInQuantity`, `paymentMethodId`, `totalAmount`, `customerfullName`, `customerCompleteAddress`, `customerContactInfo`, `notificationStatus`, `message`, `multiBookId`, `createdDate`, `latestModifiedDate`, `isPartial`, `partialPayment`) VALUES
+(245, 39, '2024-11-18', '2024-11-19', 94, '2024-11-19 00:36:54', 'approved', 1, 1, 1500, 'Geykson Maravillas', 'Langcangan', '09700780041', 'read', '', 0, '2024-11-18', '2024-11-18', 0, 0),
+(246, 38, '2024-11-18', '2024-11-19', 94, '2024-11-19 01:49:55', 'approved', 1, 2, 3500, 'Geykson Maravillas', 'Langcangan', '09700780041', 'read', '', 0, '2024-11-18', '2024-11-21', 0, 0),
+(247, 40, '2024-11-21', '2024-11-22', 94, '2024-11-21 02:12:05', 'approved', 1, 1, 1500.65, 'Son Jeyk', 'Langcangan', '09700780041', 'read', '', 0, '2024-11-21', '2024-11-21', 1, 500),
+(248, 40, '2024-11-24', '2024-11-25', 94, '2024-11-21 02:25:12', 'rejected', 1, 4, 1500.65, 'Geykson Maravillas', 'Langcangan', '09700780041', 'read', 'Test Reject', 0, '2024-11-21', '2024-11-21', 0, 0);
+
 -- --------------------------------------------------------
 
 --
@@ -110,6 +121,13 @@ CREATE TABLE `created_from_facebook` (
   `userId` bigint(10) NOT NULL,
   `fbUserId` char(225) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `created_from_facebook`
+--
+
+INSERT INTO `created_from_facebook` (`Id`, `userId`, `fbUserId`) VALUES
+(97, 94, '2152625611741250');
 
 -- --------------------------------------------------------
 
@@ -140,7 +158,9 @@ CREATE TABLE `multibook` (
 --
 
 INSERT INTO `multibook` (`id`, `totalAmount`, `partialPayment`) VALUES
-(0, 0, 0);
+(0, 0, 0),
+(58, 16003.2, 0),
+(59, 6500.65, 3500);
 
 -- --------------------------------------------------------
 
@@ -174,6 +194,15 @@ CREATE TABLE `payment_evidence` (
   `Link` varchar(255) NOT NULL,
   `checkInId` bigint(10) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `payment_evidence`
+--
+
+INSERT INTO `payment_evidence` (`Id`, `Link`, `checkInId`) VALUES
+(134, 'https://firebasestorage.googleapis.com/v0/b/hrs-costa.appspot.com/o/images%2Fimages%20(1).png?alt=media&token=006abc67-e422-42b9-a90c-9966893a6382', 245),
+(135, 'https://firebasestorage.googleapis.com/v0/b/hrs-costa.appspot.com/o/images%2Fimages%20(1).png?alt=media&token=25e3f525-362d-4087-af4c-181af2b26681', 246),
+(136, 'https://firebasestorage.googleapis.com/v0/b/hrs-costa.appspot.com/o/images%2Fimages.png?alt=media&token=6b99d545-da7e-44d5-946f-9d966f855162', 247);
 
 -- --------------------------------------------------------
 
@@ -210,17 +239,18 @@ CREATE TABLE `rooms` (
   `maximum` int(10) NOT NULL,
   `description` longtext NOT NULL,
   `originalRate` float NOT NULL,
-  `quantity` bigint(10) NOT NULL
+  `quantity` bigint(10) NOT NULL,
+  `overall_rating` float NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `rooms`
 --
 
-INSERT INTO `rooms` (`Id`, `name`, `maximum`, `description`, `originalRate`, `quantity`) VALUES
-(38, 'Test Room A', 3, 'This hotel room test description provides a detailed overview of the features and amenities available in the room. From the size and layout to the furnishings and decor, customers can gain a clear understanding of what to expect during their stay. The description also highlights any unique selling points or special touches that set this room apart from others in the hotel. Overall, this product description aims to inform and entice potential guests to book this particular room for their upcoming', 3500, 10),
-(39, 'Test Room B', 3, 'This hotel room test description provides a detailed overview of the features and amenities available in the room. From the size and layout to the furnishings and decor, customers can gain a clear understanding of what to expect during their stay. The description also highlights any unique selling points or special touches that set this room apart from others in the hotel. Overall, this product description aims to inform and entice potential guests to book this particular room for their upcoming', 1500, 10),
-(40, 'Test Room C', 5, 'This hotel room test description provides a detailed overview of the features and amenities available in the room. From the size and layout to the furnishings and decor, customers can gain a clear understanding of what to expect during their stay. The description also highlights any unique selling points or special touches that set this room apart from others in the hotel. Overall, this product description aims to inform and entice potential guests to book this particular room for their upcoming', 1500.65, 10);
+INSERT INTO `rooms` (`Id`, `name`, `maximum`, `description`, `originalRate`, `quantity`, `overall_rating`) VALUES
+(38, 'Test Room A', 3, 'This hotel room test description provides a detailed overview of the features and amenities available in the room. From the size and layout to the furnishings and decor, customers can gain a clear understanding of what to expect during their stay. The description also highlights any unique selling points or special touches that set this room apart from others in the hotel. Overall, this product description aims to inform and entice potential guests to book this particular room for their upcoming', 3500, 10, 3.76),
+(39, 'Test Room B', 3, 'This hotel room test description provides a detailed overview of the features and amenities available in the room. From the size and layout to the furnishings and decor, customers can gain a clear understanding of what to expect during their stay. The description also highlights any unique selling points or special touches that set this room apart from others in the hotel. Overall, this product description aims to inform and entice potential guests to book this particular room for their upcoming', 1500, 10, 3.1),
+(40, 'Test Room C', 5, 'This hotel room test description provides a detailed overview of the features and amenities available in the room. From the size and layout to the furnishings and decor, customers can gain a clear understanding of what to expect during their stay. The description also highlights any unique selling points or special touches that set this room apart from others in the hotel. Overall, this product description aims to inform and entice potential guests to book this particular room for their upcoming', 1500.65, 10, 3);
 
 -- --------------------------------------------------------
 
@@ -257,6 +287,31 @@ INSERT INTO `room_image` (`Id`, `Link`, `roomId`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `room_ratings`
+--
+
+CREATE TABLE `room_ratings` (
+  `room_ratings_id` bigint(20) NOT NULL,
+  `user_id` bigint(20) NOT NULL,
+  `room_id` bigint(20) NOT NULL,
+  `rating` float NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `room_ratings`
+--
+
+INSERT INTO `room_ratings` (`room_ratings_id`, `user_id`, `room_id`, `rating`) VALUES
+(6, 94, 38, 4.7),
+(7, 94, 38, 3.3),
+(8, 94, 38, 4.8),
+(9, 94, 38, 5),
+(10, 94, 38, 1),
+(11, 94, 39, 3.1);
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `user`
 --
 
@@ -275,7 +330,9 @@ CREATE TABLE `user` (
 --
 
 INSERT INTO `user` (`id`, `username`, `email`, `password`, `role`, `createdDate`, `lastModifiedDate`) VALUES
-(93, 'Test Admin', 'testadmin@test.com', 'dXVVVVcrZ08wNmNhTWlyWTJkL0o5QT09', 'admin', '2024-10-09', '2024-10-09');
+(93, 'Test Admin', 'testadmin@test.com', 'dXVVVVcrZ08wNmNhTWlyWTJkL0o5QT09', 'admin', '2024-10-09', '2024-10-09'),
+(94, 'Geykson Maravillas', 'matildogeykson@gmail.com', 'dXVVVVcrZ08wNmNhTWlyWTJkL0o5QT09', 'customer', '2024-10-09', '2024-10-09'),
+(95, 'Warren Villafranca', 'warren.villafranca@lsu.edu.ph', 'dXVVVVcrZ08wNmNhTWlyWTJkL0o5QT09', 'customer', '2024-10-19', '2024-10-19');
 
 --
 -- Indexes for dumped tables
@@ -362,6 +419,14 @@ ALTER TABLE `room_image`
   ADD KEY `roomId` (`roomId`);
 
 --
+-- Indexes for table `room_ratings`
+--
+ALTER TABLE `room_ratings`
+  ADD PRIMARY KEY (`room_ratings_id`),
+  ADD KEY `rating_user_id` (`user_id`),
+  ADD KEY `rating_room_id` (`room_id`);
+
+--
 -- Indexes for table `user`
 --
 ALTER TABLE `user`
@@ -376,7 +441,7 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT for table `access_token`
 --
 ALTER TABLE `access_token`
-  MODIFY `Id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=167;
+  MODIFY `Id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=175;
 
 --
 -- AUTO_INCREMENT for table `amenity`
@@ -388,13 +453,13 @@ ALTER TABLE `amenity`
 -- AUTO_INCREMENT for table `check_ins`
 --
 ALTER TABLE `check_ins`
-  MODIFY `Id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=233;
+  MODIFY `Id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=249;
 
 --
 -- AUTO_INCREMENT for table `created_from_facebook`
 --
 ALTER TABLE `created_from_facebook`
-  MODIFY `Id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=97;
+  MODIFY `Id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=98;
 
 --
 -- AUTO_INCREMENT for table `created_from_google`
@@ -406,7 +471,7 @@ ALTER TABLE `created_from_google`
 -- AUTO_INCREMENT for table `multibook`
 --
 ALTER TABLE `multibook`
-  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=58;
+  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=60;
 
 --
 -- AUTO_INCREMENT for table `other_rate`
@@ -418,7 +483,7 @@ ALTER TABLE `other_rate`
 -- AUTO_INCREMENT for table `payment_evidence`
 --
 ALTER TABLE `payment_evidence`
-  MODIFY `Id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=123;
+  MODIFY `Id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=137;
 
 --
 -- AUTO_INCREMENT for table `payment_methods`
@@ -439,10 +504,16 @@ ALTER TABLE `room_image`
   MODIFY `Id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=82;
 
 --
+-- AUTO_INCREMENT for table `room_ratings`
+--
+ALTER TABLE `room_ratings`
+  MODIFY `room_ratings_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+
+--
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=94;
+  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=96;
 
 --
 -- Constraints for dumped tables
@@ -498,6 +569,13 @@ ALTER TABLE `payment_evidence`
 --
 ALTER TABLE `room_image`
   ADD CONSTRAINT `ImageCorresponsingRoomId` FOREIGN KEY (`roomId`) REFERENCES `rooms` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `room_ratings`
+--
+ALTER TABLE `room_ratings`
+  ADD CONSTRAINT `rating_room_id` FOREIGN KEY (`room_id`) REFERENCES `rooms` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `rating_user_id` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
