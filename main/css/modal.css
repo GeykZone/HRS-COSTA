@@ -296,6 +296,11 @@
   width: 150px;
 }
 
+#new-addImages {
+  background-color: grey !important;
+  gap: 10px;
+  width: 150px;
+}
 
 #addImagesEvidence {
   background-color: grey !important;

@@ -34,6 +34,10 @@ include('controller/generalController.php')
     <?php include('addRoomModal.php') ?>
     <!-- resources-->
 
+    <!-- resources-->
+    <?php include('editRoomModal.php') ?>
+    <!-- resources-->
+
     <div class="page-content">
       
       <!--place sidebar here-->

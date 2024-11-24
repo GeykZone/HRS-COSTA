@@ -61,10 +61,14 @@ let selectedFiles = [];
 let selectedFilesSingleBook = [];
 let selectedFilesMultiBook = [];
 let otherRateObject = [];
+let otherRateObjectForEditRoom = [];
 let amenityObject = [];
+let amenityObjectForEditRoom = [];
 let imageLink = [];
 let singleBookingimageLink = [];
 let multiBookingimageLink = [];
+let toBeRemoveOldRoomRate = [];
+let toBeRemoveOdlAmenity = [];
 let otherRateCount = 0;
 let amenityCount = 0
 let swiper;
@@ -78,6 +82,14 @@ let isPartialValueSingle = false;
 let multiBookOverallQuantity;
 const multiBookingLabel =  document.querySelector('.multi-booking-toggle-label');
 const coursesBoxContainer = document.querySelector('.courses-boxes');
+const editRoomModal = document.getElementById('editRoomModal');
+const closeEditRoomModal = document.getElementById('closeEditRoomModal');
+const newAddRateNow = document.getElementById('new-addRateNow');
+const newNewRate = document.getElementById('new-newRate');
+const newAddAmenityNow = document.getElementById('new-addAmenityNow');
+const newAmenity =  document.getElementById('new-amenity');
+const existingRoomImage = document.getElementById('existingRoomImage');
+let oldRoomDetails;
 
 
 function initializeSwiperWithParam(className, swiperWrapperClass) {
@@ -193,7 +205,7 @@ function checkForSearchParams() {
         checkInDateParam = checkInDate;
         checkInDateInput.value = checkInDate;
     } else {
-        console.log("Check-in date parameter not found");
+        console.error("Check-in date parameter not found");
     }
 
     // Check if the check-out date parameter exists
@@ -202,7 +214,7 @@ function checkForSearchParams() {
         checkOutDateParam = checkOutDate;
         checkOutDateInput.value = checkOutDate;
     } else {
-        console.log("Check-out date parameter not found");
+        console.error("Check-out date parameter not found");
     }
 }
 
@@ -256,12 +268,12 @@ function showAllrooms() {
         }
         else {
             alertMessage('There are no rooms available at this time.', 'warning', 3000);
-            console.log(response)
+            console.error(response)
         }
     })
     .catch((error) => {
         alertMessage('Something went wrong, Error: ' + error, 'error', 3000);
-        console.log("Error:", error);
+        console.error("Error:", error);
     });
 }
 
@@ -418,7 +430,7 @@ function displayRooms(room) {
             updateArray(checkedRoomItems, parseInt(room.roomId), 'deselect', true)
         }
 
-        console.log(checkedRoomItems);
+        // console.log(checkedRoomItems);
     })
 
     multibookingELement = document.querySelectorAll('.multi-booking-element');
@@ -611,6 +623,160 @@ bookNOwBtn.addEventListener('click', function() {
             alertMessage('Select atleast one available room.', 'warning', 5000);
         }
     }
+})
+
+newNewRate.addEventListener('blur', function() {
+    dynamicInputFieldCurrencyFormatter(newNewRate)
+});
+
+newNewRate.addEventListener('input', function() {
+    dynamicCurrencyOnlyInput(newNewRate);
+});
+
+// add new rates for edit room
+newAddRateNow.addEventListener('click', function(){
+
+    const newRateType = document.getElementById('new-rateType');
+
+    //add new rates functionality
+    let isValidNewRatesInput = true;
+
+    if(!newRateType.value) {
+        displayError(newRateType, "Type cannot be empty");
+        isValidNewRatesInput = false;
+    }
+    else {
+        displayError(newRateType, '');
+    }
+
+    if(!newNewRate.value) {
+        displayError(newNewRate, "New Rate cannot be empty");
+    isValidNewRatesInput = false;
+    }
+    else {
+        displayError(newNewRate, '');
+    }
+
+    if(isValidNewRatesInput){
+
+        let rateTypeValue = capitalizeFirstLetter(newRateType.value);
+        let newRateValue = parseCurrency(newNewRate.value);
+        newRateValue = formatCurrency(newRateValue);
+
+        let otherRateCard = document.createElement('div');
+        otherRateCard.classList.add('otherRate-card');
+        otherRateCard.id = `new-otherRate-card-${otherRateCount}`;
+
+        otherRateObjectForEditRoom.push({
+            rateType: rateTypeValue,
+            newRateValue: convertCurrencyStringToNumber(newRateValue),
+            id: otherRateCard.id,
+            roomId: oldRoomDetails.rooms[0].roomId
+        });
+
+        // console.log('old room detains => ' , oldRoomDetails.rooms[0].roomId )
+        // console.log(otherRateObjectForEditRoom);
+
+        let rateTypeSpan = document.createElement('span');
+        rateTypeSpan.id = `new-ratype-${otherRateCount}`;
+        rateTypeSpan.textContent = rateTypeValue;
+
+        let colonSpan = document.createElement('span');
+        colonSpan.textContent = ' : ';
+
+        let newRateValueSpan = document.createElement('span');
+        newRateValueSpan.id = `new-newRateValue-${otherRateCount}`;
+        newRateValueSpan.textContent = newRateValue;
+
+        let removeOtherRateCard = document.createElement('span');
+        removeOtherRateCard.classList.add('fa-regular', 'fa-circle-xmark');
+        removeOtherRateCard.style.marginLeft = '10px';
+        removeOtherRateCard.style.cursor = 'pointer';
+
+        otherRateCard.appendChild(rateTypeSpan);
+        otherRateCard.appendChild(colonSpan);
+        otherRateCard.appendChild(newRateValueSpan);
+        otherRateCard.appendChild(removeOtherRateCard);
+
+        document.querySelector('#editExistingRate-container').appendChild(otherRateCard);
+        resetErrors("form-edit-rates")
+
+        otherRateCount++;
+        newRateType.value = null;
+        newNewRate.value = null;
+
+        removeOtherRateCard.addEventListener('click', function() {
+            otherRateCard.remove();
+            let indexToDelete = otherRateObjectForEditRoom.findIndex(function(rateObject) {
+                return rateObject.id === otherRateCard.id;
+            });
+            otherRateObjectForEditRoom.splice(indexToDelete, 1);
+            // console.log(otherRateObjectForEditRoom)
+        });
+        
+    }
+})
+
+// add new amenity for edit room
+newAddAmenityNow.addEventListener('click', () => {
+
+    let isValid = true;
+
+    if(!newAmenity.value) {
+        displayError(newAmenity, "Amenity cannot be empty");
+        isValid = false;
+    }
+    else {
+        displayError(newAmenity, '');
+    }
+
+    if(isValid){
+
+        let amenityInputValue = capitalizeFirstLetter(newAmenity.value);
+
+        let amenityCard = document.createElement('div');
+        amenityCard.classList.add('amenity-card');
+        amenityCard.id = `new-amenity-card-${amenityCount}`;
+
+        amenityObjectForEditRoom.push({
+            amenity: amenityInputValue,
+            id: amenityCard.id,
+            roomId: oldRoomDetails.rooms[0].roomId
+        });
+
+        // console.log(amenityObjectForEditRoom);
+
+        let amenitySpan = document.createElement('span');
+        amenitySpan.id = `new-ratype-${amenityCount}`;
+        amenitySpan.textContent = amenityInputValue;
+
+        let removeAmenityCard = document.createElement('span');
+        removeAmenityCard.classList.add('fa-regular', 'fa-circle-xmark');
+        removeAmenityCard.style.marginLeft = '10px';
+        removeAmenityCard.style.cursor = 'pointer';
+
+        amenityCard.appendChild(amenitySpan);
+        amenityCard.appendChild(removeAmenityCard);
+
+        document.querySelector('#newAmenityContainerIdForEdit').appendChild(amenityCard);
+
+        amenityCount++;
+        amenityInput.value = null;
+
+        removeAmenityCard.addEventListener('click', function() {
+            amenityCard.remove();
+            let indexToDelete = amenityObjectForEditRoom.findIndex(function(amintyObj) {
+                return amintyObj.id === amenityCard.id;
+            });
+            amenityObjectForEditRoom.splice(indexToDelete, 1);
+
+            // console.log(amenityObjectForEditRoom);
+        });
+
+        resetErrors("form-addNewAmenitiesEditRoom")
+
+    }
+
 })
 
 // multi booking validation
@@ -887,10 +1053,10 @@ multiRoomBookingModalBtnDone.addEventListener('click', function() {
         // console.log('book')
         // Call the function to upload images
         if(multibookingPaymentMethod != 'Manual'){
-            console.log(multibookingPaymentMethod)
+            // console.log(multibookingPaymentMethod)
             uploadImageToFirebase(selectedFilesMultiBook, multiBookingimageLink).then(() => {
                 if (multiBookingimageLink.length > 0) {
-                    console.log('image link for multi booking = ' +JSON.stringify(multiBookingimageLink));
+                    // console.log('image link for multi booking = ' +JSON.stringify(multiBookingimageLink));
                     sendReservationRequestMultiBooking();
                 }
             }).catch(error => {
@@ -1016,12 +1182,12 @@ function sendReservationRequestSingleBooking() {
         }
         else {
             alertMessage('Something went wrong, Error: ' + jsonResponse.error, 'error', 5000);
-            console.log(response)
+            console.error(response)
         }
     })
     .catch((error) => {
         alertMessage('Something went wrong, Error: ' + error, 'error', 3000);
-        console.log("Error:", error);
+        console.error("Error:", error);
     });
 }
 
@@ -1070,10 +1236,10 @@ function sendReservationRequestMultiBooking() {
        
         var jsonResponse = JSON.parse(response);
         if(jsonResponse.reserve === 'success') {
-            console.log('response: ', response);
+            // console.log('response: ', response);
             let receiptList = '';
 
-            console.log('checked room items '+checkedRoomItems);
+            // console.log('checked room items '+checkedRoomItems);
 
             checkedRoomItems.forEach((roomItem, index) => {
                 const eachPartial = allocatedPartials * parseInt(roomItem.quantity);
@@ -1159,12 +1325,12 @@ function sendReservationRequestMultiBooking() {
         }
         else {
             alertMessage('Something went wrong, Error: ' + jsonResponse.error, 'error', 5000);
-            console.log(response)
+            console.error(response)
         }
     })
     .catch((error) => {
         alertMessage('Something went wrong, Error: ' + error, 'error', 3000);
-        console.log("Error:", error);
+        console.error("Error:", error);
     });
 }
 
@@ -1519,12 +1685,12 @@ function saveRoomDetailsToDatabase() {
         }
         else {
             alertMessage('Something went wrong, Error: ' + jsonResponse.error, 'error', 5000);
-            console.log(response)
+            console.error(response)
         }
     })
     .catch((error) => {
         alertMessage('Something went wrong, Error: ' + error, 'error', 3000);
-        console.log("Error:", error);
+        console.error("Error:", error);
     });
 }
 
@@ -1568,6 +1734,7 @@ function querySingleRoomDetails(roomId) {
         // console.log(response)
         var jsonResponse = JSON.parse(response);
         if(jsonResponse.rooms.length > 0) {
+            oldRoomDetails = jsonResponse;
             let roomName = jsonResponse.rooms[0].roomName;
             let roomId = jsonResponse.rooms[0].roomId;
             let roomMaxCap = jsonResponse.rooms[0].roomMaxCap;
@@ -1691,12 +1858,12 @@ function querySingleRoomDetails(roomId) {
         }
         else {
             alertMessage('Cant\'t load room details, something went wrong', 'warning', 3000);
-            console.log(response)
+            console.error(response)
         }
     })
     .catch((error) => {
         alertMessage('Something went wrong, Error: ' + error, 'error', 3000);
-        console.log("Error:", error);
+        console.error("Error:", error);
     });
 }
 
@@ -1952,10 +2119,177 @@ publishedRate.addEventListener('input', function() {
     dynamicCurrencyOnlyInput(publishedRate);
 });
 
-submitChanges.addEventListener('click', function(){
-    alert('Editing room details is currently in development');
+submitChanges.addEventListener('click', function(){    
+    const checkOldRoomDetails = setInterval(function(){
+
+        if(oldRoomDetails){
+            clearInterval(checkOldRoomDetails)
+            toBeRemoveOldRoomRate = [];
+            toBeRemoveOdlAmenity = []
+            otherRateObjectForEditRoom = [];
+            amenityObjectForEditRoom = [];
+            otherRateCount = 0;
+            if(editRoomModal.classList.contains('display-none'))
+            {
+               editRoomModal.classList.remove('display-none');
+            }
+           
+            const roomDetails = oldRoomDetails.rooms[0];
+            // console.log(roomDetails)
+            const otherRates = JSON.parse(roomDetails.otherRate);
+            const roomImages = JSON.parse(roomDetails.imageLink);
+            const amenities = JSON.parse(roomDetails.amenities);
+
+            const newRooName = document.getElementById('new-rooName');
+            const newRoomDescription = document.getElementById('new-roomDescription');
+            const newMaximumCapacity = document.getElementById('new-maximumCapacity');
+            const newRoomQuantity = document.getElementById('new-roomQuantity');
+            const newPublishedRate = document.getElementById('new-publishedRate');
+
+
+            newRooName.value = roomDetails.roomName;
+            newRoomDescription.value = roomDetails.roomDescription;
+            newMaximumCapacity.value = roomDetails.roomMaxCap;
+            newRoomQuantity.value = roomDetails.roomQuantity;
+            newPublishedRate.value = dynamicCurrencyforTxtValue(`${roomDetails.roomPublishedRate}`) ;
+
+            //show existing rates and also function to remove it
+            if (roomDetails?.otherRate)  {
+                document.querySelector('#existingRate-container').innerHTML = '';
+                otherRates.forEach(rate => {
+                    const rateId = rate.Id;
+                    const rateAmount = rate.amount;
+                    const rateType = rate.type;
+                
+                    let rateTypeValue = capitalizeFirstLetter(rateType);
+                    let newRateValue = rateAmount;
+                    newRateValue = formatCurrency(newRateValue);
+                
+                    let otherRateCard = document.createElement('div');
+                    otherRateCard.classList.add('otherRate-card');
+                    otherRateCard.id = `existing-otherRate-card-${rateId}`;
+                
+                    let rateTypeSpan = document.createElement('span');
+                    rateTypeSpan.id = `existing-ratype-${rateId}`;
+                    rateTypeSpan.textContent = rateTypeValue;
+                
+                    let colonSpan = document.createElement('span');
+                    colonSpan.textContent = ' : ';
+                
+                    let newRateValueSpan = document.createElement('span');
+                    newRateValueSpan.id = `existing-newRateValue-${rateId}`;
+                    newRateValueSpan.textContent = newRateValue;
+                
+                    let removeOtherRateCard = document.createElement('span');
+                    removeOtherRateCard.classList.add('fa-regular', 'fa-circle-xmark');
+                    removeOtherRateCard.style.marginLeft = '10px';
+                    removeOtherRateCard.style.cursor = 'pointer';
+                
+                    // Add event listener for removing the rate card
+                    removeOtherRateCard.addEventListener('click', () => {
+                        // Add the rate details to the toBeRemoveOldRoomRate array
+                        toBeRemoveOldRoomRate.push({
+                            id: rateId,
+                            type: rateType,
+                            amount: rateAmount
+                        });
+                
+                        // Hide the rate card from the UI
+                        otherRateCard.style.display = 'none';
+                        // console.log('Rate removed:', rateId, rateType, rateAmount); // Optional: For debugging
+                        // console.log('To be removed rates:', toBeRemoveOldRoomRate); // Optional: For debugging
+                    });
+                
+                    otherRateCard.appendChild(rateTypeSpan);
+                    otherRateCard.appendChild(colonSpan);
+                    otherRateCard.appendChild(newRateValueSpan);
+                    otherRateCard.appendChild(removeOtherRateCard);
+                
+                    document.querySelector('#existingRate-container').appendChild(otherRateCard);
+                });
+            }
+
+            //show existing amenities
+            if (roomDetails?.amenities) {
+                document.querySelector('#existingAmenities').innerHTML = ''
+                amenities.forEach(function(amenity){
+                    // console.log(amenity)
+                    const amenityId = amenity.Id;
+                    const amenityName = amenity.amenityName;
+    
+                    let amenityInputValue = capitalizeFirstLetter(amenityName);
+    
+                    let amenityCard = document.createElement('div');
+                    amenityCard.classList.add('amenity-card');
+                    amenityCard.id = `amenity-card-${amenityId}`;
+            
+                    let amenitySpan = document.createElement('span');
+                    amenitySpan.id = `ratype-${amenityId}`;
+                    amenitySpan.textContent = amenityInputValue;
+            
+                    let removeAmenityCard = document.createElement('span');
+                    removeAmenityCard.classList.add('fa-regular', 'fa-circle-xmark');
+                    removeAmenityCard.style.marginLeft = '10px';
+                    removeAmenityCard.style.cursor = 'pointer';
+    
+                    // Add event listener for removing the rate card
+                    removeAmenityCard.addEventListener('click', () => {
+                        // Add the rate details to the toBeRemoveOldRoomRate array
+                        toBeRemoveOdlAmenity.push({
+                            id: amenityId,
+                            amenityName: amenityInputValue
+                        });
+                
+                        // Hide the rate card from the UI
+                        amenityCard.style.display = 'none';
+                        // console.log('To be removed amenities:', toBeRemoveOdlAmenity); // Optional: For debugging
+                    });
+            
+                    amenityCard.appendChild(amenitySpan);
+                    amenityCard.appendChild(removeAmenityCard);
+            
+                    document.querySelector('#existingAmenities').appendChild(amenityCard);
+    
+                })
+            }
+
+            //show existing images
+            if (roomDetails?.imageLink) {
+                roomImages.forEach(function(roomImage){
+                    const imageId = roomImage.Id;
+                    const imageLink = roomImage.Link;
+                    
+                    const previewContainer = document.getElementById('existingRoomImage');
+                    const imageContainer = document.createElement('div');
+                    imageContainer.classList.add('imageContainer');
+                    imageContainer.id = 'imageContainer-'+ imageId;
+
+                    const image = new Image();
+                    image.src = imageLink;
+                    image.classList.add('previewImage');
+
+                    const deleteButton = document.createElement('span');
+                    deleteButton.classList.add('deleteButton','fa-regular', 'fa-circle-xmark');
+                    imageContainer.appendChild(image);
+                    imageContainer.appendChild(deleteButton);
+
+                    previewContainer.appendChild(imageContainer);
+                    
+                })
+            }     
+            
+        }
+
+    },100)
 })
-  
+
+closeEditRoomModal.addEventListener('click', function() {
+    if(!editRoomModal.classList.contains('display-none'))
+    {
+       editRoomModal.classList.add('display-none');
+    }
+})
+
 // add other rates event
 addRateNowBtn.addEventListener('click', function() {
     if (validateOtherRatesForm()) {
@@ -1997,7 +2331,7 @@ addRateNowBtn.addEventListener('click', function() {
         otherRateCard.appendChild(newRateValueSpan);
         otherRateCard.appendChild(removeOtherRateCard);
 
-        document.querySelector('.newAddedRate-container').appendChild(otherRateCard);
+        document.querySelector('#newAddedRate-container-Id').appendChild(otherRateCard);
 
         otherRateCount++;
         rateType.value = null;
@@ -2044,7 +2378,7 @@ addAmenityNowBtn.addEventListener('click', function() {
         amenityCard.appendChild(amenitySpan);
         amenityCard.appendChild(removeAmenityCard);
 
-        document.querySelector('.newAmenity-container').appendChild(amenityCard);
+        document.querySelector('#newAmenityContainerId').appendChild(amenityCard);
 
         amenityCount++;
         amenityInput.value = null;

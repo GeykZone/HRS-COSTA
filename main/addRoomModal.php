@@ -56,7 +56,7 @@
                <span class="clickable costa-btn-a" id="addRateNow">Add +</span>
             </div>
 
-            <div class="newAddedRate-container">
+            <div class="newAddedRate-container" id="newAddedRate-container-Id">
             </div>
           </div>
 
@@ -73,7 +73,7 @@
                <span class="clickable costa-btn-a" id="addAmenityNow">Add +</span>
             </div>
 
-            <div class="newAmenity-container">
+            <div class="newAmenity-container" id="newAmenityContainerId">
             </div>
           </div>
 
