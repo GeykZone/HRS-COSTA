@@ -10,10 +10,9 @@
 -Rejected
 
 # todo next
--ma apdate ang info sa room ni admin
 -maka add og payment method option
 -ma edit user details
 -generate estimated revenue
 -Landing Page butngan og map
--contact us through gmail
+-contact us through messenger
 

@@ -875,4 +875,341 @@ function insertAmenities($roomId, $amenities) {
     return false;
 }
 
+// insert new roomImage
+if (isset($inputData['newRoomImage']) && $inputData['newRoomImage'] === true) {
+    // Capture input data
+    $roomId = $inputData['roomId'] ?? null;
+    $imageLink = $inputData['imageLink'] ?? null;
+
+    // Validate required fields
+    if ($roomId && $imageLink) {
+        // Insert the new image into the room_image table
+        $insertImageSql = "INSERT INTO `room_image` (`Link`, `roomId`) VALUES (?, ?)";
+        if ($stmt = $conn->prepare($insertImageSql)) {
+            $stmt->bind_param("si", $imageLink, $roomId);
+            if ($stmt->execute()) {
+                $response = [
+                    'status' => 'success',
+                    'message' => 'Image added successfully.',
+                    'roomId' => $roomId,
+                    'imageLink' => $imageLink,
+                ];
+            } else {
+                $response = [
+                    'status' => 'error',
+                    'message' => 'Failed to insert image: ' . $stmt->error,
+                ];
+            }
+        } else {
+            $response = [
+                'status' => 'error',
+                'message' => 'Failed to prepare insert statement: ' . $conn->error,
+            ];
+        }
+    } else {
+        $response = [
+            'status' => 'error',
+            'message' => 'Missing required fields or invalid data.',
+        ];
+    }
+
+    // Output response as JSON
+    echo json_encode($response);
+}
+
+// delete room image
+if (isset($inputData['deleteImage']) && $inputData['deleteImage'] === true) {
+    // Capture input data
+    $imageId = $inputData['id'] ?? null;
+    $imageLink = $inputData['link'] ?? null;
+
+    // Validate required fields
+    if ($imageId && $imageLink) {
+        // Prepare the SQL query to delete the image
+        $deleteImageSql = "DELETE FROM `room_image` WHERE `Id` = ? AND `Link` = ?";
+        if ($stmt = $conn->prepare($deleteImageSql)) {
+            $stmt->bind_param("is", $imageId, $imageLink);
+            if ($stmt->execute()) {
+                if ($stmt->affected_rows > 0) {
+                    $response = [
+                        'status' => 'success',
+                        'message' => 'Image deleted successfully.',
+                    ];
+                } else {
+                    $response = [
+                        'status' => 'error',
+                        'message' => 'No matching image found to delete.',
+                    ];
+                }
+            } else {
+                $response = [
+                    'status' => 'error',
+                    'message' => 'Failed to execute delete statement: ' . $stmt->error,
+                ];
+            }
+        } else {
+            $response = [
+                'status' => 'error',
+                'message' => 'Failed to prepare delete statement: ' . $conn->error,
+            ];
+        }
+    } else {
+        $response = [
+            'status' => 'error',
+            'message' => 'Missing required fields: id or Link.',
+        ];
+    }
+
+    // Output response as JSON
+    echo json_encode($response);
+}
+
+// insert other rate
+if (isset($inputData['addNewRate']) && $inputData['addNewRate'] === true) {
+    // Capture input data
+    $rateType = $inputData['rateType'] ?? null;
+    $newRateValue = $inputData['newRateValue'] ?? null;
+    $roomId = $inputData['roomId'] ?? null;
+
+    // Validate required fields
+    if ($rateType && $newRateValue !== null && $roomId) {
+        // Prepare the SQL query to insert the new rate
+        $insertRateSql = "INSERT INTO `other_rate` (`type`, `roomId`, `amount`) VALUES (?, ?, ?)";
+        if ($stmt = $conn->prepare($insertRateSql)) {
+            $stmt->bind_param("sid", $rateType, $roomId, $newRateValue);
+            if ($stmt->execute()) {
+                $response = [
+                    'status' => 'success',
+                    'message' => 'New rate added successfully.',
+                    'rateId' => $stmt->insert_id // Return the ID of the newly inserted rate
+                ];
+            } else {
+                $response = [
+                    'status' => 'error',
+                    'message' => 'Failed to add new rate: ' . $stmt->error
+                ];
+            }
+        } else {
+            $response = [
+                'status' => 'error',
+                'message' => 'Failed to prepare insert statement: ' . $conn->error
+            ];
+        }
+    } else {
+        $response = [
+            'status' => 'error',
+            'message' => 'Missing required fields: rateType, newRateValue, or roomId.'
+        ];
+    }
+
+    // Output response as JSON
+    echo json_encode($response);
+}
+
+// delete other rate
+if (isset($inputData['removeThisOtherRate']) && $inputData['removeThisOtherRate'] === true) {
+    // Capture input data
+    $rateId = $inputData['id'] ?? null; // ID of the rate to be removed
+    $rateType = $inputData['type'] ?? null; // Type of the rate (optional for debugging/logging)
+    $amount = $inputData['amount'] ?? null; // Amount of the rate (optional for debugging/logging)
+
+    // Validate required fields
+    if ($rateId) {
+        // Prepare the SQL query to delete the specified rate
+        $deleteRateSql = "DELETE FROM `other_rate` WHERE `Id` = ?";
+        if ($stmt = $conn->prepare($deleteRateSql)) {
+            $stmt->bind_param("i", $rateId); // Bind the rate ID as an integer
+            if ($stmt->execute()) {
+                // If the deletion is successful
+                if ($stmt->affected_rows > 0) {
+                    $response = [
+                        'status' => 'success',
+                        'message' => "Rate with ID {$rateId} successfully removed.",
+                        'rateId' => $rateId,
+                    ];
+                } else {
+                    $response = [
+                        'status' => 'error',
+                        'message' => "Rate with ID {$rateId} does not exist or was not removed.",
+                    ];
+                }
+            } else {
+                // Handle query execution failure
+                $response = [
+                    'status' => 'error',
+                    'message' => 'Failed to delete the rate: ' . $stmt->error,
+                ];
+            }
+        } else {
+            // Handle query preparation failure
+            $response = [
+                'status' => 'error',
+                'message' => 'Failed to prepare delete statement: ' . $conn->error,
+            ];
+        }
+    } else {
+        // Handle missing rate ID
+        $response = [
+            'status' => 'error',
+            'message' => 'Rate ID is missing or invalid.',
+        ];
+    }
+
+    // Output response as JSON
+    echo json_encode($response);
+}
+
+// add new amenity
+if (isset($inputData['addThisNewAmenity']) && $inputData['addThisNewAmenity'] === true) {
+    // Capture input data
+    $amenityName = $inputData['amenity'] ?? null; // Amenity name
+    $roomId = $inputData['roomId'] ?? null;       // Room ID
+
+    // Validate required fields
+    if ($amenityName && $roomId) {
+        // Prepare the SQL query to insert the new amenity
+        $insertAmenitySql = "INSERT INTO `amenity` (`amenityName`, `roomId`) VALUES (?, ?)";
+        if ($stmt = $conn->prepare($insertAmenitySql)) {
+            $stmt->bind_param("si", $amenityName, $roomId); // Bind the amenity name and room ID
+            if ($stmt->execute()) {
+                // If the insertion is successful
+                $response = [
+                    'status' => 'success',
+                    'message' => "Amenity '{$amenityName}' successfully added to room ID {$roomId}.",
+                    'amenityId' => $stmt->insert_id, // Return the inserted amenity's ID
+                ];
+            } else {
+                // Handle query execution failure
+                $response = [
+                    'status' => 'error',
+                    'message' => 'Failed to insert amenity: ' . $stmt->error,
+                ];
+            }
+        } else {
+            // Handle query preparation failure
+            $response = [
+                'status' => 'error',
+                'message' => 'Failed to prepare insert statement: ' . $conn->error,
+            ];
+        }
+    } else {
+        // Handle missing required fields
+        $response = [
+            'status' => 'error',
+            'message' => 'Missing required fields: amenityName or roomId.',
+        ];
+    }
+
+    // Output response as JSON
+    echo json_encode($response);
+}
+
+// delete amenity
+if (isset($inputData['removeThisAmenity']) && $inputData['removeThisAmenity'] === true) {
+    // Capture input data
+    $amenityId = $inputData['id'] ?? null; // Amenity ID to be removed
+    $roomId = $inputData['roomId'] ?? null; // Room ID for verification
+
+    // Validate required fields
+    if ($amenityId && $roomId) {
+        // Prepare the SQL query to delete the amenity
+        $deleteAmenitySql = "DELETE FROM `amenity` WHERE `Id` = ? AND `roomId` = ?";
+        if ($stmt = $conn->prepare($deleteAmenitySql)) {
+            $stmt->bind_param("ii", $amenityId, $roomId); // Bind the amenity ID and room ID
+            if ($stmt->execute()) {
+                // Check if any rows were affected
+                if ($stmt->affected_rows > 0) {
+                    $response = [
+                        'status' => 'success',
+                        'message' => "Amenity ID {$amenityId} successfully removed from room ID {$roomId}.",
+                    ];
+                } else {
+                    $response = [
+                        'status' => 'error',
+                        'message' => 'No matching amenity found or already deleted.',
+                    ];
+                }
+            } else {
+                // Handle query execution failure
+                $response = [
+                    'status' => 'error',
+                    'message' => 'Failed to delete amenity: ' . $stmt->error,
+                ];
+            }
+        } else {
+            // Handle query preparation failure
+            $response = [
+                'status' => 'error',
+                'message' => 'Failed to prepare delete statement: ' . $conn->error,
+            ];
+        }
+    } else {
+        // Handle missing required fields
+        $response = [
+            'status' => 'error',
+            'message' => 'Missing required fields: amenityId or roomId.',
+        ];
+    }
+
+    // Output response as JSON
+    echo json_encode($response);
+}
+
+// update room info
+if (isset($inputData['updateRoomInfo']) && $inputData['updateRoomInfo'] === true) {
+    // Capture input data
+    $roomId = $inputData['roomId'] ?? null;
+    $newRoomName = $inputData['newRooName'] ?? null;
+    $newRoomDescription = $inputData['newRoomDescription'] ?? null;
+    $newMaximumCapacity = $inputData['newMaximumCapacity'] ?? null;
+    $newRoomQuantity = $inputData['newRoomQuantity'] ?? null;
+    $newPublishedRate = $inputData['newPublishedRate'] ?? null;
+
+    // Validate required fields
+    if ($roomId && $newRoomName && $newRoomDescription && $newMaximumCapacity !== null && $newRoomQuantity !== null && $newPublishedRate !== null) {
+        // Prepare the SQL query to update room details
+        $updateRoomSql = "
+            UPDATE `rooms` 
+            SET 
+                `name` = ?, 
+                `description` = ?, 
+                `maximum` = ?, 
+                `quantity` = ?, 
+                `originalRate` = ?
+            WHERE `Id` = ?";
+
+        if ($stmt = $conn->prepare($updateRoomSql)) {
+            // Bind parameters to the SQL query
+            $stmt->bind_param("ssiidi", $newRoomName, $newRoomDescription, $newMaximumCapacity, $newRoomQuantity, $newPublishedRate, $roomId);
+            
+            // Execute the query
+            if ($stmt->execute()) {
+                $response = [
+                    'status' => 'success',
+                    'message' => 'Room information updated successfully.',
+                    'roomId' => $roomId,
+                ];
+            } else {
+                $response = [
+                    'status' => 'error',
+                    'message' => 'Failed to update room information: ' . $stmt->error,
+                ];
+            }
+        } else {
+            $response = [
+                'status' => 'error',
+                'message' => 'Failed to prepare update statement: ' . $conn->error,
+            ];
+        }
+    } else {
+        $response = [
+            'status' => 'error',
+            'message' => 'Missing required fields.',
+        ];
+    }
+
+    // Output response as JSON
+    echo json_encode($response);
+}
+
 ?>

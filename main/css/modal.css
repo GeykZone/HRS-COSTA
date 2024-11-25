@@ -411,6 +411,12 @@
   gap: 5px;
 }
 
+#new-imagePreviewContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
 #imagePreviewContainerSingleEvidence {
   display: flex;
   flex-wrap: wrap;

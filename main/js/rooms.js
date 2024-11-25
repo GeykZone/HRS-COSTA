@@ -1,11 +1,15 @@
 let fileInput = document.getElementById('fileInput');
+let newFileInput = document.getElementById('new-fileInput');
 let fileInputSingleBookEvidence = document.getElementById('fileInputSingleBookEvidence');
 let fileInputmultiBookEvidence = document.getElementById('fileInputmultiBookEvidence');
 let addImages = document.getElementById('addImages');
+let newAddImages = document.getElementById('new-addImages');
 let addImagesEvidence = document.getElementById('addImagesEvidence');
 let addImagesEvidenceMultbooking = document.getElementById('addImagesEvidenceForMultiBooking');
 let addRoomBtnDone = document.getElementById('addRoomBtnDone');
+let newAddRoomBtnDone = document.getElementById('new-addRoomBtnDone');
 let imagePreviewContainer = document.getElementById('imagePreviewContainer');
+let newImagePreviewContainer = document.getElementById('new-imagePreviewContainer');
 let imagePreviewContainerSingleEvidence = document.getElementById('imagePreviewContainerSingleEvidence')
 let imagePreviewContainermultiEvidence = document.getElementById('imagePreviewContainermultiEvidence')
 let newRate = document.getElementById('newRate');
@@ -23,6 +27,7 @@ let singleRoomBookingModalCLose = document.getElementById('singleRoomBookingModa
 let multiRoomBookingModalCLose = document.getElementById('multiRoomBookingModalCLose');
 let singleRoomBookingModalId = document.getElementById('singleRoomBookingModalId');
 let imagePreviewContainerError = document.getElementById('imagePreviewContainer-error');
+let newImagePreviewContainerError = document.getElementById('new-imagePreviewContainer-error');
 let imagePreviewContainerSingleEvidenceError = document.getElementById('imagePreviewContainerSingleEvidence-error')
 let imagePreviewContainermultiEvidenceError = document.getElementById('imagePreviewContainermultiEvidence-error')
 let checkInDateInput = document.getElementById('check-in-date');
@@ -65,10 +70,13 @@ let otherRateObjectForEditRoom = [];
 let amenityObject = [];
 let amenityObjectForEditRoom = [];
 let imageLink = [];
+let editRoomNewImageLink = [];
 let singleBookingimageLink = [];
 let multiBookingimageLink = [];
 let toBeRemoveOldRoomRate = [];
 let toBeRemoveOdlAmenity = [];
+let toBeRemoveRoomImage = [];
+let addNewImagesForEditRoom = [];
 let otherRateCount = 0;
 let amenityCount = 0
 let swiper;
@@ -89,6 +97,11 @@ const newNewRate = document.getElementById('new-newRate');
 const newAddAmenityNow = document.getElementById('new-addAmenityNow');
 const newAmenity =  document.getElementById('new-amenity');
 const existingRoomImage = document.getElementById('existingRoomImage');
+const newRooName = document.getElementById('new-rooName');
+const newRoomDescription = document.getElementById('new-roomDescription');
+const newMaximumCapacity = document.getElementById('new-maximumCapacity');
+const newRoomQuantity = document.getElementById('new-roomQuantity');
+const newPublishedRate = document.getElementById('new-publishedRate');
 let oldRoomDetails;
 
 
@@ -176,6 +189,13 @@ if(addImages) {
     fileInput.value = "";
     fileInput.click();
  });
+}
+
+if(newAddImages) {
+    newAddImages.addEventListener('click', function() {
+        newFileInput.value = "";
+        newFileInput.click();
+     });
 }
 
 // add image evidence button
@@ -495,6 +515,75 @@ fileInput.addEventListener('change', function() {
     imgCount ++;
 });
 
+// event for previewig selected image for edit room
+newFileInput.addEventListener('change', function() {
+
+    let files = this.files;
+    const previewContainer = document.getElementById('new-imagePreviewContainer');
+
+    for (let i = 0; i < files.length; i++) {
+
+        const file = files[i];
+
+        // Check if the file is an image
+        newImagePreviewContainerError.classList.add('display-none')
+        if (!file.type.startsWith('image/')) {
+            newImagePreviewContainerError.classList.remove('display-none')
+            displayError(newImagePreviewContainer, "Selected file is not an image. Please select an image file.");
+            continue; // Skip non-image files
+        }
+        
+        let reader = new FileReader();
+        reader.onload = function () {
+            const imageContainer = document.createElement('div');
+            imageContainer.classList.add('imageContainer');
+            imageContainer.id = 'imageContainer-' + imgCount;
+        
+            if (files.length > 1) {
+                imageContainer.id = 'imageContainer-' + i;
+            }
+        
+            const image = new Image();
+            image.src = reader.result;
+            image.classList.add('previewImage');
+        
+            const deleteButton = document.createElement('span');
+            deleteButton.classList.add('deleteButton', 'fa-regular', 'fa-circle-xmark');
+        
+            // Attach event listener to deleteButton
+            deleteButton.addEventListener('click', function () {
+                // Remove the image container from the UI
+                imageContainer.remove();
+        
+                // Remove the corresponding entry from the array
+                const index = addNewImagesForEditRoom.findIndex(item => item.id === imageContainer.id);
+                if (index !== -1) {
+                    addNewImagesForEditRoom.splice(index, 1); // Remove the item from the array
+                }
+            });
+        
+            imageContainer.appendChild(image);
+            imageContainer.appendChild(deleteButton);
+        
+            previewContainer.appendChild(imageContainer);
+        
+            // Add image details to the array
+            addNewImagesForEditRoom.push({
+                id: imageContainer.id,
+                file: file,
+                roomId: oldRoomDetails.rooms[0].roomId
+            });
+        };
+        
+
+        reader.readAsDataURL(file);
+        displayError(newImagePreviewContainer, "");
+    }
+
+    imgCount ++;
+});
+
+
 // file input single book evidence event listener
 fileInputSingleBookEvidence.addEventListener('change', function() {
     let files = this.files;
@@ -631,6 +720,14 @@ newNewRate.addEventListener('blur', function() {
 
 newNewRate.addEventListener('input', function() {
     dynamicCurrencyOnlyInput(newNewRate);
+});
+
+newPublishedRate.addEventListener('blur', function() {
+    dynamicInputFieldCurrencyFormatter(newPublishedRate)
+});
+
+newPublishedRate.addEventListener('input', function() {
+    dynamicCurrencyOnlyInput(newPublishedRate);
 });
 
 // add new rates for edit room
@@ -1644,6 +1741,28 @@ addRoomBtnDone.addEventListener('click', async function() {
     }
 });
 
+// Event for adding edited rooms and it's additional details
+newAddRoomBtnDone.addEventListener('click', async function() {
+    if(validateEditRoomForm()) {
+       // Call the function to upload images
+
+       if(addNewImagesForEditRoom.length > 0){
+            uploadImageToFirebase(addNewImagesForEditRoom, editRoomNewImageLink).then(() => {
+                if (editRoomNewImageLink.length > 0) {
+                    saveEditedRoomDetailsToDatabase()
+                }
+            }).catch(error => {
+                console.error('Error uploading images:', error);
+            });
+       }
+       else{
+            saveEditedRoomDetailsToDatabase()
+       }
+
+       
+    }
+});
+
 // Save Romm Details to the Database
 function saveRoomDetailsToDatabase() {
     let otherRatesToPass = null;
@@ -1692,6 +1811,217 @@ function saveRoomDetailsToDatabase() {
         alertMessage('Something went wrong, Error: ' + error, 'error', 3000);
         console.error("Error:", error);
     });
+}
+
+// Save Edited Room Details to database
+function saveEditedRoomDetailsToDatabase() {
+
+let dmlSuccess = true;
+
+roomId = oldRoomDetails.rooms[0].roomId;
+const url = "controller/roomsController.php";
+const data = {
+    updateRoomInfo: true,
+    newRooName: newRooName.value,
+    newRoomDescription: newRoomDescription.value,
+    newMaximumCapacity: newMaximumCapacity.value,
+    newRoomQuantity: newRoomQuantity.value,
+    newPublishedRate: convertCurrencyStringToNumber(newPublishedRate.value),
+    roomId: roomId,
+};
+const detailsList = dynamicSynchronousPostRequest(url, data);
+
+if(isValidJSON(detailsList)){
+    const details = JSON.parse(detailsList);
+    let status = details.status;
+    let message = details.message
+    if(status == 'success'){
+    }
+    else{
+        alertMessage(message, 'error', 3000);
+        dmlSuccess = false;
+    }
+}
+else{
+    dmlSuccess = false;
+    console.error(detailsList);
+    alertMessage('Something went wrong. Please see the error logs for additional information.', 'error', 3000);
+}
+
+if(editRoomNewImageLink.length > 0 && dmlSuccess){
+    editRoomNewImageLink.forEach(function(roomImage){
+        roomId = oldRoomDetails.rooms[0].roomId;
+        const url = "controller/roomsController.php";
+        const data = {
+            newRoomImage: true,
+            imageLink: roomImage.Link,
+            roomId: roomId,
+        };
+        const detailsList = dynamicSynchronousPostRequest(url, data);
+    
+        if(isValidJSON(detailsList)){
+            const details = JSON.parse(detailsList);
+            let status = details.status;
+            let message = details.message
+            if(status == 'success'){
+            }
+            else{
+                alertMessage(message, 'error', 3000);
+                dmlSuccess = false;
+            }
+        }
+        else{
+            dmlSuccess = false;
+            console.error(detailsList);
+            alertMessage('Something went wrong. Please see the error logs for additional information.', 'error', 3000);
+        }
+    })
+}
+
+if(toBeRemoveRoomImage.length > 0 && dmlSuccess){
+    toBeRemoveRoomImage.forEach(function(tobeRemoveImage){
+        roomId = oldRoomDetails.rooms[0].roomId;
+        const url = "controller/roomsController.php";
+        const data = tobeRemoveImage; // this contains this (id: sample, Link Sample)
+        data.deleteImage = true;
+        console.log(data)
+
+        const detailsList = dynamicSynchronousPostRequest(url, data);
+    
+        if(isValidJSON(detailsList)){
+            const details = JSON.parse(detailsList);
+            let status = details.status;
+            let message = details.message
+            if(status == 'success'){
+            }
+            else{
+                dmlSuccess = false;
+                alertMessage(message, 'error', 3000);
+            }
+        }
+        else{
+            dmlSuccess = false;
+            console.error(detailsList);
+            alertMessage('Something went wrong. Please see the error logs for additional information.', 'error', 3000);
+        }
+    })
+}
+
+if(otherRateObjectForEditRoom.length > 0 && dmlSuccess){
+    otherRateObjectForEditRoom.forEach(function(newAddedRate){
+        roomId = oldRoomDetails.rooms[0].roomId;
+        const url = "controller/roomsController.php";
+        const data = newAddedRate;
+        data.addNewRate = true;
+        const detailsList = dynamicSynchronousPostRequest(url, data);
+        if(isValidJSON(detailsList)){
+            const details = JSON.parse(detailsList);
+            let status = details.status;
+            let message = details.message
+            if(status == 'success'){
+            }
+            else{
+                dmlSuccess = false;
+                alertMessage(message, 'error', 3000);
+            }
+        }
+        else{
+            dmlSuccess = false;
+            console.error(detailsList);
+            alertMessage('Something went wrong. Please see the error logs for additional information.', 'error', 3000);
+        }
+    })
+}
+
+if(toBeRemoveOldRoomRate.length > 0 && dmlSuccess){
+    toBeRemoveOldRoomRate.forEach(function(toberemoveRate){
+        roomId = oldRoomDetails.rooms[0].roomId;
+        const url = "controller/roomsController.php";
+        const data = toberemoveRate;
+        data.removeThisOtherRate = true; //{id: '16', type: 'Lucky Sale', amount: 950, removeThisOtherRate: true}
+        const detailsList = dynamicSynchronousPostRequest(url, data);
+        if(isValidJSON(detailsList)){
+            const details = JSON.parse(detailsList);
+            let status = details.status;
+            let message = details.message
+            if(status == 'success'){
+            }
+            else{
+                dmlSuccess = false;
+                alertMessage(message, 'error', 3000);
+            }
+        }
+        else{
+            dmlSuccess = false;
+            console.error(detailsList);
+            alertMessage('Something went wrong. Please see the error logs for additional information.', 'error', 3000);
+        }
+    })
+}
+
+if(amenityObjectForEditRoom.length > 0 && dmlSuccess){
+    amenityObjectForEditRoom.forEach(function(newAmenity){
+        roomId = oldRoomDetails.rooms[0].roomId;
+        const url = "controller/roomsController.php";
+        const data = newAmenity;
+        data.addThisNewAmenity = true; //{amenity: 'Test', id: 'new-amenity-card-0', roomId: 38, addThisNewAmenity: true}
+        const detailsList = dynamicSynchronousPostRequest(url, data);
+        if(isValidJSON(detailsList)){
+            const details = JSON.parse(detailsList);
+            let status = details.status;
+            let message = details.message
+            if(status == 'success'){
+            }
+            else{
+                dmlSuccess = false;
+                alertMessage(message, 'error', 3000);
+            }
+        }
+        else{
+            dmlSuccess = false;
+            console.error(detailsList);
+            alertMessage('Something went wrong. Please see the error logs for additional information.', 'error', 3000);
+        }
+    })
+}
+
+if(toBeRemoveOdlAmenity.length > 0 && dmlSuccess){
+    toBeRemoveOdlAmenity.forEach(function(amenityToremove){
+        roomId = oldRoomDetails.rooms[0].roomId;
+        const url = "controller/roomsController.php";
+        const data = amenityToremove;
+        data.removeThisAmenity = true; //{id: '19', amenityName: 'CR', removeThisAmenity: true}
+        data.roomId = roomId;
+        const detailsList = dynamicSynchronousPostRequest(url, data);
+        if(isValidJSON(detailsList)){
+            const details = JSON.parse(detailsList);
+            let status = details.status;
+            let message = details.message
+            if(status == 'success'){
+            }
+            else{
+                dmlSuccess = false;
+                alertMessage(message, 'error', 3000);
+            }
+        }
+        else{
+            dmlSuccess = false;
+            console.error(detailsList);
+            alertMessage('Something went wrong. Please see the error logs for additional information.', 'error', 3000);
+        }
+    })
+}
+
+if(dmlSuccess){
+    if(!editRoomModal.classList.contains('display-none')){
+        editRoomModal.classList.add('display-none')
+    }
+    alertMessage('Room has been updated successfully.', 'success', 3000);
+    setTimeout(function(){
+      window.location.reload();
+    },2500)
+}
+    
 }
 
 // Function to handle the click event for room details view
@@ -2128,6 +2458,8 @@ submitChanges.addEventListener('click', function(){
             toBeRemoveOdlAmenity = []
             otherRateObjectForEditRoom = [];
             amenityObjectForEditRoom = [];
+            toBeRemoveRoomImage = [];
+            addNewImagesForEditRoom = [];
             otherRateCount = 0;
             if(editRoomModal.classList.contains('display-none'))
             {
@@ -2139,13 +2471,6 @@ submitChanges.addEventListener('click', function(){
             const otherRates = JSON.parse(roomDetails.otherRate);
             const roomImages = JSON.parse(roomDetails.imageLink);
             const amenities = JSON.parse(roomDetails.amenities);
-
-            const newRooName = document.getElementById('new-rooName');
-            const newRoomDescription = document.getElementById('new-roomDescription');
-            const newMaximumCapacity = document.getElementById('new-maximumCapacity');
-            const newRoomQuantity = document.getElementById('new-roomQuantity');
-            const newPublishedRate = document.getElementById('new-publishedRate');
-
 
             newRooName.value = roomDetails.roomName;
             newRoomDescription.value = roomDetails.roomDescription;
@@ -2255,27 +2580,41 @@ submitChanges.addEventListener('click', function(){
 
             //show existing images
             if (roomDetails?.imageLink) {
-                roomImages.forEach(function(roomImage){
+                const previewContainer = document.getElementById('existingRoomImage');
+                previewContainer.innerHTML = ''
+                roomImages.forEach(function (roomImage) {
                     const imageId = roomImage.Id;
                     const imageLink = roomImage.Link;
-                    
-                    const previewContainer = document.getElementById('existingRoomImage');
+        
                     const imageContainer = document.createElement('div');
                     imageContainer.classList.add('imageContainer');
-                    imageContainer.id = 'imageContainer-'+ imageId;
-
+                    imageContainer.id = 'imageContainer-' + imageId;
+            
                     const image = new Image();
                     image.src = imageLink;
                     image.classList.add('previewImage');
-
+            
                     const deleteButton = document.createElement('span');
-                    deleteButton.classList.add('deleteButton','fa-regular', 'fa-circle-xmark');
+                    deleteButton.classList.add('deleteButton', 'fa-regular', 'fa-circle-xmark');
+            
+                    // Add click event listener to delete the image and update the array
+                    deleteButton.addEventListener('click', function () {
+                        // Add the image details to the array
+                        toBeRemoveRoomImage.push({ id: imageId, link: imageLink });
+            
+                        // Remove the image container from the UI
+                        imageContainer.remove();
+
+                        console.log('Removed images:', toBeRemoveRoomImage); // For debugging
+                    });
+            
                     imageContainer.appendChild(image);
                     imageContainer.appendChild(deleteButton);
-
+            
                     previewContainer.appendChild(imageContainer);
-                    
-                })
+                });
+            
+                
             }     
             
         }
@@ -2445,6 +2784,60 @@ function validateAddRoomForm() {
         displayError(imagePreviewContainer, "No image selected, please select at least one");
         isValid = false;
     }
+
+    return isValid;
+}
+
+// validate the edit room form
+function validateEditRoomForm() {
+
+    let isValid = true;
+
+    if (!newRooName.value) {
+        displayError(newRooName, "Room Name cannot be empty");
+        isValid = false;
+    }
+    else {
+        displayError(newRooName, '');
+    }
+
+    if (!newRoomDescription.value) {
+        displayError(newRoomDescription, "Room Discription cannot be empty");
+        isValid = false;
+    }
+    else {
+        displayError(newRoomDescription, '');
+    }
+
+    if (!newMaximumCapacity.value) {
+        displayError(newMaximumCapacity, "Maximum Capacity cannot be empty");
+        isValid = false;
+    }
+    else {
+        displayError(newMaximumCapacity, '');
+    }
+
+    if(!newRoomQuantity.value) {
+        displayError(newRoomQuantity, "Room Quantity cannot be empty");
+        isValid = false;
+    }
+    else {
+        displayError(newRoomQuantity, '');
+    }
+
+    if (!newPublishedRate.value) {
+        displayError(newPublishedRate, "Published Rate cannot be empty");
+        isValid = false;
+    }
+    else {
+        displayError(newPublishedRate, '');
+    }
+
+    // if (addNewImagesForEditRoom.length < 1) {
+    //     newImagePreviewContainerError.classList.remove('display-none')
+    //     displayError(newImagePreviewContainer, "No image selected, please select at least one");
+    //     isValid = false;
+    // }
 
     return isValid;
 }
