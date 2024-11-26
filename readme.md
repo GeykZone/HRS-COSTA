@@ -10,7 +10,6 @@
 -Rejected
 
 # todo next
--maka add og payment method option
 -ma edit user details
 -generate estimated revenue
 -Landing Page butngan og map

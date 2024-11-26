@@ -91,19 +91,17 @@
           </div>
 
           <div class="amenities-container">
-
             <div class="input-container">
                 Existing Room Images
               </div>
 
             <div class="newAmenity-container" id="existingRoomImage">
             </div>
-
           </div>
 
           <div class="room-form-button-container">
             <div id="new-fileInputContainer">
-            <input type="file" id="new-fileInput" multiple style="display: none;">
+              <input type="file" id="new-fileInput" multiple style="display: none;">
             </div>
             <span class="clickable costa-btn-a" id="new-addImages">Add Image <i class="fa-regular fa-images"></i></span>
           </div>

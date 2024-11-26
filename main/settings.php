@@ -14,6 +14,11 @@ include('controller/generalController.php')
     <title>Settings</title>
   </head>
   <body>
+
+    <!-- resources-->
+    <?php include('openReservationNotificationModal.php') ?>
+    <!-- resources-->
+
     <div class="page-content">
       <!--place sidebar here-->
       <?php include('sidebar.php');?>
@@ -28,6 +33,101 @@ include('controller/generalController.php')
           </div>
 
           <div class="main-content-boxes">
+
+            <!-- Payment Methods -->
+            <div class="box admin display-none" >
+              <div class="box-section1 settings-section1">
+                <div class="box-title">
+                  <h2>Payment Methods</h2>
+                  <p>Add edit or remove payment methods</p>
+                  <span class="clickable costa-btn-a" id="addPaymentMethodBtn">Add Payment Method</span>
+                </div>
+
+                <style>
+                  #addPaymentMethodBtn{
+                    margin-top: 10px !important;
+                    width: 180px !important;                 
+                  }
+
+                  #addQrButton{
+                    width: 180px !important;  
+                  }
+
+                  #RemovePaymentMethod{
+                    background-color: #C41919 !important;
+                  }
+
+                  #ClosePaymentMethodForm{
+                    background-color: grey !important;
+                  }
+
+                  #showOnlyIfManualPMIsClicked p{
+                    color: gray !important;
+                  }
+                </style>
+              </div>
+
+
+              <div class="backup-manager-section3" id="paymentMethodSettingsContainer">
+              </div>
+
+              <!-- payment method form container -->
+              <div class="room-form-container display-none" id="paymenthMethodSettingsForm">
+
+                <div class="input-container">
+                  <input type="text" class="room-input form-a" placeholder="Payment Method Name *" id="paymentMethodName" maxlength="50" />
+                  <div id="paymentMethodName-error" class="room-error-message-label error"></div>
+                </div>
+
+                <div class="input-container">
+                  <input type="text" class="room-input form-a" placeholder="Payment Method Number / Code *" id="paymentMethodNumber" maxlength="50" />
+                  <div id="paymentMethodNumber-error" class="room-error-message-label error"></div>
+                </div>
+
+                <!-- add qr image -->
+                <div class="room-form-button-container">
+                  <div id="getPaymentMethodQRImage">
+                    <input type="file" id="uploadPaymentMethodQRImage" multiple style="display: none;">
+                  </div>
+                  <span class="clickable costa-btn-a addImagesButton" id="addQrButton">Add QR Code <i class="fa-regular fa-images"></i></span>
+                </div>
+
+                <div id="newPaymentMethodQRContainer-error" class="room-error-message-label error display-none" style="margin-top: -10px; margin-bottom: -10px;"></div>
+                <div id="newPaymentMethodQRContainer"></div>
+
+                <div class="newAmenity-container">
+                  <span class="clickable costa-btn-a" id="ClosePaymentMethodForm">Close</span>
+                  <span class="clickable costa-btn-a forEditPaymentMethod display-none" id="RemovePaymentMethod">Remove</span>
+                  <span class="clickable costa-btn-a" id="SubmitPaymentMethodChanges">Submit</span>
+                </div>
+
+              </div>
+
+              <div  class="newAmenity-container display-none" id="showOnlyIfManualPMIsClicked">
+                  <p>You can't modify Manual payment method.</p>
+              </div>
+
+            </div>
+
+            <!-- Social Info -->
+            <div class="box">
+              <div class="box-section1">
+                <div class="box-title">
+                  <h2>Social Info</h2>
+                  <p>Social Media Information</p>
+                </div>
+              </div>
+              <div class="social-info-section2">
+                <form>
+                  <div class="social-info-icon">
+                    <i class="fa-solid fa-money-check"></i>
+                    <input type="text" placeholder="Twitter Username" />
+                  </div>
+                </form>
+              </div>
+            </div>
+
+            <!-- Site Control -->
             <div class="box">
               <div class="box-section1">
                 <div class="box-title">
@@ -52,6 +152,7 @@ include('controller/generalController.php')
               </div>
             </div>
 
+            <!-- General Info -->
             <div class="box">
               <div class="box-section1">
                 <div class="box-title">
@@ -79,6 +180,7 @@ include('controller/generalController.php')
               </div>
             </div>
 
+            <!-- Security Info -->
             <div class="box">
               <div class="box-section1">
                 <div class="box-title">
@@ -113,34 +215,7 @@ include('controller/generalController.php')
               </div>
             </div>
 
-            <div class="box">
-              <div class="box-section1">
-                <div class="box-title">
-                  <h2>Social Info</h2>
-                  <p>Social Media Information</p>
-                </div>
-              </div>
-              <div class="social-info-section2">
-                <form>
-                  <div class="social-info-icon">
-                    <i class="fa-brands fa-twitter"></i>
-                    <input type="text" placeholder="Twitter Username" />
-                  </div>
-                  <div class="social-info-icon">
-                    <i class="fa-brands fa-facebook-f"></i>
-                    <input type="text" placeholder="Facebook Username" />
-                  </div>
-                  <div class="social-info-icon">
-                    <i class="fa-brands fa-linkedin"></i>
-                    <input type="text" placeholder="Linkedin Username" />
-                  </div>
-                  <div class="social-info-icon">
-                    <i class="fa-brands fa-youtube"></i>
-                    <input type="text" placeholder="Youtube Username" />
-                  </div>
-                </form>
-              </div>
-            </div>
+            <!-- Wiget Control -->
             <div class="box">
               <div class="box-section1 settings-section1">
                 <div class="box-title">
@@ -179,59 +254,16 @@ include('controller/generalController.php')
                 </form>
               </div>
             </div>
-            <div class="box">
-              <div class="box-section1 settings-section1">
-                <div class="box-title">
-                  <h2>Backup Manager</h2>
-                  <p>Control Backup Time And Location</p>
-                </div>
-              </div>
-              <div class="backup-mangager-section2">
-                <form>
-                  <ul>
-                    <li>
-                      <input type="radio" id="radio-one" name="time" />
-                      <label for="radio-one">Daily</label>
-                    </li>
-                    <li>
-                      <input type="radio" id="radio-two" name="time" checked />
-                      <label for="radio-two">Weekly</label>
-                    </li>
-                    <li>
-                      <input type="radio" id="radio-three" name="time" />
-                      <label for="radio-three">Monthly</label>
-                    </li>
-                  </ul>
-                </form>
-              </div>
-              <div class="backup-manager-section3">
-                <input type="radio" name="box-radio" id="box-radio-1" />
-                <div>
-                  <label for="box-radio-1">
-                    <i class="fa-solid fa-server"></i>
-                    Megaman
-                  </label>
-                </div>
-                <input type="radio" name="box-radio" id="box-radio-2" />
-                <div>
-                  <label for="box-radio-2">
-                    <i class="fa-solid fa-server"></i>
-                    Zero
-                  </label>
-                </div>
-                <input type="radio" name="box-radio" id="box-radio-3" checked />
-                <div>
-                  <label for="box-radio-3">
-                    <i class="fa-solid fa-server"></i>
-                    Sigma
-                  </label>
-                </div>
-              </div>
-            </div>
+
           </div>
         </div>
       </main>
     </div>
-    <script src="../js/script.js"></script>
+    <script>var userOrAdminDetails = <?php echo json_encode($response); ?>;</script>
+    <script src="js/script.js"></script>
+    <script src="js/swiper-bundle.min.js"></script>
+    <script src="js/notificationListener.js"></script>
+    <script src="js/settings.js"></script>
+    <script src="js/dataTables.js"></script>
   </body>
 </html>
