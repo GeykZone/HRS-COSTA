@@ -266,18 +266,25 @@ function openSingleReservationNotification(notificationData) {
 
             let image = document.getElementById('viewPaymentEvidence');
             let imageJSON = JSON.parse(roomDetails.imageLink);
-            let imgLink = imageJSON[0].Link;
-            image.src = imgLink;
+            let imgLink;
+            if (imageJSON && imageJSON[0] && imageJSON[0].Link){
+                imgLink = imageJSON[0].Link;
+                console.log(imgLink)
+                image.src = imgLink;
+            }
+
 
             if (cardWrapperEvidence && cardWrapperEvidence.children.length > 0) {
                 cardWrapperEvidence.innerHTML = '';
             }
 
             // console.log(imageJSON)
-
-            imageJSON.forEach(img => {
-                displayRoomsInSliderWithWrapper(img, cardWrapperEvidence);
-            });
+            if (imageJSON && imageJSON[0] && imageJSON[0].Link){
+                imageJSON.forEach(img => {
+                    displayRoomsInSliderWithWrapper(img, cardWrapperEvidence);
+                });
+            }
+            
             initializeSwiperWithParam('slide-container-evidence', 'wrapper-evidence');
 
             document.querySelectorAll('.imageList').forEach(imgList => {
