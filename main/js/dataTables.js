@@ -216,7 +216,7 @@ if(document.getElementById('paymentDetailsTable')){
       fixedHeader: true,
       searching: false, // Disable default server-side search
       dom: 'Bfrtip',
-      pageLength : 10,
+      pageLength : 100,
       buttons: [
         {
             extend: 'excel',
@@ -269,6 +269,99 @@ if(document.getElementById('paymentDetailsTable')){
   if (spanElement && targetDiv) {
       // Move the span element inside the target div
       targetDiv.appendChild(spanElement);
+  } else {
+      console.error('Element(s) not found');
+  }
+
+}
+
+if(document.getElementById('revenueTable')){
+
+  function paymentDetailsTable(){
+    var ajax_url = "controller/dataTables.php";
+
+    let bookingTableData = {
+      showRevenueReport: true,
+      reportYear: defaultYearSet,
+      timeframe: defaultRevenueType
+    }
+  
+    if ( ! $.fn.DataTable.isDataTable( '#revenueTable' ) ) { // check if data table is already exist
+      let tableDataVar;
+  
+    table = $('#revenueTable').DataTable({
+  
+      // "processing": true,
+      "deferRender": true,
+      "serverSide": true,
+      "ajax": {
+          url: ajax_url,
+          data: bookingTableData,
+          "dataSrc": function ( json ) {
+          //   //Make your callback here.
+          tableDataVar = json.data;
+          console.log(tableDataVar)
+          return json.data;
+        }      
+        
+      },
+      order: [[0,'desc']],
+      
+      responsive: true,
+      fixedHeader: true,
+      searching: false, // Disable default server-side search
+      dom: 'Bfrtip',
+      pageLength : 100,
+      buttons: [
+        {
+            extend: 'excel',
+            text: 'Export Excel',
+            title: defaultRevenueType + ' Revenue '+defaultYearSet,
+            className: 'export-excel-btn',
+            exportOptions: {
+                // Specify columns to be included (0 to 8 in this case)
+                columns: function (idx, data, node) {
+                    // Include columns 0 to 8
+                    return idx >= 0 && idx <= 2;
+                }
+              }
+          }
+      ],
+      "lengthMenu": [[5, 10, 20, 50, 100], [5, 10, 20, 50, 100]],
+  
+      //disable the sorting of colomn
+        // "columnDefs": [ {
+        // "targets": 9,
+        // "orderable": false
+        // } ],
+  
+        "language": {
+          "info": "Showing _START_ to _END_ of _TOTAL_ entries",
+          "infoFiltered":""
+        },
+  
+      "columns": [
+        null,
+        null,
+        null
+      ],
+    });    
+    }
+  };
+  paymentDetailsTable();
+
+  // Select the span element
+  const revenueContainer = document.getElementById('revenueContainer');
+
+  // Select the div element
+  var targetDiv = revenueContainer.querySelector('.dt-buttons');
+
+  // Check if both elements exist
+  if (dailyRevenu && weeklyRevenue && monthlyRevenue && targetDiv) {
+      // Move the span element inside the target div
+      targetDiv.appendChild(dailyRevenu);
+      targetDiv.appendChild(weeklyRevenue);
+      targetDiv.appendChild(monthlyRevenue);
   } else {
       console.error('Element(s) not found');
   }

@@ -20,6 +20,13 @@ let filterLastProcessEndDate =  document.getElementById('filter-last-process-end
 let proceedFilterBtn = document.getElementById('proceedFilterBtn');
 let swiper;
 let filterableValues = [];
+let defaultYearSet = new Date().getFullYear();
+let defaultRevenueType = 'Daily';
+let yearInput = document.getElementById('yearInput');
+const dailyRevenu = document.getElementById('dailyRevenu');
+const weeklyRevenue = document.getElementById('weeklyRevenue');
+const monthlyRevenue = document.getElementById('monthlyRevenue');
+document.getElementById('revenuePeriod').textContent = 'Daily Revenue ' + defaultYearSet
 changeFilterOperatorValueColor();
 checkUrlParamValues();
 
@@ -236,6 +243,82 @@ proceedFilterBtn.addEventListener('click', function() {
 
 })
 
+// dailyRevenu
+// weeklyRevenue
+monthlyRevenue.addEventListener('click', function(){
+    
+    let url = `payments.php`;
+    let queryParams = [];
+
+    if(yearInput.value){
+       if(validateYear(yearInput.value)){
+         defaultYearSet = yearInput.value;
+
+         queryParams.push(`yearInput=${encodeURIComponent(defaultYearSet)}`);
+
+       }
+    }
+
+    defaultRevenueType = 'Monthly';
+    queryParams.push(`defaultRevenueType=${encodeURIComponent(defaultRevenueType)}`);
+    
+    if (queryParams.length > 0) {
+        url += '?' + queryParams.join('&');
+    }
+
+    window.location.href = url;
+})
+
+
+dailyRevenu.addEventListener('click', function(){
+    
+    let url = `payments.php`;
+    let queryParams = [];
+
+    if(yearInput.value){
+       if(validateYear(yearInput.value)){
+         defaultYearSet = yearInput.value;
+
+         queryParams.push(`yearInput=${encodeURIComponent(defaultYearSet)}`);
+
+       }
+    }
+
+    defaultRevenueType = 'Daily';
+    queryParams.push(`defaultRevenueType=${encodeURIComponent(defaultRevenueType)}`);
+    
+    if (queryParams.length > 0) {
+        url += '?' + queryParams.join('&');
+    }
+
+    window.location.href = url;
+})
+
+
+weeklyRevenue.addEventListener('click', function(){
+    
+    let url = `payments.php`;
+    let queryParams = [];
+
+    if(yearInput.value){
+       if(validateYear(yearInput.value)){
+         defaultYearSet = yearInput.value;
+
+         queryParams.push(`yearInput=${encodeURIComponent(defaultYearSet)}`);
+
+       }
+    }
+
+    defaultRevenueType = 'Weekly';
+    queryParams.push(`defaultRevenueType=${encodeURIComponent(defaultRevenueType)}`);
+    
+    if (queryParams.length > 0) {
+        url += '?' + queryParams.join('&');
+    }
+
+    window.location.href = url;
+})
+
 //check url parameter value
 function checkUrlParamValues() {
   let urlParams = new URLSearchParams(window.location.search);
@@ -319,5 +402,31 @@ function checkUrlParamValues() {
     filterableValues.filterLastProcessEndDate = filterLastProcessEndDate.value;
   }
 
+  if (urlParams.has('yearInput')) {
+     defaultYearSet = urlParams.get('yearInput');
+     filterableValues.filterLastProcessEndDate = filterLastProcessEndDate.value;
+  }
+
+  if (urlParams.has('defaultRevenueType')) {
+     defaultRevenueType = urlParams.get('defaultRevenueType');
+
+     document.getElementById('revenuePeriod').textContent = defaultRevenueType + ' Revenue ' + defaultYearSet
+  }
+
+}
+
+function validateYear(input) {
+    const year = parseInt(input.value, 10);
+    isValidYear = true;
+  
+    // Check if the input is a valid year
+    if (year < 1900 || year > 2099) {
+      displayError(yearInput, "Please enter a valid year (1900-2099).");
+      isValidYear = false
+    } else {
+      displayError(yearInput, "");
+    }
+
+    return isValidYear;
 }
   

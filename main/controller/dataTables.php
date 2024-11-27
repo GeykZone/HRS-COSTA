@@ -602,4 +602,60 @@ if(isset($_GET['paymentDetailsTable'])){
     //  echo $where;
 }
 
+if (isset($_GET['showRevenueReport'])) {
+    $mysqli = new mysqli($dbDetails['host'], $dbDetails['user'], $dbDetails['pass'], $dbDetails['db']);
+    if ($mysqli->connect_error) {
+        die("Connection failed: " . $mysqli->connect_error);
+    }
+
+    $reportYear = $_GET['reportYear'];
+    $timeframe = $_GET['timeframe'];
+    $draw = isset($_GET['draw']) ? intval($_GET['draw']) : 1;
+
+    // Determine grouping based on timeframe
+    if ($timeframe === 'Daily') {
+        $dateFormat = "%Y-%m-%d";
+        $groupBy = "DATE(latestModifiedDate)";
+    } elseif ($timeframe === 'Weekly') {
+        $dateFormat = "%Y-%u"; // Week number
+        $groupBy = "YEARWEEK(latestModifiedDate)";
+    } else { // Monthly
+        $dateFormat = "%Y-%m";
+        $groupBy = "DATE_FORMAT(latestModifiedDate, '%Y-%m')";
+    }
+
+    $sql = "
+        SELECT 
+            DATE_FORMAT(latestModifiedDate, '$dateFormat') AS period,
+            SUM(totalAmount) AS total_revenue,
+            COUNT(Id) AS total_transactions
+        FROM check_ins
+        WHERE YEAR(latestModifiedDate) = ?
+        AND status = 'Approved'
+        GROUP BY $groupBy
+        ORDER BY period
+    ";
+
+    $stmt = $mysqli->prepare($sql);
+    $stmt->bind_param("i", $reportYear);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    $data = [];
+    while ($row = $result->fetch_assoc()) {
+        $data[] = [$row['period'], $row['total_revenue'], $row['total_transactions']];
+    }
+
+    echo json_encode([
+        "draw" => $draw,
+        "recordsTotal" => count($data),
+        "recordsFiltered" => count($data),
+        "data" => $data
+    ]);
+
+    $stmt->close();
+    $mysqli->close();
+}
+
+
 ?>

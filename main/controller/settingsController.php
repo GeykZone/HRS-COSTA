@@ -11,8 +11,7 @@ if (!isset($inputData)) {
 
 include ('dynamicFunctions.php');
 
-
-//query all payment methods
+// query all payment methods
 if (isset($inputData['queryAllPaymentMethods']) && $inputData['queryAllPaymentMethods'] === true) {
     // Query to fetch all payment methods
     $query = "SELECT `Id`, `paymentMethodName`, `qrLink`, `paymentNumber` FROM `payment_methods`";
@@ -42,7 +41,7 @@ if (isset($inputData['queryAllPaymentMethods']) && $inputData['queryAllPaymentMe
     echo json_encode($response);
 }
 
-
+// payment method dml
 if (isset($inputData['paymentMethodDml']) && $inputData['paymentMethodDml'] === true) {
     $paymentMethodName = isset($inputData['paymentMethodNameField']) ? $inputData['paymentMethodNameField'] : null;
     $paymentMethodNumber = isset($inputData['paymentMethodNumberField']) ? $inputData['paymentMethodNumberField'] : null;
@@ -155,6 +154,72 @@ if (isset($inputData['paymentMethodDml']) && $inputData['paymentMethodDml'] === 
     echo json_encode($response);
 }
 
+// update user details
+if(isset($inputData['userDetailsUpdate'])){
+    if (isset($inputData['userId'])) {
+        $userId = $inputData['userId'];
+        $username = isset($inputData['newAccountUsername']) ? $inputData['newAccountUsername'] : null;
+        $email = isset($inputData['newAccountEmail']) ? $inputData['newAccountEmail'] : null;
+        $password = isset($inputData['newAccountPassword']) ? $inputData['newAccountPassword'] : null;
+    
+        // Initialize the update fields array
+        $updateFields = [];
+        $updateValues = [];
+    
+        if ($username) {
+            $updateFields[] = "`username` = ?";
+            $updateValues[] = $username;
+        }
+        if ($email) {
+            $updateFields[] = "`email` = ?";
+            $updateValues[] = $email;
+        }
+        if ($password) {
+            // Hash the password before saving
+            $hashedPassword = encrypt_decrypt('encrypt', $password);
+            $updateFields[] = "`password` = ?";
+            $updateValues[] = $hashedPassword;
+        }
+    
+        if (!empty($updateFields)) {
+            $updateFields[] = "`lastModifiedDate` = NOW()"; // Automatically set lastModifiedDate
+            $sql = "UPDATE `user` SET " . implode(", ", $updateFields) . " WHERE `id` = ?";
+            $updateValues[] = $userId; // Add userId to the values array for the WHERE clause
+    
+            if ($stmt = $conn->prepare($sql)) {
+                $stmt->bind_param(str_repeat("s", count($updateValues) - 1) . "i", ...$updateValues);
+                if ($stmt->execute()) {
+                    $response = [
+                        'status' => 'success',
+                        'message' => 'User details updated successfully.',
+                    ];
+                } else {
+                    $response = [
+                        'status' => 'error',
+                        'message' => 'Failed to execute update query: ' . $stmt->error,
+                    ];
+                }
+            } else {
+                $response = [
+                    'status' => 'error',
+                    'message' => 'Failed to prepare the SQL statement: ' . $conn->error,
+                ];
+            }
+        } else {
+            $response = [
+                'status' => 'error',
+                'message' => 'No fields to update.',
+            ];
+        }
+    } else {
+        $response = [
+            'status' => 'error',
+            'message' => 'User ID is required.',
+        ];
+    }
+    
+    echo json_encode($response);
+}
 
 
 ?>

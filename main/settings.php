@@ -109,150 +109,87 @@ include('controller/generalController.php')
 
             </div>
 
-            <!-- Social Info -->
-            <div class="box">
-              <div class="box-section1">
-                <div class="box-title">
-                  <h2>Social Info</h2>
-                  <p>Social Media Information</p>
-                </div>
-              </div>
-              <div class="social-info-section2">
-                <form>
-                  <div class="social-info-icon">
-                    <i class="fa-solid fa-money-check"></i>
-                    <input type="text" placeholder="Twitter Username" />
-                  </div>
-                </form>
-              </div>
-            </div>
-
-            <!-- Site Control -->
-            <div class="box">
-              <div class="box-section1">
-                <div class="box-title">
-                  <h2>Site Control</h2>
-                  <p>Control The Website If There Is Maintenance</p>
-                </div>
-              </div>
-              <div class="settings-box-section2">
-                <div class="settings-box-website-control">
-                  <div class="settings-box-title">
-                    <p>Website Control</p>
-                    <p>Open/Close Website And Type The Reason</p>
-                  </div>
-                  <span class="toggle"></span>
-                </div>
-                <form>
-                  <textarea
-                    name=""
-                    placeholder="Close Message Content"
-                  ></textarea>
-                </form>
-              </div>
-            </div>
-
             <!-- General Info -->
             <div class="box">
+
               <div class="box-section1">
                 <div class="box-title">
-                  <h2>General Info</h2>
-                  <p>General Information About Your Account</p>
+                  <h2>Login Details</h2>
+                  <p>Update Account login details</p>
                 </div>
               </div>
-              <div class="general-info-section2">
-                <form>
-                  <label for="first-name">First Name</label>
-                  <input type="text" placeholder="First Name" id="first-name" />
-                  <label for="last-name">Last Name</label>
-                  <input type="text" placeholder="Last Name" id="last-name" />
-                  <label for="Email">Email</label>
-                  <div class="email">
-                    <input
-                      type="email"
-                      disabled
-                      id="Email"
-                      value="zana.suleiman.44@gmail.com"
-                    />
-                    <a href="/#">Change</a>
-                  </div>
-                </form>
-              </div>
-            </div>
 
-            <!-- Security Info -->
-            <div class="box">
-              <div class="box-section1">
-                <div class="box-title">
-                  <h2>Security Info</h2>
-                  <p>Security Information About Your Account</p>
-                </div>
-              </div>
-              <div class="security-info-section2">
-                <div class="person-security-info">
-                  <div class="person-info">
-                    <p style="font-weight: normal">Password</p>
-                    <span>Last Change On 25/10/2021</span>
-                  </div>
-                  <a href="/#">Change</a>
+              <div class="room-form-container" id="updateLoginDetailsContainer">
+                <div class="input-container">
+                  <input type="text" class="room-input form-a updateDetailsInput" placeholder="New Account Username" id="newAccountUsername" maxlength="50" />
+                  <div id="newAccountUsername-error" class="room-error-message-label error"></div>
                 </div>
 
-                <div class="person-security-info">
-                  <div class="person-info">
-                    <p style="font-weight: normal">Two-Factor Authentication</p>
-                    <span>Enable/Disable The Feature</span>
-                  </div>
-                  <span class="toggle toggle1"></span>
+                <div class="input-container">
+                  <input type="email" class="room-input form-a updateDetailsInput" placeholder="New Account Email" id="newAccountEmail" maxlength="50" />
+                  <div id="newAccountEmail-error" class="room-error-message-label error"></div>
                 </div>
 
-                <div class="person-security-info">
-                  <div class="person-info">
-                    <p style="font-weight: normal">Devices</p>
-                    <span>Check The Login Devices List</span>
-                  </div>
-                  <a href="/#">Devices</a>
+                <div class="input-container">
+                  <input type="password" class="room-input form-a updateDetailsInput" placeholder="New Account Password" id="newAccountPassword" maxlength="50" />
+                  <div id="newAccountPassword-error" class="room-error-message-label error"></div>
                 </div>
-              </div>
-            </div>
 
-            <!-- Wiget Control -->
-            <div class="box">
-              <div class="box-section1 settings-section1">
-                <div class="box-title">
-                  <h2>Widgets Control</h2>
-                  <p>Show/Hide Widgets</p>
+                <div class="input-container">
+                  <input type="password" class="room-input form-a " placeholder="Re-type New Account Password" id="reTypeNewAccountPassword" maxlength="50" />
+                  <div id="reTypeNewAccountPassword-error" class="room-error-message-label error"></div>
                 </div>
+
+                <div class="newAmenity-container updateDetailsButtonsContainer" id="updateUserDetailsButtonsContainer">
+                    <span class="clickable costa-btn-a" id="updateDetails">Submit</span>
+                </div> 
               </div>
-              <div class="widgets-control-section2">
-                <form>
-                  <ul>
-                    <li>
-                      <input type="checkbox" id="one" />
-                      <label for="one">Quick Draft</label>
-                    </li>
-                    <li>
-                      <input type="checkbox" id="two" checked />
-                      <label for="two">Yearly Targets</label>
-                    </li>
-                    <li>
-                      <input type="checkbox" id="three" />
-                      <label for="three">Tickets Statistics</label>
-                    </li>
-                    <li>
-                      <input type="checkbox" id="four" checked />
-                      <label for="four">Latest News</label>
-                    </li>
-                    <li>
-                      <input type="checkbox" id="five" />
-                      <label for="five">Latest Tasks</label>
-                    </li>
-                    <li>
-                      <input type="checkbox" id="six" checked />
-                      <label for="six">Top Search Items</label>
-                    </li>
-                  </ul>
-                </form>
+
+              <div class="room-form-container display-none" style = " margin-top: 30px;" id = "emailVerification">
+
+                  <div class="box-title">
+                    <p>Check your Email for your verification code. Please don't refresh the page.</p>
+                  </div>      
+                         
+                  <div class="input-container">
+                    <input type="text" class="room-input form-a" placeholder="Gmail Verification Code *" id="inputVerificationCode" maxlength="50" />
+                    <div id="inputVerificationCode-error" class="room-error-message-label error"></div>
+                  </div>
+                  
+                  <div class="newAmenity-container  updateDetailsButtonsContainer" id="verificationCodeContainer">
+                    <span class="clickable costa-btn-a" id="reSendCode">Resend</span>
+                    <span class="clickable costa-btn-a" id="verifyCode">Verify</span>
+                  </div>     
+
               </div>
+
+              <div class="newAmenity-container display-none" id="resendLoading">
+                   <p>Please wait...</p>
+              </div>
+
+               <style>
+                  .updateDetailsButtonsContainer{
+                    margin-top: -25px !important;
+                    background: transparent;
+                  }
+
+                  #resendLoading p{
+                    color: gray;
+                  }
+
+                  .updateDetailsInput{
+                    margin-bottom: -10px !important;
+                  }
+
+                  #reTypeNewAccountPassword-error{
+                    margin-top: -10px !important;
+                    margin-bottom: 10px!important;
+                  }
+                  
+                  #reSendCode{
+                    background-color: gray !important;
+                  }
+                </style>
             </div>
 
           </div>

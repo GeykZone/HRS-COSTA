@@ -50,22 +50,6 @@ include('controller/generalController.php');
               <span class="clickable costa-btn-a" id="paymentsOpenFilterModalBtn">Filter</span>
             </div>
 
-            <!-- <style>
-              li[data-dtr-index="9"] .dtr-title {
-                display: none !important;
-              }
-
-              .table-head-title{
-                text-align: center !important;
-              }
-
-              tbody tr td:nth-child(10) span {
-                margin: 0 auto !important; /* Centers horizontally */
-                text-align: center !important;
-                vertical-align: middle !important;
-              }
-            </style> -->
-
             <div class="paymentDetailsContainer" >
               <table id="paymentDetailsTable"  class="nowrap content-table" width="100%">
                 <thead>
@@ -84,8 +68,57 @@ include('controller/generalController.php');
                 </tbody>
               </table>
             </div>
+        </div>
 
 
+        <div class="projects-box" id="revenueContainer">
+            <div class="title">
+                <h3 class="room-page-title" >Estimated Sales Revenue</h3>
+            </div>
+
+            <div class="filter-container ">
+              <span class="clickable costa-btn-a" id="dailyRevenu">Daily</span>
+              <span class="clickable costa-btn-a" id="weeklyRevenue">Weekly</span>
+              <span class="clickable costa-btn-a" id="monthlyRevenue">Monthly</span>
+
+              <div class="input-container">
+                <input 
+                  type="number" 
+                  id="yearInput" 
+                  class=" room-input form-a " 
+                  placeholder="Enter Year:" 
+                  min="1900" 
+                  max="2099" 
+                  step="1" 
+                  oninput="validateYear(this)" 
+                  required />
+                <div id="yearInput-error" class="room-error-message-label error"></div>
+              </div>
+
+
+              <style>
+
+                #yearInput{
+                  width: 300px;
+                }
+
+              </style>
+
+            </div>
+
+            <div class="revenueContainer" >
+              <table id="revenueTable"  class="nowrap content-table" width="100%">
+                <thead>
+                  <tr>
+                    <td ><span class="title-head-span" id="revenuePeriod">Daily Revenue</span></td>
+                    <td ><span class="title-head-span">Total Revenue</span></td>
+                    <td ><span class="title-head-span">Transaction Count</span></td>
+                  </tr>
+                </thead>
+                <tbody>
+                </tbody>
+              </table>
+            </div>
         </div>
 
        </div>

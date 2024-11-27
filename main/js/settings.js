@@ -13,10 +13,22 @@ const newPaymentMethodQRContainer = document.getElementById('newPaymentMethodQRC
 const newPaymentMethodQRError = document.getElementById('newPaymentMethodQRContainer-error');
 const SubmitPaymentMethodChanges =  document.getElementById('SubmitPaymentMethodChanges');
 const RemovePaymentMethod = document.getElementById('RemovePaymentMethod');
-let uploadableQrImage = null; // Variable to store the selected image file
+let uploadableQrImage = null; 
 let paymentMethodSubmitType = 'Add';
 let toUpdatePaymentMethodId = null;
 let paymentMethodImageLink = [];
+const newAccountUsername = document.getElementById('newAccountUsername');
+const newAccountEmail = document.getElementById('newAccountEmail');
+const newAccountPassword = document.getElementById('newAccountPassword');
+const reTypeNewAccountPassword = document.getElementById('reTypeNewAccountPassword');
+const updateDetails = document.getElementById('updateDetails');
+const inputVerificationCode = document.getElementById('inputVerificationCode');
+const reSendCode = document.getElementById('reSendCode');
+const verifyCode = document.getElementById('verifyCode');
+const emailVerification = document.getElementById('emailVerification');
+const updateLoginDetailsContainer = document.getElementById('updateLoginDetailsContainer');
+const resendLoading = document.getElementById('resendLoading');
+let globalUniqueCode;
 
 if(UserRole == 'admin'){
     const paymentMethodSettingsContainer = document.getElementById('paymentMethodSettingsContainer');
@@ -329,6 +341,159 @@ RemovePaymentMethod.addEventListener('click', function(){
     submitPaymentMethodDetails(true);
 })
 
+// update login details
+updateDetails.addEventListener('click', function(){
+
+    let isValid = true;
+
+    if(newAccountEmail.value) {
+        
+        if(!isValidEmail(newAccountEmail.value)){
+            displayError(newAccountEmail, "Please input a valid email format.");
+            isValid = false;
+        }
+        else{
+            displayError(newAccountEmail, '');
+        }
+    }
+
+    if(newAccountPassword.value){
+        
+        if(newAccountPassword.value != reTypeNewAccountPassword.value){
+            displayError(newAccountPassword, "Password does not match.");
+            displayError(reTypeNewAccountPassword, "Password does not match.");
+            isValid = false;
+        }
+        else{
+            displayError(newAccountPassword, '');
+            displayError(reTypeNewAccountPassword, '');
+        }
+
+    }
+
+    if(isValid){
+        
+        if(newAccountEmail.value){
+
+            verifyEmailAddress();
+            const showVerificationContainer = setInterval(() => {
+                if(globalUniqueCode){
+                    clearInterval(showVerificationContainer)
+                    if(emailVerification.classList.contains('display-none')){
+                        emailVerification.classList.remove('display-none');
+                    }
+                    
+                    if(!updateLoginDetailsContainer.classList.contains('display-none')){
+                        updateLoginDetailsContainer.classList.add('display-none');
+                    }
+                }
+            }, 100);
+
+        }
+        else{
+            updateDmlOperation()
+        }
+
+    }
+
+})
+
+// verify code from email
+verifyCode.addEventListener('click',  function(){
+    if(validateVerificationCode()){
+        updateDmlOperation()
+    }
+})
+
+// resend code from email
+reSendCode.addEventListener('click',  function(){
+
+    globalUniqueCode = '';
+    if(!emailVerification.classList.contains('display-none')){
+        emailVerification.classList.add('display-none');
+    }
+
+    if(resendLoading.classList.contains('display-none')){
+        resendLoading.classList.remove('display-none');
+    }
+    
+
+    verifyEmailAddress();
+
+    const showVerificationContainer = setInterval(() => {
+        if(globalUniqueCode){
+            clearInterval(showVerificationContainer)
+            if(emailVerification.classList.contains('display-none')){
+                emailVerification.classList.remove('display-none');
+            }
+
+            if(!resendLoading.classList.contains('display-none')){
+                resendLoading.classList.add('display-none');
+            }
+            
+            if(!updateLoginDetailsContainer.classList.contains('display-none')){
+                updateLoginDetailsContainer.classList.add('display-none');
+            }
+        }
+    }, 100);
+    
+})
+
+// update account details dml
+function updateDmlOperation(){
+
+    const url = "controller/settingsController.php";
+    const data = {
+        userId: customerId,
+        userDetailsUpdate: true,
+        ...(newAccountUsername.value.trim() && { newAccountUsername: newAccountUsername.value }),
+        ...(newAccountEmail.value.trim() && { newAccountEmail: newAccountEmail.value }),
+        ...(newAccountPassword.value.trim() && { newAccountPassword: newAccountPassword.value }),
+    };
+    const detailsList = dynamicSynchronousPostRequest(url, data);
+
+        if(isValidJSON(detailsList)){
+            const details = JSON.parse(detailsList);
+            let status = details.status;
+            let message = details.message
+            if(status == 'success'){
+                alertMessage(message, 'success', 3000);
+                setTimeout(function(){
+                    window.location.reload();
+                },2500)
+            }
+            else{
+                alertMessage(message, 'error', 3000);
+                dmlSuccess = false;
+            }
+        }
+        else{
+            dmlSuccess = false;
+            console.error(detailsList);
+            alertMessage('Something went wrong. Please see the error logs for additional information.', 'error', 3000);
+        }
+
+}
+
+// validate verification input field
+function validateVerificationCode() {
+    let isValid = true;
+
+    if(!inputVerificationCode.value) {
+        displayError(inputVerificationCode, "Verification code cannot be empty");
+        isValid = false;
+    }
+    else if (inputVerificationCode.value !== globalUniqueCode) {
+        displayError(inputVerificationCode, "Verification code do not match");
+        isValid = false;
+    }
+    else {
+        displayError(inputVerificationCode, '');
+    }
+
+    return isValid;
+}
+
 // validate payment method form
 function validatePaymentMethodForm(isNotForEdit){
 
@@ -369,7 +534,7 @@ function submitPaymentMethodDetails(isDeletePm){
     const url = "controller/settingsController.php";
     const data = {
         paymentMethodNameField:paymentMethodNameField.value,
-        paymentMethodNumberField:paymentMethodNameField.value,
+        paymentMethodNumberField:paymentMethodNumberField.value,
         paymentMethodDml: true
     };
     
@@ -448,4 +613,58 @@ async function uploadImageToFirebase(selectedFiles, imageLink) {
     });
 
     await Promise.all(uploadPromises);
+}
+
+//check if is valid email format
+function isValidEmail(email) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+}
+
+// verify email address form manual sign-up
+function verifyEmailAddress() {
+
+    let toEMail = newAccountEmail.value;
+    let toName = extractUsername(toEMail);
+    let generateUniqueCode = Math.random().toString(36).substring(2, 8).toUpperCase();
+    
+    var data = {
+        service_id: 'service_lb5am8l',
+        template_id: 'template_gak32m7',
+        user_id: '9YUtu9MVMdqaqe0T7', //public key
+        template_params: {
+            'fromName': 'HRS-COSTA',
+            'message': generateUniqueCode,
+            'toEmail': toEMail,
+            'toName': toName
+        }
+    };
+
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', 'https://api.emailjs.com/api/v1.0/email/send');
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.onload = function() {
+        if (xhr.status === 200) {
+            alertMessage(`Your mail is sent!`, 'success', 3000);
+            globalUniqueCode = generateUniqueCode;
+            
+        } else {
+            alertMessage('Oops... ' + xhr.responseText, 'error', 3000);
+        }
+    };
+    xhr.onerror = function() {
+        alert('Oops... Something went wrong!');
+    };
+    xhr.send(JSON.stringify(data));
+}
+
+//Convert Email into a Username
+function extractUsername(email) {
+    const atIndex = email.indexOf("@");
+    let username = email.substring(0, atIndex);
+    username = username.replace(/\./g, " ");
+    username = username.replace(/\b\w/g, function(char) {
+        return char.toUpperCase();
+    });
+    return username;
 }
