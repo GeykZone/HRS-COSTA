@@ -10,7 +10,7 @@
 -Rejected
 
 # todo next
--generate estimated revenue
+
 -Landing Page butngan og map
 -contact us through messenger
 
