@@ -70,7 +70,7 @@
 	</div>
 
 	<!-- end:fh5co-header -->
-	<aside id="fh5co-hero" class="js-fullheight">
+	<aside id="fh5co-hero" class="js-fullheight" >
 		<div class="flexslider js-fullheight">
 			<ul class="slides">
 		   	<li style="background-image: url(images/slider1.jpg);">
@@ -127,10 +127,198 @@
 	</aside>
 
 	</div>
-	<!-- END fh5co-page -->
 
+	<div  class="amen-container">
+		<div class="flexslider js-fullheight" id="amenImage">
+	  	</div>
+	</div>
+
+	<div>
+		<div class="container ">
+			
+			<div class="row">
+				<div class ="col-12 text-center" style = "margin-top: 30px">
+				<h1 id="propertyTitle">Property Information</h1>
+				</div>
+				<div class="col-md-6">
+					<li>
+					All rooms are equipped with air-conditioning, flat-screen TV with cable channels, personal safe (specific rooms), en suite bathrooms with hot & cold shower and toiletries. Towels and linens are also provided. 
+					</li>
+					<li>
+					Checked-in guests can fully enjoy our adult and kiddie pool, beachfront cottages, and beach area. A poolbar is also located at our resort area where guests can order snacks and drinks. Other facilities include a banquet hall.
+					</li>
+				
+				</div>
+				<div class="col-md-6">
+					<li>
+					For sporty guests, a rubberized track & field and two tennis courts are 550m away from the property. The resort is also situated about 850m from the city plaza and 1.3km away from the Oroquieta City Public Market. The Ozamiz Airport and Dipolog Airport are the two closest airport to the property, which are 39.1km and 90.2km away, respectively. Airport transfers are available subject to an additional charge through our transport partners. 
+					</li>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div  class="map-container">
+		<div class="flexslider js-fullheight" id="mapImage">
+	  	</div>
+
+		<script>
+			const mapImage = document.getElementById('mapImage');
+			mapImage.addEventListener('click', function(){
+				window.location.href = 'https://l.facebook.com/l.php?u=https%3A%2F%2Fwww.google.com%2Fmaps%2Fdir%2F%3Fapi%3D1%26destination%3D8.4915516336667%252C123.80291636217%26fbclid%3DIwZXh0bgNhZW0CMTAAAR2XpCdkOrncjbY9SQboQQ0JwY43w4U82EKxpQ7HOZz09UAk-X7mINJYgdM_aem_ulchzL815tCryTmLMdoW9g&h=AT01-GqqdyQ8F-XdV8TE_dT5g9P5KgX82f4Awa4co9yJfKx6KSXrzqDXsv-XrCxtc6fKIj2KnBMoNWVH_VeEO8s1B7nFgkHRCZykydHJbIl3Qe6PZPgilRgJGzo3mWxyuvaoPA';
+			})
+		</script>
+	</div>
+
+	<footer id="footer" class="fh5co-bg-color">
+		<div class="container">
+			<div class="row align-items-end">
+				<div class="col-md-6">
+					<li>
+					Property Name: Costa del Sol Resort Hotel
+					</li>
+					<li>
+					Street Address: Magsaysay Avenue, Lower Loboc
+					</li>
+					<li>
+					City : Oroquieta City - Misamis Occidental
+					</li>
+					<li>
+					Postal Code : 7207
+					</li>
+					<li>
+					Phone: +639202377777</li>
+					<li>
+						
+					Email: reservations.costadelsol@gmail.com
+					</li>
+				</div>
+				<div class="col-md-6 text-right align-items-end " id="waterMarkContainer">
+					<br class="">
+					<br class="brss">
+					<br class="brss">
+					<span class="footer-watermark">Your Text</span>
+				</div>
+			</div>
+		</div>
+
+		<script>
+			function checkScreenWidth() {
+				const waterMarkContainer = document.getElementById('waterMarkContainer');
+				const brss = document.querySelectorAll('.brss');
+				if (window.innerWidth <= 991) {
+					
+
+					if(waterMarkContainer.classList.contains('text-right', 'align-items-end')){
+						waterMarkContainer.classList.remove('text-right', 'align-items-end');
+					}
+
+					brss.forEach(function(br){
+						if(!br.classList.contains('hidden')){
+						br.classList.add('hidden');
+						}
+					})
+				}
+				else{
+
+					if(!waterMarkContainer.classList.contains('text-right', 'align-items-end')){
+						waterMarkContainer.classList.add('text-right', 'align-items-end');
+					}
+
+					brss.forEach(function(br){
+						if(br.classList.contains('hidden')){
+						br.classList.remove('hidden');
+						}
+					})
+				}
+			}
+
+			// Check the width on page load
+			checkScreenWidth();
+
+			// Add an event listener to detect when the screen size changes
+			window.addEventListener('resize', checkScreenWidth);
+		</script>
+	</footer>
 	</div>
 	<!-- END fh5co-wrapper -->
+
+	<style>
+
+		#footer{
+			padding-top: 50px;
+			padding-bottom: 50px
+		}
+
+		#amenImage {
+			background-image: url(images/amenitiespic.png);
+			background-size: contain;  /* Ensure the full image is shown without cropping */
+			background-repeat: no-repeat;  /* Prevent the image from repeating */
+			background-position: center;  /* Center the image in the container */
+			width: 100%;
+			height: 300px !important;
+			margin-top: -100px !important;
+		}
+
+		.map-container{
+			padding: 0px !important;
+		}
+
+		#mapImage{
+			cursor: pointer;
+			background-image: url(images/costa-map.png);
+			background-size: contain;  /* Ensure the full image is shown without cropping */
+			background-repeat: no-repeat;  /* Prevent the image from repeating */
+			background-position: center;  /* Center the image in the container */
+			width: 100%;
+			height: 100%;
+
+		}
+
+		.amen-container {
+			margin-top: 30vh; /* Adjust for screens 598px or smaller */
+		}
+
+
+		@media (max-width: 1360px) {
+		#amenImage  {
+			height: 250px !important;
+		}}
+
+
+		@media (max-width: 1280px) {
+		#amenImage  {
+			height: 250px !important;
+		}}
+
+		@media (max-width: 1162px) {
+		#amenImage  {
+			height: 230px !important;
+		}}
+
+		@media (max-height: 675px) {
+		.amen-container {
+			margin-top: 35vh; /* Adjust for screens 598px or smaller */
+		}}
+
+		@media (max-height: 591px) {
+		.amen-container {
+			margin-top: 55vh; /* Adjust for screens 598px or smaller */
+		}}
+
+		@media (max-height: 518px) {
+		.amen-container {
+			margin-top: 80vh; /* Adjust for screens 598px or smaller */
+		}}
+
+		@media (max-height: 398px) {
+		.amen-container {
+			margin-top: 80vh; /* Adjust for screens 598px or smaller */
+		}}
+
+
+	</style>
+	
 	
 	<!-- Javascripts -->
 	<script src="js/jquery-2.1.4.min.js"></script>

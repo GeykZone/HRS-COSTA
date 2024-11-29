@@ -106,29 +106,37 @@ For sporty guests, a rubberized track & field and two tennis courts are 550m awa
 	<div id="fh5co-contact-section">
 		<div class="row">
 			<div class="col-md-6">
-			<div class="col-md-12">
-					<div class="row">
-						<div class="col-md-6">
-							<div class="form-group">
-								<input type="text" class="form-control" placeholder="Name">
-							</div>
+				<div class="col-md-12">
+				<div style="display: flex; justify-content: center; align-items: center; margin-bottom: 15px;">
+							<input 
+								type="submit" 
+								value="Message Costa del Sol" 
+								class="btn btn-primary" 
+								id="redirectButton">
 						</div>
-						<div class="col-md-6">
-							<div class="form-group">
-								<input type="text" class="form-control" placeholder="Email">
-							</div>
-						</div>
-						<div class="col-md-12">
-							<div class="form-group">
-								<textarea name="" class="form-control" id="" cols="30" rows="7" placeholder="Message"></textarea>
-							</div>
-						</div>
-						<div class="col-md-12">
-							<div class="form-group">
-								<input type="submit" value="Send Message" class="btn btn-primary">
-							</div>
-						</div>
-					</div>
+
+					<div class="iframely-embed"><div class="iframely-responsive" style="height: 500px; padding-bottom: 0;"><a href="https://www.facebook.com/CostadelSolResortHotel" data-iframely-url="//iframely.net/MqmvZSx"></a></div>
+						<div class = "iFrameLoader" style="display: flex; justify-content: center; align-items: center; margin-top: 15px;">
+							<h6>Loading Facebook Page...</h6>
+						</div></div><script async src="//iframely.net/embed.js"></script>
+
+						<script>
+							document.getElementById('redirectButton').addEventListener('click', function() {
+								window.location.href = 'https://www.facebook.com/messages/t/1397094990334673';
+							});
+							const iframelyEmbed =  document.querySelector('.iframely-embed');
+							const iFrameLoader = document.querySelector('.iFrameLoader');
+							setTimeout(() => {
+
+								if(!iFrameLoader.classList.contains('hidden')){
+									iFrameLoader.classList.add('hidden')
+								}
+
+							}, 3000);
+
+						</script>
+
+
 				</div>
 			</div>
 			<div class="col-md-6">
@@ -144,14 +152,94 @@ For sporty guests, a rubberized track & field and two tennis courts are 550m awa
 			</div>
 		</div>
 	</div>
-	
 
 	<footer id="footer" class="fh5co-bg-color">
-	<div class="container">
-			<div class="row footer-watermark">
+		<div class="container">
+			<div class="row align-items-end">
+				<div class="col-md-6">
+					<li>
+					Property Name: Costa del Sol Resort Hotel
+					</li>
+					<li>
+					Street Address: Magsaysay Avenue, Lower Loboc
+					</li>
+					<li>
+					City : Oroquieta City - Misamis Occidental
+					</li>
+					<li>
+					Postal Code : 7207
+					</li>
+					<li>
+					Phone: +639202377777</li>
+					<li>
+						
+					Email: reservations.costadelsol@gmail.com
+					</li>
+				</div>
+				<div class="col-md-6 text-right align-items-end " id="waterMarkContainer">
+					<br class="">
+					<br class="brss">
+					<br class="brss">
+					<span class="footer-watermark">Your Text</span>
+				</div>
 			</div>
 		</div>
+
+		<script>
+			function checkScreenWidth() {
+				const waterMarkContainer = document.getElementById('waterMarkContainer');
+				const brss = document.querySelectorAll('.brss');
+				if (window.innerWidth <= 991) {
+					
+
+					if(waterMarkContainer.classList.contains('text-right', 'align-items-end')){
+						waterMarkContainer.classList.remove('text-right', 'align-items-end');
+					}
+
+					brss.forEach(function(br){
+						if(!br.classList.contains('hidden')){
+						br.classList.add('hidden');
+						}
+					})
+				}
+				else{
+
+					if(!waterMarkContainer.classList.contains('text-right', 'align-items-end')){
+						waterMarkContainer.classList.add('text-right', 'align-items-end');
+					}
+
+					brss.forEach(function(br){
+						if(br.classList.contains('hidden')){
+						br.classList.remove('hidden');
+						}
+					})
+				}
+			}
+
+			// Check the width on page load
+			checkScreenWidth();
+
+			// Add an event listener to detect when the screen size changes
+			window.addEventListener('resize', checkScreenWidth);
+		</script>
 	</footer>
+
+	<style>
+		#fh5co-wrapper{
+			overflow-x: hidden;
+			position: unset;
+			height: 100%;
+		}
+
+		.fb_iframe_widget span {
+			display: block;
+			width: 100%;
+			height: auto;
+			max-width: 100%;
+			overflow: hidden;
+		}
+
+	</style>
 
 	</div>
 	<!-- END fh5co-page -->

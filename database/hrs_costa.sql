@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 24, 2024 at 02:08 PM
--- Server version: 10.4.28-MariaDB
--- PHP Version: 8.2.4
+-- Generation Time: Nov 29, 2024 at 03:08 AM
+-- Server version: 10.4.32-MariaDB
+-- PHP Version: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -40,7 +40,7 @@ CREATE TABLE `access_token` (
 
 INSERT INTO `access_token` (`Id`, `token`, `userId`, `expirationDate`) VALUES
 (173, 'oLGdU00KbonPIGGCuZsxB5LeI9XOKIx2mkpLhXUam8RTpHfW0m', 93, '2024-12-12'),
-(174, '8uzrDuvTci9cQYWhEy9oMKK4YNnYX5H4HYeKHoeIae7mAgyTa3', 94, '2024-12-13');
+(181, 'cxpdQQlFuTZsRsOLaGl4xDLFbLyRQzEYZPHQBtXl6XoT3IUxoY', 93, '2024-12-27');
 
 -- --------------------------------------------------------
 
@@ -61,7 +61,6 @@ CREATE TABLE `amenity` (
 INSERT INTO `amenity` (`Id`, `amenityName`, `roomId`) VALUES
 (16, 'TV ', 38),
 (17, '2 Beds', 38),
-(18, 'Aircon', 38),
 (19, 'CR', 38),
 (20, 'TV ', 39),
 (21, '3 Beds', 39),
@@ -100,16 +99,6 @@ CREATE TABLE `check_ins` (
   `partialPayment` float NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `check_ins`
---
-
-INSERT INTO `check_ins` (`Id`, `roomId`, `checkInDate`, `checkOutDate`, `userId`, `queueDateTime`, `status`, `checkInQuantity`, `paymentMethodId`, `totalAmount`, `customerfullName`, `customerCompleteAddress`, `customerContactInfo`, `notificationStatus`, `message`, `multiBookId`, `createdDate`, `latestModifiedDate`, `isPartial`, `partialPayment`) VALUES
-(245, 39, '2024-11-18', '2024-11-19', 94, '2024-11-19 00:36:54', 'approved', 1, 1, 1500, 'Geykson Maravillas', 'Langcangan', '09700780041', 'read', '', 0, '2024-11-18', '2024-11-18', 0, 0),
-(246, 38, '2024-11-18', '2024-11-19', 94, '2024-11-19 01:49:55', 'approved', 1, 2, 3500, 'Geykson Maravillas', 'Langcangan', '09700780041', 'read', '', 0, '2024-11-18', '2024-11-21', 0, 0),
-(247, 40, '2024-11-21', '2024-11-22', 94, '2024-11-21 02:12:05', 'approved', 1, 1, 1500.65, 'Son Jeyk', 'Langcangan', '09700780041', 'read', '', 0, '2024-11-21', '2024-11-21', 1, 500),
-(248, 40, '2024-11-24', '2024-11-25', 94, '2024-11-21 02:25:12', 'rejected', 1, 4, 1500.65, 'Geykson Maravillas', 'Langcangan', '09700780041', 'read', 'Test Reject', 0, '2024-11-21', '2024-11-21', 0, 0);
-
 -- --------------------------------------------------------
 
 --
@@ -121,13 +110,6 @@ CREATE TABLE `created_from_facebook` (
   `userId` bigint(10) NOT NULL,
   `fbUserId` char(225) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `created_from_facebook`
---
-
-INSERT INTO `created_from_facebook` (`Id`, `userId`, `fbUserId`) VALUES
-(97, 94, '2152625611741250');
 
 -- --------------------------------------------------------
 
@@ -195,15 +177,6 @@ CREATE TABLE `payment_evidence` (
   `checkInId` bigint(10) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `payment_evidence`
---
-
-INSERT INTO `payment_evidence` (`Id`, `Link`, `checkInId`) VALUES
-(134, 'https://firebasestorage.googleapis.com/v0/b/hrs-costa.appspot.com/o/images%2Fimages%20(1).png?alt=media&token=006abc67-e422-42b9-a90c-9966893a6382', 245),
-(135, 'https://firebasestorage.googleapis.com/v0/b/hrs-costa.appspot.com/o/images%2Fimages%20(1).png?alt=media&token=25e3f525-362d-4087-af4c-181af2b26681', 246),
-(136, 'https://firebasestorage.googleapis.com/v0/b/hrs-costa.appspot.com/o/images%2Fimages.png?alt=media&token=6b99d545-da7e-44d5-946f-9d966f855162', 247);
-
 -- --------------------------------------------------------
 
 --
@@ -223,9 +196,11 @@ CREATE TABLE `payment_methods` (
 
 INSERT INTO `payment_methods` (`Id`, `paymentMethodName`, `qrLink`, `paymentNumber`) VALUES
 (1, 'Gcash', 'https://firebasestorage.googleapis.com/v0/b/hrs-costa.appspot.com/o/system%20images%2F1200px-QR_Code_Example.svg.png?alt=media&token=9030b11c-f9dc-405a-8ae0-d2e3070a4cf6', '+639542568956'),
-(2, 'Palawan', 'https://firebasestorage.googleapis.com/v0/b/hrs-costa.appspot.com/o/system%20images%2FExample-QR-code.webp?alt=media&token=721e322f-a9ca-410a-9cf6-c793e081a278', '+639256455892'),
+(2, 'Palawan', 'https://firebasestorage.googleapis.com/v0/b/hrs-costa.appspot.com/o/images%2Fqr.png?alt=media&token=b728ac4f-8aad-4c91-bea7-d499bcbe8c61', '+639856265623'),
 (3, 'Maya', 'https://firebasestorage.googleapis.com/v0/b/hrs-costa.appspot.com/o/system%20images%2FQR_code_for_mobile_English_Wikipedia.svg?alt=media&token=8f208533-a12c-4ccb-9414-66134f1294d0', '+639856265623'),
-(4, 'Manual', '', '');
+(4, 'Manual', '', ''),
+(10, 'RCB Bank Transfer', 'https://firebasestorage.googleapis.com/v0/b/hrs-costa.appspot.com/o/images%2Fqr.png?alt=media&token=afbb3c3f-c92f-4df5-b323-a7bba7db47d4', 'ACC-695323256665565565656565'),
+(11, 'BDO Bank Transfer', 'https://firebasestorage.googleapis.com/v0/b/hrs-costa.appspot.com/o/images%2Fqr.png?alt=media&token=521fa35e-8651-432b-926c-afabc09959d3', 'Test Bank No 6565656565556');
 
 -- --------------------------------------------------------
 
@@ -240,7 +215,7 @@ CREATE TABLE `rooms` (
   `description` longtext NOT NULL,
   `originalRate` float NOT NULL,
   `quantity` bigint(10) NOT NULL,
-  `overall_rating` float NOT NULL
+  `overall_rating` float NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -248,9 +223,9 @@ CREATE TABLE `rooms` (
 --
 
 INSERT INTO `rooms` (`Id`, `name`, `maximum`, `description`, `originalRate`, `quantity`, `overall_rating`) VALUES
-(38, 'Test Room A', 3, 'This hotel room test description provides a detailed overview of the features and amenities available in the room. From the size and layout to the furnishings and decor, customers can gain a clear understanding of what to expect during their stay. The description also highlights any unique selling points or special touches that set this room apart from others in the hotel. Overall, this product description aims to inform and entice potential guests to book this particular room for their upcoming', 3500, 10, 3.76),
-(39, 'Test Room B', 3, 'This hotel room test description provides a detailed overview of the features and amenities available in the room. From the size and layout to the furnishings and decor, customers can gain a clear understanding of what to expect during their stay. The description also highlights any unique selling points or special touches that set this room apart from others in the hotel. Overall, this product description aims to inform and entice potential guests to book this particular room for their upcoming', 1500, 10, 3.1),
-(40, 'Test Room C', 5, 'This hotel room test description provides a detailed overview of the features and amenities available in the room. From the size and layout to the furnishings and decor, customers can gain a clear understanding of what to expect during their stay. The description also highlights any unique selling points or special touches that set this room apart from others in the hotel. Overall, this product description aims to inform and entice potential guests to book this particular room for their upcoming', 1500.65, 10, 3);
+(38, 'Test Room A', 1, 'This hotel room test description provides a detailed overview of the features and amenities available in the room. From the size and layout to the furnishings and decor, customers can gain a clear understanding of what to expect during their stay. The description also highlights any unique selling points or special touches that set this room apart from others in the hotel. Overall, this product description aims to inform and entice potential guests to book this particular room for their upcoming', 4000, 10, 0),
+(39, 'Test Room B', 3, 'This hotel room test description provides a detailed overview of the features and amenities available in the room. From the size and layout to the furnishings and decor, customers can gain a clear understanding of what to expect during their stay. The description also highlights any unique selling points or special touches that set this room apart from others in the hotel. Overall, this product description aims to inform and entice potential guests to book this particular room for their upcoming', 1500, 10, 0),
+(40, 'Test Room C', 5, 'This hotel room test description provides a detailed overview of the features and amenities available in the room. From the size and layout to the furnishings and decor, customers can gain a clear understanding of what to expect during their stay. The description also highlights any unique selling points or special touches that set this room apart from others in the hotel. Overall, this product description aims to inform and entice potential guests to book this particular room for their upcoming', 1500.65, 10, 0);
 
 -- --------------------------------------------------------
 
@@ -269,8 +244,6 @@ CREATE TABLE `room_image` (
 --
 
 INSERT INTO `room_image` (`Id`, `Link`, `roomId`) VALUES
-(68, 'https://firebasestorage.googleapis.com/v0/b/hrs-costa.appspot.com/o/images%2F1669205776825_gallery~~638ec46771d51.jpg?alt=media&token=c6ac34b3-76b8-4286-8ff5-2fd15d5df141', 38),
-(69, 'https://firebasestorage.googleapis.com/v0/b/hrs-costa.appspot.com/o/images%2F1.jpg?alt=media&token=d0afcd8d-5f66-41a8-975a-aa4db9c13dca', 38),
 (70, 'https://firebasestorage.googleapis.com/v0/b/hrs-costa.appspot.com/o/images%2F1%20(4).jpg?alt=media&token=5330b0cb-52da-4ec6-8966-28fdbe00c3fe', 38),
 (71, 'https://firebasestorage.googleapis.com/v0/b/hrs-costa.appspot.com/o/images%2F1%20(2).jpg?alt=media&token=494bb36a-c18d-487b-be39-abaa1558a5a5', 38),
 (72, 'https://firebasestorage.googleapis.com/v0/b/hrs-costa.appspot.com/o/images%2F1%20(3).jpg?alt=media&token=831e01e2-c739-4535-a14e-7727f652ad67', 38),
@@ -297,18 +270,6 @@ CREATE TABLE `room_ratings` (
   `rating` float NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `room_ratings`
---
-
-INSERT INTO `room_ratings` (`room_ratings_id`, `user_id`, `room_id`, `rating`) VALUES
-(6, 94, 38, 4.7),
-(7, 94, 38, 3.3),
-(8, 94, 38, 4.8),
-(9, 94, 38, 5),
-(10, 94, 38, 1),
-(11, 94, 39, 3.1);
-
 -- --------------------------------------------------------
 
 --
@@ -330,9 +291,7 @@ CREATE TABLE `user` (
 --
 
 INSERT INTO `user` (`id`, `username`, `email`, `password`, `role`, `createdDate`, `lastModifiedDate`) VALUES
-(93, 'Test Admin', 'testadmin@test.com', 'dXVVVVcrZ08wNmNhTWlyWTJkL0o5QT09', 'admin', '2024-10-09', '2024-10-09'),
-(94, 'Geykson Maravillas', 'matildogeykson@gmail.com', 'dXVVVVcrZ08wNmNhTWlyWTJkL0o5QT09', 'customer', '2024-10-09', '2024-10-09'),
-(95, 'Warren Villafranca', 'warren.villafranca@lsu.edu.ph', 'dXVVVVcrZ08wNmNhTWlyWTJkL0o5QT09', 'customer', '2024-10-19', '2024-10-19');
+(93, 'admin', 'admin@gmail.com', 'dXVVVVcrZ08wNmNhTWlyWTJkL0o5QT09', 'admin', '2024-10-09', '2024-11-29');
 
 --
 -- Indexes for dumped tables
@@ -431,7 +390,8 @@ ALTER TABLE `room_ratings`
 --
 ALTER TABLE `user`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `email` (`email`);
+  ADD UNIQUE KEY `email` (`email`),
+  ADD UNIQUE KEY `username` (`username`);
 
 --
 -- AUTO_INCREMENT for dumped tables
@@ -441,25 +401,25 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT for table `access_token`
 --
 ALTER TABLE `access_token`
-  MODIFY `Id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=175;
+  MODIFY `Id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=183;
 
 --
 -- AUTO_INCREMENT for table `amenity`
 --
 ALTER TABLE `amenity`
-  MODIFY `Id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+  MODIFY `Id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 
 --
 -- AUTO_INCREMENT for table `check_ins`
 --
 ALTER TABLE `check_ins`
-  MODIFY `Id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=249;
+  MODIFY `Id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=253;
 
 --
 -- AUTO_INCREMENT for table `created_from_facebook`
 --
 ALTER TABLE `created_from_facebook`
-  MODIFY `Id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=98;
+  MODIFY `Id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=99;
 
 --
 -- AUTO_INCREMENT for table `created_from_google`
@@ -477,19 +437,19 @@ ALTER TABLE `multibook`
 -- AUTO_INCREMENT for table `other_rate`
 --
 ALTER TABLE `other_rate`
-  MODIFY `Id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `Id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- AUTO_INCREMENT for table `payment_evidence`
 --
 ALTER TABLE `payment_evidence`
-  MODIFY `Id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=137;
+  MODIFY `Id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=138;
 
 --
 -- AUTO_INCREMENT for table `payment_methods`
 --
 ALTER TABLE `payment_methods`
-  MODIFY `Id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `Id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `rooms`
@@ -501,7 +461,7 @@ ALTER TABLE `rooms`
 -- AUTO_INCREMENT for table `room_image`
 --
 ALTER TABLE `room_image`
-  MODIFY `Id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=82;
+  MODIFY `Id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=86;
 
 --
 -- AUTO_INCREMENT for table `room_ratings`
@@ -513,7 +473,7 @@ ALTER TABLE `room_ratings`
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=96;
+  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=97;
 
 --
 -- Constraints for dumped tables

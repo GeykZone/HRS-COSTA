@@ -38,7 +38,7 @@
 
 </head>
 <body>
-	<div id="fh5co-wrapper-blog ">
+	<div id="fh5co-wrapper">
 	<div id="fh5co-page">
 	<div id="fh5co-header">
 		<header id="fh5co-header-section">
@@ -116,6 +116,15 @@
 				</div>
 				<div class="col-md-4">
 					<div class="services">
+						<span><i class="ti-harddrives"></i></span>
+						<div class="desc">
+							<h3>Amenities</h3>
+							<p>Experience comfort with our amenities, including air-conditioned rooms, flat-screen TVs, private bathrooms, and cozy living areas.</p>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-4">
+					<div class="services">
 						<span><i class="ti-signal"></i></span>
 						<div class="desc">
 							<h3>Reliable Signals</h3>
@@ -129,10 +138,82 @@
 
 	<footer id="footer" class="fh5co-bg-color">
 		<div class="container">
-			<div class="row footer-watermark">
+			<div class="row align-items-end">
+				<div class="col-md-6">
+					<li>
+					Property Name: Costa del Sol Resort Hotel
+					</li>
+					<li>
+					Street Address: Magsaysay Avenue, Lower Loboc
+					</li>
+					<li>
+					City : Oroquieta City - Misamis Occidental
+					</li>
+					<li>
+					Postal Code : 7207
+					</li>
+					<li>
+					Phone: +639202377777</li>
+					<li>
+						
+					Email: reservations.costadelsol@gmail.com
+					</li>
+				</div>
+				<div class="col-md-6 text-right align-items-end " id="waterMarkContainer">
+					<br class="">
+					<br class="brss">
+					<br class="brss">
+					<span class="footer-watermark">Your Text</span>
+				</div>
 			</div>
 		</div>
+
+		<script>
+			function checkScreenWidth() {
+				const waterMarkContainer = document.getElementById('waterMarkContainer');
+				const brss = document.querySelectorAll('.brss');
+				if (window.innerWidth <= 991) {
+					
+
+					if(waterMarkContainer.classList.contains('text-right', 'align-items-end')){
+						waterMarkContainer.classList.remove('text-right', 'align-items-end');
+					}
+
+					brss.forEach(function(br){
+						if(!br.classList.contains('hidden')){
+						br.classList.add('hidden');
+						}
+					})
+				}
+				else{
+
+					if(!waterMarkContainer.classList.contains('text-right', 'align-items-end')){
+						waterMarkContainer.classList.add('text-right', 'align-items-end');
+					}
+
+					brss.forEach(function(br){
+						if(br.classList.contains('hidden')){
+						br.classList.remove('hidden');
+						}
+					})
+				}
+			}
+
+			// Check the width on page load
+			checkScreenWidth();
+
+			// Add an event listener to detect when the screen size changes
+			window.addEventListener('resize', checkScreenWidth);
+		</script>
 	</footer>
+
+	<style>
+		#fh5co-wrapper{
+			overflow-x: hidden;
+			position: unset;
+			height: 100%;
+		}
+	</style>
  
 	</div>
 	<!-- END fh5co-page -->

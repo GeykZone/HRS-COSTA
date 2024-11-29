@@ -239,5 +239,5 @@ const currentYear = new Date().getFullYear();
 // Change the text of the div with the class 'footer-watermark'
 $('.footer-watermark').text(`Copyrights HRS-COST (BETA) ${currentYear}`);
 });
-	
+
 	
