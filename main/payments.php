@@ -71,7 +71,7 @@ include('controller/generalController.php');
         </div>
 
 
-        <div class="projects-box" id="revenueContainer">
+        <div class="projects-box admin" id="revenueContainer">
             <div class="title">
                 <h3 class="room-page-title" >Estimated Sales Revenue</h3>
             </div>

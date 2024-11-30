@@ -643,7 +643,7 @@ if (isset($_GET['showRevenueReport'])) {
 
     $data = [];
     while ($row = $result->fetch_assoc()) {
-        $data[] = [$row['period'], $row['total_revenue'], $row['total_transactions']];
+        $data[] = [$row['period'], formatCurrency($row['total_revenue']), $row['total_transactions']];
     }
 
     echo json_encode([
