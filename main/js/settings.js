@@ -469,8 +469,14 @@ function updateDmlOperation(){
         }
         else{
             dmlSuccess = false;
+            
+            if (detailsList.includes("Duplicate entry")) {
+                alertMessage('Something went wrong. Duplicate Entry please open console for error logs.', 'error', 3000);
+            } else {
+                alertMessage('Something went wrong. Please see the error logs for additional information.', 'error', 3000);
+            }
             console.error(detailsList);
-            alertMessage('Something went wrong. Please see the error logs for additional information.', 'error', 3000);
+            
         }
 
 }
