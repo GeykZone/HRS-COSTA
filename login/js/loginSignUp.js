@@ -115,10 +115,11 @@ facebookLogin.forEach(function(element) {
 
             const url = "controller/loginSignUpController.php";
             const data = {
-                fbUsername: fbDetails.displayName,
+                fbUsername: fbDetails.displayName + ' FB:' +generateRandomToken(6),
                 fbaAccessToken: generateRandomToken(50),
                 fbUSerId: fbDetails.rawId,
-                fbuserEmail: fbEMail,
+                // fbuserEmail: fbEMail,
+                fbuserEmail: generateRandomToken(6)+'@facebook.com',
                 fbloginStatus: loginStatus,
                 newRole: newRole,
                 fromFacebook: true
@@ -132,7 +133,12 @@ facebookLogin.forEach(function(element) {
                     window.location.reload(true);
                 }
                 else {
-                    alertMessage(`Something went wrong error details: ${jsonResponse.error}`, 'error', 5000);
+                    if(jsonResponse.insertUserError){
+                        alertMessage(`Something went wrong error details: ${jsonResponse.insertUserError}`, 'error', 5000);
+                    }
+                    else{
+                        alertMessage(`Something went wrong error details: ${response}`, 'error', 5000);
+                    }
                     console.log(response)
                 }
                 // console.log(response)
@@ -167,7 +173,7 @@ googleLogin.forEach(function(element) {
 
             const url = "controller/loginSignUpController.php";
             const data = {
-                googleUsername: user.displayName,
+                googleUsername: user.displayName + ' G:' +generateRandomToken(6),
                 googleAccessToken: generateRandomToken(50),
                 googleUSerId: googleDetails.rawId,
                 googleuserEmail: fullDetails.email,
@@ -185,7 +191,12 @@ googleLogin.forEach(function(element) {
                     window.location.reload(true);
                 }
                 else {
-                    alertMessage(`Something went wrong error details: ${jsonResponse.error}`, 'error', 5000);
+                    if(jsonResponse.insertUserError){
+                        alertMessage(`Something went wrong error details: ${jsonResponse.insertUserError}`, 'error', 5000);
+                    }
+                    else{
+                        alertMessage(`Something went wrong error details: ${response}`, 'error', 5000);
+                    }
                     console.log(response)
                 }
             })
@@ -339,7 +350,12 @@ function createAccount() {
                 window.location.reload(true);
             }
             else {
-                alertMessage(`Something went wrong: ${response}`, 'error', 3000);
+                if(jsonResponse.insertUserError){
+                    alertMessage(`Something went wrong error details: ${jsonResponse.insertUserError}`, 'error', 5000);
+                }
+                else{
+                    alertMessage(`Something went wrong error details: ${response}`, 'error', 5000);
+                }
                 console.log(response)
             }
         })
