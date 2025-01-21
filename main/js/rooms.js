@@ -2076,6 +2076,7 @@ function querySingleRoomDetails(roomId) {
             }
             let imageLink = JSON.parse(jsonResponse.rooms[0].imageLink);
             let otherRate = JSON.parse(jsonResponse.rooms[0].otherRate);
+            console.log(jsonResponse.rooms[0].amenities)
             let amenities = JSON.parse(jsonResponse.rooms[0].amenities);
             let modalHeader = document.getElementById('roomName');
             let image = document.getElementById('viewRoomMainImage');
@@ -2467,7 +2468,7 @@ submitChanges.addEventListener('click', function(){
             }
            
             const roomDetails = oldRoomDetails.rooms[0];
-            // console.log(roomDetails)
+            console.log(roomDetails.amenities)
             const otherRates = JSON.parse(roomDetails.otherRate);
             const roomImages = JSON.parse(roomDetails.imageLink);
             const amenities = JSON.parse(roomDetails.amenities);

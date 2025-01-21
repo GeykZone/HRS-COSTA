@@ -383,9 +383,9 @@ if (isset($inputData['querySingleRoom'])) {
             '[',
             GROUP_CONCAT(
                 DISTINCT CONCAT(
-                    '{\"Id\":\"', am.Id, '\",\"amenityName\":\"', am.amenityName, '\"}'
+                    '{\"Id\":\"', am.Id, '\",\"amenityName\":\"', REPLACE(am.amenityName, '\"', ''), '\"}'
                 ) ORDER BY am.amenityName DESC
-            ),
+            ),            
             ']'
         ) AS amenities,
         IFNULL(totalCheckIn.totalCheckInQuantity, 0) AS totalCheckInQuantity
