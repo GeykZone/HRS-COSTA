@@ -218,6 +218,10 @@
 
 .amenityType-container {
   background-color: #19C4B8;
+  white-space: nowrap; /* Prevent wrapping */
+  display: flex;       /* Ensure flex alignment */
+  align-items: center; /* Vertically center content */
+  justify-content: center; /* Horizontally center content */
   padding: 15px;
   border-radius: 10px;
   color: #ffffff;
